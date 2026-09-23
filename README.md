@@ -4,6 +4,8 @@ An interactive PowerShell pipeline visualizer, sandbox, and series of
 educational levels — inspired by
 [learnGitBranching](https://github.com/pcottle/learnGitBranching).
 
+**Live on GitHub Pages:** https://alisadeghiaghili.github.io/learn-powershell/
+
 LearnGitBranching makes the git commit graph visible while you type commands.
 LearnPowerShell does the same for the structure PowerShell hides from a plain
 terminal: the **object pipeline**, session variables, and the provider
