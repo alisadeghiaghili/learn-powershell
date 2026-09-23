@@ -1,15 +1,10 @@
 # LearnPowerShell
 
 An interactive PowerShell pipeline visualizer, sandbox, and series of
-educational levels — inspired by
-[learnGitBranching](https://github.com/pcottle/learnGitBranching).
+educational levels. Learn objects, the pipeline, and session state until the
+language clicks.
 
 **Live on GitHub Pages:** https://alisadeghiaghili.github.io/learn-powershell/
-
-LearnGitBranching makes the git commit graph visible while you type commands.
-LearnPowerShell does the same for the structure PowerShell hides from a plain
-terminal: the **object pipeline**, session variables, and the provider
-filesystem.
 
 ## Run it
 
@@ -37,17 +32,19 @@ Permalinks:
 | Sandbox | Type PowerShell-shaped commands against a virtual lab machine |
 | Pipeline visualizer | Objects stream through cmdlet stages as you run |
 | Session panel | Live `cwd`, `$variables`, and directory listing |
-| Levels | Guided challenges with win conditions |
-| Command golf | Each level has a `par` command count |
+| Teaching notes | Why each command matters — mental models, not just syntax |
+| Levels | Guided challenges with win conditions and a par score |
+| Celebrate + share | Clear a level, then post progress to LinkedIn / X / Facebook |
+| Progress memory | localStorage + cookie — resume a week later |
+| Terminal habits | History (↑/↓), word-by-word Tab, caret stays in the box |
 | `undo` / `reset` | Snapshot restore for the whole session |
-| `levels` | Level browser with series tabs |
 | `build level` / `import level` | Export / load custom level JSON |
 
 ## Commands to know
 
 ```
-help          levels        hint          goal
-undo          reset         sandbox
+help          levels        hint          goal          steps
+undo          reset         sandbox       curriculum
 ```
 
 Simulated cmdlets include `Get-Location`, `Set-Location`, `Get-ChildItem`,
@@ -77,17 +74,24 @@ $procs = Get-Process
 4. **Session & Files** — variables and filesystem verbs
 5. **Remix** — composition and golf
 
+Each level teaches what is happening, why it matters, and a mental model.
+
 ## Project layout
 
 ```
 index.html              app shell
 assets/css/app.css      layout and visual system
 assets/js/engine.js     simulated PowerShell session
-assets/js/levels.js     level data + goal evaluator
+assets/js/levels.js     level data + goal evaluator + teaching notes
 assets/js/visuals.js    pipeline + session renderers
-assets/js/terminal.js   shell UI
+assets/js/terminal.js   shell UI (history, Tab, ghost text)
+assets/js/teach.js      after-command "why" blocks
+assets/js/progress.js   localStorage + cookie persistence
+assets/js/share.js      LinkedIn / X / Facebook share payloads
+assets/js/confetti.js   celebration effects
 assets/js/app.js        wiring, modes, modals
 tests/smoke.mjs         engine smoke tests (Node)
+tests/curriculum.mjs    every level is solvable (Node)
 DESIGN.md               design notes
 ```
 
@@ -95,16 +99,15 @@ DESIGN.md               design notes
 
 ```powershell
 node tests/smoke.mjs
+node tests/curriculum.mjs
 ```
+
+## License
+
+Apache License 2.0 — see [LICENSE](LICENSE).
 
 ## Scope
 
 This is a **teaching simulator**, not a real `pwsh` host. It covers the
 language idioms that matter for the pipeline mental model. It does not run
 scripts, remoting, DSC, classes, or arbitrary .NET.
-
-## Credits
-
-Product shape follows [learnGitBranching](https://github.com/pcottle/learnGitBranching)
-by Peter Cottle and contributors. This project is an independent PowerShell
-analogy, not a fork.

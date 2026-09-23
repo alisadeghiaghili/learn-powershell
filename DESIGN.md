@@ -1,30 +1,27 @@
 # LearnPowerShell — Design Notes
 
-Internal design document for the interactive PowerShell tutorial game
-inspired by [learnGitBranching](https://github.com/pcottle/learnGitBranching).
+Internal design document for the interactive PowerShell tutorial game.
 
 ## Product thesis
 
-LearnGitBranching teaches git by making the invisible commit graph visible
-while you type commands. PowerShell’s CLI hides a different structure: the
-**object pipeline**, session variables, and the provider filesystem.
+PowerShell's CLI hides the structure that matters: the **object pipeline**,
+session variables, and the provider filesystem. LearnPowerShell makes that
+structure visible while you type commands.
 
-LearnPowerShell is that same game loop for PowerShell:
+Game loop:
 
 - type real PowerShell-shaped commands
 - watch objects flow through the pipeline
 - complete levels against a stated goal
 - keep a command-count score (PowerShell golf)
-- `undo` / `reset` / `levels` / `help`
-
-It is **not** a git clone with PowerShell skin. Branching is a git concept.
-The PowerShell analog of the commit tree is the pipeline + session panel.
+- celebrate and share progress
+- `undo` / `reset` / `levels` / `help` / `steps`
 
 ## Style anchor
 
 Windows Terminal / Cascadia-era Microsoft terminal product chrome, crossed
-with learnGitBranching’s dual-pane game HUD (live visualizer above, shell
-below, level goal always visible).
+with a dual-pane learning HUD (live visualizer above, shell below, level goal
+always visible).
 
 Feel: a serious learning tool that ships with the OS — cool blue-slate,
 dense information, monospace-first — not a SaaS marketing site.
@@ -45,8 +42,9 @@ dense information, monospace-first — not a SaaS marketing site.
 | `--success`      | `#34D399` | Goal met, success                         |
 | `--danger`       | `#F87171` | Errors                                    |
 | `--warn`         | `#F59E0B` | Warnings, par-score edges                 |
+| neon current     | `#FF8C1A` | Active goal step (orange neon ring)       |
 
-No cream/terracotta. No neon-on-black. No decorative gradients.
+No cream/terracotta. No neon-on-black as a whole theme. No decorative gradients.
 
 ## Typography
 
@@ -57,56 +55,55 @@ No cream/terracotta. No neon-on-black. No decorative gradients.
 | Object labels     | same mono, 11–12px                                           |
 
 Scale: 11 / 12 / 13 / 14 / 16 / 20 / 28. Weights: 400 body, 600 titles,
-700 only for the product wordmark. Sentence case. No ALL-CAPS eyebrows.
+700 only for the product wordmark. Sentence case.
 
 ## Layout system
 
-Full-viewport app shell. 8px spacing rhythm. Max content width none —
-this is a tool, not a landing page.
+Full-viewport app shell. 8px spacing rhythm. Tool density, not landing page.
 
 ```
 ┌────────────────────────────────────────────────────────────┐
-│ wordmark          mode · progress · command counter        │ 40px
+│ wordmark          mode · progress · command counter        │ 44px
 ├───────────────────────────────────┬────────────────────────┤
 │                                   │  goal / level panel    │
-│     PIPELINE VISUALIZER           │  (title, brief,        │
-│     objects → cmdlets → output    │   win checks, hint)    │
+│     PIPELINE VISUALIZER           │  title, brief, hint    │
+│     objects → cmdlets → output    │  win checks (neon)     │
+│                                   │  teaching boxes        │
 │                                   ├────────────────────────┤
 │                                   │  SESSION               │
 │                                   │  cwd · $vars · files   │
 ├───────────────────────────────────┴────────────────────────┤
 │  terminal scrollback                                       │
-│  PS C:\lab> █                                               │  ~38vh
+│  hint bar                                                  │
+│  PS C:\lab> █   (ghost word + caret)                       │  ~38vh
 └────────────────────────────────────────────────────────────┘
 ```
 
-Level browser is a modal overlay (same as LGB’s `levels` dialog).
-Level intro / success use the same modal family.
+Level browser and celebration use the modal family.
 
 Responsive: below 900px stack visualizer → goal → session → terminal.
 Keyboard focus rings on every interactive control. `prefers-reduced-motion`
-disables pipeline animation.
+disables pipeline animation and neon pulse.
 
 ## Signature moments
 
 1. **Pipeline burst** — after a command runs, object tokens stream along
-   the connector through each cmdlet node (420ms, staggered). This is the
-   product’s one loud animation.
-2. **Goal lock-in** — win conditions check off in sequence with a 80ms
-   stagger, then a quiet success bar (not confetti).
+   the connector through each cmdlet node (420ms, staggered).
+2. **Neon current step** — first unmet goal check gets an orange neon ring.
+3. **Celebrate** — confetti + fanfare + share card with learned curriculum.
 
-## Game model (mirrors LGB)
+## Terminal behavior (must match a real shell)
 
-| LGB                    | LearnPowerShell                      |
-|------------------------|--------------------------------------|
-| commit tree visualizer | pipeline + session visualizer        |
-| git sandbox            | PowerShell sandbox                   |
-| `levels`               | `levels` (series tabs)               |
-| goal tree match        | goal predicates (output / state / usage) |
-| command golf           | command golf (par per level)         |
-| `undo` / `reset`       | `undo` / `reset`                     |
-| level builder          | `build level` → JSON export          |
-| permalinks `?command=` | same                                 |
+- Empty input: placeholder only (never stacked with ghost text).
+- Ghost text: only the suffix of the *current word* (or the next word after space).
+- Tab: complete current word; repeated Tab cycles candidates.
+- ArrowUp / ArrowDown: history with draft restore.
+- Caret stays in the command box after every submit and after modal close.
+
+## Progress memory
+
+`localStorage` + cookie (`learn_powershell_progress`), merged on load.
+Share payloads list every solved level (series: name) plus the live URL.
 
 ## Curriculum (level series)
 
@@ -116,18 +113,19 @@ disables pipeline animation.
 4. **session** — variables, files, providers
 5. **remix** — multi-command challenges + golf
 
-Each level: `{ id, series, name, brief, hint, par, start, goal }`.
-`goal` predicates: `commandsUsed`, `outputMatches`, `pathIs`, `variableIs`,
-`filesMatch`, `usedCmdlets`, `pipelineDepth`.
+Each level: `{ id, series, name, brief, hint, par, goal, teach, learning }`.
+`goal` predicates: `commandsMax`, `usedCmdlets`, `pathIs`, `variableIs`,
+`fileExists`, `fileMissing`, `fileContains`, `outputIncludes`, `outputCount`,
+`pipelineCmdlets`.
 
 ## Engine
 
 Client-side simulated PowerShell (no real `pwsh` execution):
 
 - tokenizer for quoted strings, parameters, pipeline `|`
-- cmdlet table with aliases (`gci`, `cd`, `%`, `?`, …)
+- cmdlet table with aliases
 - virtual filesystem + process/service tables
-- `$variables`, simple subexpressions, string interpolation (basic)
+- `$variables`, simple assignment, string expansion
 - history, `undo` stack (full session snapshots)
 
 ## Non-goals (v1)
@@ -140,5 +138,8 @@ Client-side simulated PowerShell (no real `pwsh` execution):
 ## Build
 
 Static multi-file web app (no bundler). Entry: `index.html`.
-Open or serve as static files. Tests: lightweight engine unit checks in
-`tests/engine.test.html` (browser) — no npm required to play.
+Tests: `tests/smoke.mjs`, `tests/curriculum.mjs` (Node).
+
+## License
+
+Apache License 2.0.
