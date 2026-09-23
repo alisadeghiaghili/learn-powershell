@@ -208,6 +208,8 @@ function escapeHtml(s) {
 
 /**
  * Render the goal checklist into a container.
+ * First unmet check gets a neon orange "current" ring so the learner
+ * always sees what to do next.
  * @param {HTMLElement} container
  * @param {{ checks: { id: string, label: string, passed: boolean, detail: string }[], solved: boolean }} result
  * @param {{ reduceMotion?: boolean }} [opts]
@@ -217,12 +219,15 @@ export function renderGoals(container, result, opts = {}) {
   const list = document.createElement("ul");
   list.className = "goal-list";
 
+  const firstPending = result.checks.findIndex((c) => !c.passed);
+
   result.checks.forEach((check, i) => {
     const li = document.createElement("li");
-    li.className = check.passed ? "is-pass" : "is-pending";
+    const isCurrent = !check.passed && i === firstPending;
+    li.className = check.passed ? "is-pass" : isCurrent ? "is-pending is-current" : "is-pending";
     if (!opts.reduceMotion) li.style.setProperty("--i", String(i));
     li.innerHTML = `
-      <span class="goal-mark" aria-hidden="true">${check.passed ? "✓" : "○"}</span>
+      <span class="goal-mark" aria-hidden="true">${check.passed ? "✓" : isCurrent ? "▸" : "○"}</span>
       <span class="goal-label">${escapeHtml(check.label)}</span>
       <span class="goal-detail">${escapeHtml(check.detail)}</span>
     `;

@@ -2,23 +2,30 @@
  * LearnPowerShell level definitions.
  *
  * Each level is a self-contained challenge with a start world override,
- * win predicates, and a par score for command golf.
+ * win predicates, a par score for command golf, and teaching notes.
  */
 
 /**
  * @typedef {Object} LevelGoal
- * @property {number} [commandsMax]      Max commands allowed (inclusive)
- * @property {string[]} [usedCmdlets]    Canonical cmdlets that must appear
- * @property {string} [pathIs]           Required cwd after solve
- * @property {string} [variableIs]       "name=value" required variable
- * @property {string} [fileExists]       Relative or absolute path must exist
- * @property {string} [fileMissing]      Path must not exist
- * @property {string} [fileContains]     "path::substring"
- * @property {string} [outputIncludes]   Substring that must appear in last output
- * @property {number} [outputCount]      Exact item count in last pipeline output
- * @property {string} [outputTypeName]   Last pipeline objects share this type name fragment
- * @property {string} [outputPropMin]    "Prop=value" numeric min on each output object
- * @property {string[]} [pipelineCmdlets] Cmdlets that must appear in one pipeline
+ * @property {number} [commandsMax]
+ * @property {string[]} [usedCmdlets]
+ * @property {string} [pathIs]
+ * @property {string} [variableIs]
+ * @property {string} [fileExists]
+ * @property {string} [fileMissing]
+ * @property {string} [fileContains]
+ * @property {string} [outputIncludes]
+ * @property {number} [outputCount]
+ * @property {string} [outputTypeName]
+ * @property {string} [outputPropMin]
+ * @property {string[]} [pipelineCmdlets]
+ */
+
+/**
+ * @typedef {Object} LevelTeach
+ * @property {string} what
+ * @property {string[]} why
+ * @property {string} [model]
  */
 
 /**
@@ -30,7 +37,8 @@
  * @property {string} hint
  * @property {number} par
  * @property {LevelGoal} goal
- * @property {{ cwd?: string }} [start]
+ * @property {LevelTeach} [teach]
+ * @property {string[]} [learning]
  */
 
 /** @type {{ id: string, name: string, description: string }[]} */
@@ -70,12 +78,23 @@ export const LEVELS = [
     name: "Say hello",
     brief:
       "Write the string Hello, PowerShell to the pipeline using Write-Output.",
-    hint: "Write-Output \"Hello, PowerShell\"",
+    hint: 'Write-Output "Hello, PowerShell"',
     par: 1,
     goal: {
       outputIncludes: "Hello, PowerShell",
       usedCmdlets: ["Write-Output"],
     },
+    teach: {
+      what:
+        "Write-Output puts an object on the success stream. The terminal then formats that object as text so you can read it.",
+      why: [
+        "Almost every PowerShell idiom is about moving objects between cmdlets, not scraping text.",
+        "Even a hello-world line teaches the verb-noun pattern: Write-Output.",
+      ],
+      model:
+        "Think of the pipeline as a conveyor belt of objects. Write-Output is how you place one on the belt.",
+    },
+    learning: ["Verb-Noun cmdlets", "Success stream", "Write-Output"],
   },
   {
     id: "intro-02",
@@ -87,6 +106,16 @@ export const LEVELS = [
     goal: {
       usedCmdlets: ["Get-Location"],
     },
+    teach: {
+      what:
+        "Get-Location returns the session's current path as a PathInfo object (drive + provider + path).",
+      why: [
+        "Relative paths resolve from this location. Knowing it is how you avoid 'file not found' confusion.",
+        "pwd is an alias — aliases are shortcuts, not different tools.",
+      ],
+      model: "Your prompt path is session state. Get-Location reads it as an object.",
+    },
+    learning: ["Session location", "PathInfo", "Aliases (pwd)"],
   },
   {
     id: "intro-03",
@@ -98,6 +127,16 @@ export const LEVELS = [
     goal: {
       usedCmdlets: ["Get-ChildItem"],
     },
+    teach: {
+      what:
+        "Get-ChildItem enumerates provider items and emits FileInfo / DirectoryInfo objects.",
+      why: [
+        "You receive Length, Mode, LastWriteTime — not just names in columns.",
+        "Those properties become filters and sorts in later levels.",
+      ],
+      model: "The filesystem is a provider of objects, the same way processes are.",
+    },
+    learning: ["FileInfo / DirectoryInfo", "Provider model", "Get-ChildItem"],
   },
   {
     id: "intro-04",
@@ -110,6 +149,16 @@ export const LEVELS = [
       usedCmdlets: ["Get-Content"],
       outputIncludes: "Objects > text",
     },
+    teach: {
+      what:
+        "Get-Content reads a file and emits one System.String per line (unless you ask for raw).",
+      why: [
+        "Text files are still streams of objects once they enter the pipe.",
+        "You can Select-String or Where-Object those strings without leaving PowerShell.",
+      ],
+      model: "Disk text becomes pipeline strings — then it is objects again.",
+    },
+    learning: ["Get-Content", "String stream", "File paths"],
   },
   {
     id: "intro-05",
@@ -122,6 +171,16 @@ export const LEVELS = [
       pathIs: "C:\\lab\\docs",
       usedCmdlets: ["Set-Location"],
     },
+    teach: {
+      what:
+        "Set-Location changes the session's current location. cd is the familiar alias.",
+      why: [
+        "After this, relative paths like readme.md resolve under docs\\.",
+        "Location is session state — undo can bring you back if you go too far.",
+      ],
+      model: "cd is not a joke command — it rewrites the base path for everything that follows.",
+    },
+    learning: ["Set-Location / cd", "Relative paths", "Session state"],
   },
   {
     id: "intro-06",
@@ -134,6 +193,16 @@ export const LEVELS = [
       usedCmdlets: ["Get-ChildItem"],
       outputIncludes: "todo.txt",
     },
+    teach: {
+      what:
+        "-Filter narrows the enumeration at the provider (filesystem) side before objects enter your pipe.",
+      why: [
+        "Provider filters are cheaper than Where-Object after a full listing.",
+        "Wildcards (*, ?) are PowerShell's -like patterns — not shell globs with every edge case.",
+      ],
+      model: "Filter as early as you can. That rule scales to remote and huge directories.",
+    },
+    learning: ["-Filter parameter", "Wildcards", "Early filtering"],
   },
   {
     id: "objects-01",
@@ -147,6 +216,16 @@ export const LEVELS = [
       usedCmdlets: ["Get-Process", "Select-Object"],
       outputCount: 8,
     },
+    teach: {
+      what:
+        "Get-Process emits process objects. Select-Object projects a subset of properties (Name, Id).",
+      why: [
+        "Projection is how you build a report shape without parsing a table.",
+        "Downstream stages now see lean objects — CPU/WS are gone if you did not select them.",
+      ],
+      model: "Select-Object is SQL SELECT for the object pipeline.",
+    },
+    learning: ["Get-Process", "Select-Object projection", "Note properties"],
   },
   {
     id: "objects-02",
@@ -159,18 +238,36 @@ export const LEVELS = [
       usedCmdlets: ["Get-Process", "Where-Object"],
       outputPropMin: "CPU=50",
     },
+    teach: {
+      what:
+        "Where-Object keeps objects for which a property comparison is true (CPU -gt 50).",
+      why: [
+        "The comparison is on the property value — not on a text column you grepped.",
+        "Operators: -eq -ne -gt -ge -lt -le -like -match.",
+      ],
+      model: "Where-Object is a filter on the conveyor belt. Objects that fail the test drop off.",
+    },
+    learning: ["Where-Object", "Comparison operators", "Property predicates"],
   },
   {
     id: "objects-03",
     series: "objects",
     name: "Sort the hungry ones",
-    brief:
-      "List process names ordered by CPU descending. Highest CPU first.",
+    brief: "List process names ordered by CPU descending. Highest CPU first.",
     hint: "Get-Process | Sort-Object CPU -Descending",
     par: 1,
     goal: {
       usedCmdlets: ["Get-Process", "Sort-Object"],
     },
+    teach: {
+      what: "Sort-Object orders the stream by a property. -Descending flips the order.",
+      why: [
+        "Sorting is on typed values (numbers stay numbers).",
+        "After sort, Select-Object -First N becomes a true 'top N' query.",
+      ],
+      model: "Order matters for reports and for -First / -Last slices.",
+    },
+    learning: ["Sort-Object", "-Descending", "Typed ordering"],
   },
   {
     id: "objects-04",
@@ -183,6 +280,16 @@ export const LEVELS = [
       usedCmdlets: ["Get-Process", "Measure-Object"],
       outputIncludes: "Count",
     },
+    teach: {
+      what:
+        "Measure-Object collapses a stream into aggregate facts. Count is always present.",
+      why: [
+        "Aggregation is another object — you can still Select-Object on it.",
+        "With -Property CPU you also get Sum, Average, Minimum, Maximum.",
+      ],
+      model: "Measure is reduce/fold over the pipeline.",
+    },
+    learning: ["Measure-Object", "Aggregation", "Count"],
   },
   {
     id: "objects-05",
@@ -195,6 +302,16 @@ export const LEVELS = [
       usedCmdlets: ["Get-Process", "Select-Object"],
       outputCount: 3,
     },
+    teach: {
+      what:
+        "Select-Object can project properties and slice the stream with -First / -Last in one step.",
+      why: [
+        "Order of operations matters: project and take from the objects you actually want.",
+        "-First 3 means three objects, not three text lines of a formatted table.",
+      ],
+      model: "Think: map + take. Two SQL ideas in one cmdlet.",
+    },
+    learning: ["Select-Object -First", "Projection + slice", "Object count"],
   },
   {
     id: "pipeline-01",
@@ -207,6 +324,16 @@ export const LEVELS = [
     goal: {
       pipelineCmdlets: ["Get-Process", "Where-Object", "Select-Object"],
     },
+    teach: {
+      what:
+        "A pipeline is source → transform → shape. Here: Get-Process → Where-Object → Select-Object.",
+      why: [
+        "Each stage's output objects are the next stage's input objects.",
+        "That composition is why PowerShell beats 'parse ls output with awk' for administration.",
+      ],
+      model: "UNIX pipes move bytes. PowerShell pipes move objects with structure.",
+    },
+    learning: ["Multi-stage pipeline", "Source → filter → project"],
   },
   {
     id: "pipeline-02",
@@ -220,6 +347,16 @@ export const LEVELS = [
       usedCmdlets: ["Get-Process", "ForEach-Object"],
       outputCount: 8,
     },
+    teach: {
+      what:
+        "ForEach-Object visits every object. $_ is the current one. Emitting $_.Name yields plain strings.",
+      why: [
+        "Transforms that need logic per item live here (not in Select-Object).",
+        "The result count matches the input count when you emit one value per object.",
+      ],
+      model: "ForEach-Object is map() over the stream.",
+    },
+    learning: ["ForEach-Object", "$_", "Per-object map"],
   },
   {
     id: "pipeline-03",
@@ -232,6 +369,16 @@ export const LEVELS = [
     goal: {
       usedCmdlets: ["ForEach-Object"],
     },
+    teach: {
+      what:
+        "Inside the script block you can compute a new value from $_.CPU. The result becomes the next object.",
+      why: [
+        "This is how you derive columns without leaving the pipeline.",
+        "Numeric properties stay numeric — + is arithmetic, not string concat, when both sides are numbers.",
+      ],
+      model: "Each object can be rewritten as it moves. The belt is not read-only.",
+    },
+    learning: ["Derived values", "$_.Property", "Arithmetic in the pipe"],
   },
   {
     id: "pipeline-04",
@@ -245,6 +392,16 @@ export const LEVELS = [
       pipelineCmdlets: ["Get-Content", "Select-String"],
       outputIncludes: "Select-Object",
     },
+    teach: {
+      what:
+        "Get-Content yields lines; Select-String keeps those that match a pattern and wraps them in MatchInfo.",
+      why: [
+        "Search is a pipeline stage, not a different tool chain.",
+        "MatchInfo still has LineNumber and Path if you need them.",
+      ],
+      model: "Text tools can live inside PowerShell as ordinary pipeline stages.",
+    },
+    learning: ["Get-Content → Select-String", "MatchInfo", "Pattern match"],
   },
   {
     id: "pipeline-05",
@@ -258,6 +415,16 @@ export const LEVELS = [
       usedCmdlets: ["Measure-Object"],
       outputIncludes: "Average",
     },
+    teach: {
+      what:
+        "Measure-Object -Property CPU computes Count, Sum, Average, Minimum, Maximum over that property.",
+      why: [
+        "You asked for a property — so aggregates are numeric, not string guesses.",
+        "This one-liner is a complete summary statistic over live objects.",
+      ],
+      model: "Pick the field first, then reduce. That is the analytics idiom in PowerShell.",
+    },
+    learning: ["Measure-Object -Property", "Average / Sum", "Reduce by property"],
   },
   {
     id: "session-01",
@@ -271,6 +438,16 @@ export const LEVELS = [
       variableIs: "procs=PSOBJECT_LIST",
       usedCmdlets: ["Get-Process"],
     },
+    teach: {
+      what:
+        "$procs = Get-Process captures the success stream into a variable as an array of process objects.",
+      why: [
+        "Variables remember objects — later you can $procs | Where-Object … without re-querying.",
+        "This is why assignment in PowerShell is more than copying printed text.",
+      ],
+      model: "A variable is a handle to the objects that were on the belt.",
+    },
+    learning: ["Assignment $x = …", "Object arrays in variables", "Reuse of results"],
   },
   {
     id: "session-02",
@@ -283,6 +460,15 @@ export const LEVELS = [
       fileExists: "report.txt",
       usedCmdlets: ["New-Item"],
     },
+    teach: {
+      what: "New-Item creates a filesystem item (file by default, or -ItemType Directory).",
+      why: [
+        "Same verb family as New-Process-style thinking: verbs describe the action.",
+        "The created item is also returned as an object you could assign.",
+      ],
+      model: "Providers take the same New-Item / Remove-Item verbs across drives.",
+    },
+    learning: ["New-Item", "File creation", "Verb consistency"],
   },
   {
     id: "session-03",
@@ -295,6 +481,15 @@ export const LEVELS = [
       fileContains: "report.txt::draft",
       usedCmdlets: ["Set-Content"],
     },
+    teach: {
+      what: "Set-Content replaces the file body with the value you provide.",
+      why: [
+        "Parameters and position matter: -Path and -Value can bind by name or position.",
+        "Use Add-Content when you mean append — overwriting is silent and complete.",
+      ],
+      model: "Set = replace. Add = append. The verb is the contract.",
+    },
+    learning: ["Set-Content", "Path / Value binding", "Overwrite semantics"],
   },
   {
     id: "session-04",
@@ -307,6 +502,15 @@ export const LEVELS = [
       fileMissing: "todo.txt",
       usedCmdlets: ["Remove-Item"],
     },
+    teach: {
+      what: "Remove-Item deletes a provider item. Aliases: rm, del, ri.",
+      why: [
+        "Non-empty directories need -Recurse — a safety rail against accidents.",
+        "Deletion is a session change undo can reverse in this lab.",
+      ],
+      model: "Destructive verbs are explicit. That is intentional design.",
+    },
+    learning: ["Remove-Item", "Safety rails", "Aliases rm/del"],
   },
   {
     id: "session-05",
@@ -319,6 +523,15 @@ export const LEVELS = [
       usedCmdlets: ["Test-Path"],
       outputIncludes: "True",
     },
+    teach: {
+      what: "Test-Path returns a Boolean object: True or False.",
+      why: [
+        "Guard clauses in scripts start here: if (Test-Path $p) { … }.",
+        "Booleans are objects too — they print as True/False but stay typed.",
+      ],
+      model: "Predicates first, then act. That is reliable scripting.",
+    },
+    learning: ["Test-Path", "Booleans", "Guard conditions"],
   },
   {
     id: "remix-01",
@@ -326,11 +539,21 @@ export const LEVELS = [
     name: "Service report",
     brief:
       "Emit only running services. One pipeline. Use Where-Object Status.",
-    hint: 'Get-Service | Where-Object Status -eq Running',
+    hint: "Get-Service | Where-Object Status -eq Running",
     par: 1,
     goal: {
       pipelineCmdlets: ["Get-Service", "Where-Object"],
     },
+    teach: {
+      what:
+        "Service Status is a property you compare with -eq. No text parsing of a service table.",
+      why: [
+        "This is the same filter shape as processes — one pattern, many nouns.",
+        "Verb-Noun consistency is what makes PowerShell scale in your head.",
+      ],
+      model: "Same pipeline, different noun. That is the language design.",
+    },
+    learning: ["Get-Service", "Status property", "Reusable filter pattern"],
   },
   {
     id: "remix-02",
@@ -344,6 +567,16 @@ export const LEVELS = [
       pipelineCmdlets: ["Get-Process", "Sort-Object", "Select-Object"],
       outputCount: 2,
     },
+    teach: {
+      what:
+        "Sort first so -First means 'highest CPU', then project the columns you want to show.",
+      why: [
+        "Order of stages is the algorithm. Swap them and 'top 2' becomes wrong.",
+        "This is a complete mini-report in one readable line.",
+      ],
+      model: "compose: source → order → shape. Learn to feel stage order.",
+    },
+    learning: ["Stage order", "Top-N pattern", "Report composition"],
   },
   {
     id: "remix-03",
@@ -356,6 +589,16 @@ export const LEVELS = [
     goal: {
       fileContains: "report.txt::done",
     },
+    teach: {
+      what:
+        "Add-Content appends a line. Set-Content would wipe what you already wrote.",
+      why: [
+        "Knowing the difference prevents silent data loss in real scripts.",
+        "Appending is the log-file habit: grow, do not rewrite.",
+      ],
+      model: "Set replaces the story. Add continues it.",
+    },
+    learning: ["Add-Content", "Append vs overwrite", "Log-friendly habits"],
   },
   {
     id: "remix-04",
@@ -370,11 +613,20 @@ export const LEVELS = [
       outputIncludes: "Count",
       usedCmdlets: ["Get-Process"],
     },
+    teach: {
+      what:
+        "Several statements can share one line with ;. Count commands, not keystrokes — golf is about clarity under budget.",
+      why: [
+        "Real work often needs more than one pipeline. Semicolons sequence them.",
+        "When you can hit par, you understand the shortest correct composition.",
+      ],
+      model: "Golf teaches economy: no wasted stages, no decorative Format-Table in the middle.",
+    },
+    learning: ["Semicolon sequences", "Command golf", "Economy of expression"],
   },
 ];
 
 /**
- * Resolve a level by id.
  * @param {string} id
  * @returns {Level | null}
  */
@@ -383,7 +635,6 @@ export function getLevel(id) {
 }
 
 /**
- * Levels for a series, in order.
  * @param {string} seriesId
  * @returns {Level[]}
  */
@@ -392,7 +643,14 @@ export function levelsInSeries(seriesId) {
 }
 
 /**
- * Next level id after the given id, or null.
+ * @param {string} seriesId
+ * @returns {string}
+ */
+export function seriesTitle(seriesId) {
+  return SERIES.find((s) => s.id === seriesId)?.name || seriesId;
+}
+
+/**
  * @param {string} id
  * @returns {string | null}
  */
@@ -403,7 +661,6 @@ export function nextLevelId(id) {
 }
 
 /**
- * Evaluate level goal against a session snapshot and last run.
  * @param {LevelGoal} goal
  * @param {import('./engine.js').Session} session
  * @param {{ output: string[], usedCmdlets: string[], pipeline: any, commandCount: number }} lastRun
@@ -418,14 +675,15 @@ export function evaluateGoal(goal, session, lastRun) {
     checks.push({
       id: "commandsMax",
       label: `At most ${goal.commandsMax} commands`,
-      passed: n <= goal.commandsMax && n > 0,
+      passed: n > 0 && n <= goal.commandsMax,
       detail: `${n} used`,
     });
   }
 
   if (goal.usedCmdlets?.length) {
     for (const cmd of goal.usedCmdlets) {
-      const passed = session.usedCmdlets.has(cmd) || lastRun.usedCmdlets.includes(cmd);
+      const passed =
+        session.usedCmdlets.has(cmd) || lastRun.usedCmdlets.includes(cmd);
       checks.push({
         id: `used:${cmd}`,
         label: `Used ${cmd}`,
@@ -469,15 +727,12 @@ export function evaluateGoal(goal, session, lastRun) {
   }
 
   if (goal.fileExists) {
-    const path = resolveGoalPath(session, goal.fileExists);
-    const passed = Boolean(session.constructor ? true : true);
-    // use engine helpers via duck-typing on session
     const exists = fileExistsOn(session, goal.fileExists);
     checks.push({
       id: "fileExists",
       label: `File ${goal.fileExists} exists`,
       passed: exists,
-      detail: exists ? path : "missing",
+      detail: exists ? "created" : "missing",
     });
   }
 
@@ -515,9 +770,7 @@ export function evaluateGoal(goal, session, lastRun) {
   }
 
   if (goal.outputCount != null) {
-    const n = lastRun.pipeline?.count ?? lastRun.output.length;
-    // Prefer actual object count from pipeline trace
-    const count = lastRun.pipeline?.count ?? n;
+    const count = lastRun.pipeline?.count ?? lastRun.output.length;
     const passed = count === goal.outputCount;
     checks.push({
       id: "outputCount",
@@ -544,7 +797,6 @@ export function evaluateGoal(goal, session, lastRun) {
     const [prop, minStr] = goal.outputPropMin.split("=");
     const min = Number(minStr);
     const sample = lastRun.pipeline?.stages?.at(-1)?.sample || [];
-    // Need full objects — re-check via session not available; use sample fields
     const passed =
       sample.length > 0 &&
       sample.every((s) => {
@@ -570,21 +822,7 @@ export function evaluateGoal(goal, session, lastRun) {
     });
   }
 
-  // Always require at least one command and no error on last run for solve
-  const solved = checks.length > 0 && checks.every((c) => c.passed) && lastRun.output != null;
-  return { checks, solved: checks.every((c) => c.passed) };
-}
-
-/**
- * @param {import('./engine.js').Session} session
- * @param {string} rel
- * @returns {string}
- */
-function resolveGoalPath(session, rel) {
-  const { resolvePath } = /** @type {any} */ (globalThis.__lpsEngine || {});
-  if (resolvePath) return resolvePath(session.cwd, rel);
-  if (/^[A-Za-z]:/.test(rel)) return rel.replace(/\//g, "\\");
-  return `${session.cwd}\\${rel.replace(/\//g, "\\")}`;
+  return { checks, solved: checks.length > 0 && checks.every((c) => c.passed) };
 }
 
 /**
@@ -633,4 +871,14 @@ function readGoalFile(session, rel) {
     node = child;
   }
   return node.type === "file" ? String(node.content || "") : "";
+}
+
+/**
+ * @param {import('./engine.js').Session} session
+ * @param {string} rel
+ * @returns {string}
+ */
+function resolveGoalPath(session, rel) {
+  if (/^[A-Za-z]:/.test(rel)) return rel.replace(/\//g, "\\");
+  return `${session.cwd}\\${rel.replace(/\//g, "\\")}`;
 }

@@ -796,6 +796,8 @@ export class Session {
       "sandbox",
       "hint",
       "goal",
+      "steps",
+      "curriculum",
       "clear",
       "build",
       "import",
@@ -837,6 +839,16 @@ export class Session {
     if (head === "goal") {
       out.push("goal");
       used.push("goal");
+      return { ok: true };
+    }
+    if (head === "steps") {
+      out.push("steps");
+      used.push("steps");
+      return { ok: true };
+    }
+    if (head === "curriculum") {
+      out.push("curriculum");
+      used.push("curriculum");
       return { ok: true };
     }
     if (head === "build" && (tokens[1] || "").toLowerCase() === "level") {
@@ -1880,6 +1892,8 @@ function helpText(topic) {
   levels        open the level browser
   hint          show the current level hint
   goal          show win conditions
+  steps         show the teaching guide for the current level
+  curriculum    list what you have learned and what is left
   undo          revert the last command
   reset         reset session state
   build level   export a custom level JSON

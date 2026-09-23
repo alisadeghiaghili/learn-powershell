@@ -1,8 +1,8 @@
 /**
- * App shell: wires engine, visualizer, terminal, and levels together.
+ * App shell: engine + visualizer + terminal + levels + celebrate/share + progress.
  */
 
-import { Session, resolvePath, getNode, PSObject, previewObject } from "./engine.js";
+import { Session } from "./engine.js";
 import {
   SERIES,
   LEVELS,
@@ -10,19 +10,32 @@ import {
   levelsInSeries,
   nextLevelId,
   evaluateGoal,
+  seriesTitle,
 } from "./levels.js";
 import { createVisualizer, renderGoals } from "./visuals.js";
 import { createTerminal } from "./terminal.js";
+import {
+  loadProgress,
+  saveProgress,
+  summarizeCurriculum,
+} from "./progress.js";
+import { buildShareTargets, shareWithClipboard, SHARE_URL } from "./share.js";
+import { launchConfetti, playFanfare } from "./confetti.js";
+import { teachAfterCommand, levelTeachHtml } from "./teach.js";
 
-const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const reduceMotion = window.matchMedia(
+  "(prefers-reduced-motion: reduce)"
+).matches;
 
 /** @type {Session} */
 let session = new Session();
 let mode = /** @type {"sandbox" | "level"} */ ("sandbox");
 let levelId = /** @type {string | null} */ (null);
 let lastRun = emptyRun();
-let solvedIds = loadSolved();
 let levelCommandStart = 0;
+/** @type {Record<string, { solved: boolean, bestCommands?: number }>} */
+let progressMap = loadProgress();
+let celebrateOffered = false;
 
 function emptyRun() {
   return {
@@ -33,21 +46,9 @@ function emptyRun() {
   };
 }
 
-function loadSolved() {
-  try {
-    return new Set(JSON.parse(localStorage.getItem("lps-solved") || "[]"));
-  } catch {
-    return new Set();
-  }
-}
-
-function saveSolved() {
-  localStorage.setItem("lps-solved", JSON.stringify([...solvedIds]));
-}
-
-// DOM
 const el = {
   goalBody: /** @type {HTMLElement} */ (document.querySelector("[data-goal-body]")),
+  teachBody: /** @type {HTMLElement} */ (document.querySelector("[data-teach-body]")),
   levelTitle: /** @type {HTMLElement} */ (document.querySelector("[data-level-title]")),
   levelBrief: /** @type {HTMLElement} */ (document.querySelector("[data-level-brief]")),
   levelHint: /** @type {HTMLElement} */ (document.querySelector("[data-level-hint]")),
@@ -63,6 +64,7 @@ const el = {
   btnLevels: /** @type {HTMLButtonElement} */ (document.querySelector("[data-action=levels]")),
   btnSandbox: /** @type {HTMLButtonElement} */ (document.querySelector("[data-action=sandbox]")),
   btnHint: /** @type {HTMLButtonElement} */ (document.querySelector("[data-action=hint]")),
+  btnSteps: /** @type {HTMLButtonElement} */ (document.querySelector("[data-action=steps]")),
   btnReset: /** @type {HTMLButtonElement} */ (document.querySelector("[data-action=reset]")),
   btnUndo: /** @type {HTMLButtonElement} */ (document.querySelector("[data-action=undo]")),
   modalClose: /** @type {HTMLButtonElement} */ (document.querySelector("[data-modal-close]")),
@@ -71,11 +73,15 @@ const el = {
 const viz = createVisualizer(el.vizRoot);
 const term = createTerminal(el.termRoot, { onCommand: handleCommand });
 
+function curriculum() {
+  return summarizeCurriculum(progressMap, LEVELS, seriesTitle);
+}
+
 function updateChrome() {
-  const total = LEVELS.length;
-  const done = solvedIds.size;
-  el.progress.textContent = `${done}/${total} solved`;
-  el.modeLabel.textContent = mode === "level" ? `level · ${levelId}` : "sandbox";
+  const c = curriculum();
+  el.progress.textContent = `${c.solvedCount}/${c.total} solved`;
+  el.modeLabel.textContent =
+    mode === "level" ? `level · ${levelId}` : "sandbox";
   el.cmdCount.textContent = `${session.commandCount} cmd`;
   if (mode === "level" && levelId) {
     const level = getLevel(levelId);
@@ -84,6 +90,7 @@ function updateChrome() {
       el.levelBrief.textContent = level.brief;
       el.levelHint.textContent = level.hint;
       el.levelPar.textContent = `par ${level.par}`;
+      el.teachBody.innerHTML = levelTeachHtml(level);
     }
   } else {
     el.levelTitle.textContent = "Sandbox";
@@ -91,6 +98,7 @@ function updateChrome() {
       "Free practice. Type help for commands, levels to train.";
     el.levelHint.textContent = "help · levels · undo · reset";
     el.levelPar.textContent = "";
+    el.teachBody.innerHTML = "";
     renderGoals(el.goalBody, { checks: [], solved: false }, { reduceMotion });
   }
 }
@@ -109,10 +117,17 @@ function refreshVisuals() {
         commandCount: session.commandCount,
       });
       renderGoals(el.goalBody, result, { reduceMotion });
-      if (result.solved && lastRun.output != null && session.commandCount > levelCommandStart) {
+      term.setHint(result.solved ? null : level.hint);
+      if (
+        result.solved &&
+        session.commandCount > levelCommandStart &&
+        !celebrateOffered
+      ) {
         onLevelSolved(level, result);
       }
     }
+  } else {
+    term.setHint(null);
   }
 }
 
@@ -121,49 +136,131 @@ function refreshVisuals() {
  * @param {{ checks: any[] }} result
  */
 function onLevelSolved(level, result) {
-  if (solvedIds.has(level.id) && level._justSolved) return;
-  level._justSolved = true;
-  solvedIds.add(level.id);
-  saveSolved();
+  celebrateOffered = true;
+  const used = session.commandCount - levelCommandStart;
+  const prev = progressMap[level.id];
+  progressMap[level.id] = {
+    solved: true,
+    bestCommands: prev?.bestCommands
+      ? Math.min(prev.bestCommands, used)
+      : used,
+  };
+  saveProgress(progressMap);
   updateChrome();
 
-  const used = session.commandCount - levelCommandStart;
+  const c = curriculum();
   const underPar = used <= level.par;
+  const golfLine = underPar
+    ? `**${used}** command${used === 1 ? "" : "s"} · on par (${level.par})`
+    : `**${used}** command${used === 1 ? "" : "s"}. Ideal is ${level.par}. Still counts.`;
+  const cheers = [
+    "Clean solve.",
+    "Pipeline locked in.",
+    "That is PowerShell thinking.",
+    "Objects moved. You moved with them.",
+  ];
+  const cheer = cheers[Math.floor(Math.random() * cheers.length)];
+  const learnedPreview = c.learned
+    .map((l) => `<li>${escapeHtml(l.seriesTitle)}: ${escapeHtml(l.name)}</li>`)
+    .join("");
+  const next = levelId ? nextLevelId(levelId) : null;
+  const nextLevel = next ? getLevel(next) : null;
+
+  const share = buildShareTargets({
+    levelName: level.name,
+    levelId: level.id,
+    commands: used,
+    par: level.par,
+    curriculum: c,
+  });
+
   openModal(
-    "Level solved",
+    "Level cleared",
     `
-      <p class="modal-lead">${escapeHtml(level.name)}</p>
-      <p>${used} command${used === 1 ? "" : "s"} · par ${level.par}${underPar ? " · on par" : " · over par"}</p>
-      <ul class="goal-list compact">
-        ${result.checks
-          .map(
-            (c) =>
-              `<li class="${c.passed ? "is-pass" : "is-pending"}"><span class="goal-mark">${c.passed ? "✓" : "○"}</span><span>${escapeHtml(c.label)}</span></li>`
-          )
-          .join("")}
-      </ul>
-      <div class="modal-actions">
-        <button type="button" class="btn primary" data-action="next-level">Next level</button>
-        <button type="button" class="btn" data-action="levels">All levels</button>
+      <div class="celebrate" aria-live="polite">
+        <div class="celebrate-visual" aria-hidden="true">
+          <div class="celebrate-ring"></div>
+          <div class="celebrate-star">★</div>
+        </div>
+        <div class="celebrate-badge">LEVEL CLEARED</div>
+        <h3 class="celebrate-title">${escapeHtml(level.name)}</h3>
+        <p class="celebrate-sub">${escapeHtml(seriesTitle(level.series))} · <code>${escapeHtml(level.id)}</code></p>
+        <p class="celebrate-cheer">${escapeHtml(cheer)}</p>
+        <div class="celebrate-stats"><p>${golfLine}</p></div>
+        <div class="celebrate-progress">
+          <div class="prog-track"><div class="prog-fill" style="width:${c.percent}%"></div></div>
+          <div class="par-note">${c.solvedCount} / ${c.total} levels · progress saved in this browser</div>
+        </div>
+        <div class="share-block">
+          <div class="next-title">Share your progress</div>
+          <div class="learned-preview">
+            <div class="par-note">What you have learned so far</div>
+            <ul>${learnedPreview || "<li>Solve a few levels to build your list.</li>"}</ul>
+          </div>
+          <div class="share-row" role="group" aria-label="Share">
+            <button type="button" class="share-btn linkedin" data-share="linkedin">LinkedIn</button>
+            <button type="button" class="share-btn x" data-share="x">X / Twitter</button>
+            <button type="button" class="share-btn facebook" data-share="facebook">Facebook</button>
+            <button type="button" class="share-btn copy" data-share="copy">Copy post</button>
+          </div>
+          <div class="share-status" data-share-status hidden></div>
+        </div>
+        ${
+          nextLevel
+            ? `<div class="celebrate-next">Next: <code>${escapeHtml(nextLevel.id)}</code> — ${escapeHtml(nextLevel.name)}</div>`
+            : `<div class="celebrate-next">Curriculum complete. Stay in sandbox and keep experimenting.</div>`
+        }
+        <div class="modal-actions">
+          <button type="button" class="btn ghost" data-action="celebrate-close">Bask in it</button>
+          ${
+            nextLevel
+              ? `<button type="button" class="btn primary" data-action="celebrate-next">Celebrate on: ${escapeHtml(nextLevel.id)}</button>`
+              : `<button type="button" class="btn primary" data-action="levels">Browse levels</button>`
+          }
+        </div>
       </div>
-    `
+    `,
+    { variant: "celebrate" }
   );
+
+  el.modal.querySelectorAll("[data-share]").forEach((btn) => {
+    btn.addEventListener("click", async (ev) => {
+      ev.preventDefault();
+      const kind = /** @type {any} */ (btn.getAttribute("data-share")) || "copy";
+      const status = el.modal.querySelector("[data-share-status]");
+      const result = await shareWithClipboard(kind, share);
+      if (!status) return;
+      status.hidden = false;
+      status.textContent =
+        kind === "copy"
+          ? result.copied
+            ? "Copied to clipboard."
+            : "Copy failed — select the text manually."
+          : result.copied
+            ? "Share window opened. Message also copied."
+            : "Share window opened.";
+    });
+  });
 }
 
 /**
  * @param {string} title
  * @param {string} html
+ * @param {{ variant?: "default" | "celebrate" }} [opts]
  */
-function openModal(title, html) {
+function openModal(title, html, opts = {}) {
   el.modalTitle.textContent = title;
   el.modalBody.innerHTML = html;
   el.modal.hidden = false;
   el.modal.classList.add("is-open");
+  el.modal.classList.toggle("is-celebrate", opts.variant === "celebrate");
 }
 
 function closeModal() {
-  el.modal.classList.remove("is-open");
+  el.modal.classList.remove("is-open", "is-celebrate");
   el.modal.hidden = true;
+  celebrateOffered = false;
+  term.focus();
 }
 
 function showLevels() {
@@ -171,12 +268,13 @@ function showLevels() {
     const levels = levelsInSeries(s.id);
     const items = levels
       .map((l) => {
-        const done = solvedIds.has(l.id);
+        const done = Boolean(progressMap[l.id]?.solved);
+        const best = progressMap[l.id]?.bestCommands;
         return `
           <li>
             <button type="button" class="level-row ${done ? "is-done" : ""}" data-level="${l.id}">
               <span class="level-name">${escapeHtml(l.name)}</span>
-              <span class="level-meta">par ${l.par}${done ? " · solved" : ""}</span>
+              <span class="level-meta">par ${l.par}${done ? ` · solved${best ? ` · best ${best}` : ""}` : ""}</span>
             </button>
           </li>`;
       })
@@ -202,17 +300,23 @@ function startLevel(id) {
   if (!level) return;
   mode = "level";
   levelId = id;
-  level._justSolved = false;
+  celebrateOffered = false;
   session = new Session();
   lastRun = emptyRun();
-  levelCommandStart = session.commandCount;
+  levelCommandStart = 0;
   closeModal();
   updateChrome();
   viz.renderPipeline(null);
   term.print(`— Level: ${level.name} —`, "meta");
   term.print(level.brief, "meta");
+  if (level.teach?.what) {
+    term.print(`What: ${level.teach.what}`, "meta");
+    for (const w of level.teach.why || []) term.print(`Why: ${w}`, "meta");
+    if (level.teach.model) term.print(`Model: ${level.teach.model}`, "meta");
+  }
   term.print(`Hint: ${level.hint}`, "meta");
   term.print(`Par: ${level.par}`, "meta");
+  term.setHint(level.hint);
   refreshVisuals();
   term.focus();
 }
@@ -220,6 +324,7 @@ function startLevel(id) {
 function startSandbox() {
   mode = "sandbox";
   levelId = null;
+  celebrateOffered = false;
   session = new Session();
   lastRun = emptyRun();
   levelCommandStart = 0;
@@ -227,6 +332,20 @@ function startSandbox() {
   updateChrome();
   viz.renderPipeline(null);
   term.print("Sandbox mode. Type help for commands.", "meta");
+  const c = curriculum();
+  if (c.solvedCount) {
+    term.print(
+      `Welcome back — progress saved: ${c.solvedCount}/${c.total} levels (${c.percent}%).`,
+      "meta"
+    );
+    if (c.next) {
+      term.print(
+        `Next up: ${c.next.name} (${c.next.id}). Open Levels or type levels.`,
+        "meta"
+      );
+    }
+  }
+  term.setHint(null);
   refreshVisuals();
   term.focus();
 }
@@ -243,9 +362,7 @@ function handleCommand(line) {
     refreshVisuals();
     return;
   }
-  if (result.output.includes("Opening level browser…")) {
-    showLevels();
-  }
+  if (result.output.includes("Opening level browser…")) showLevels();
   if (result.output.includes("hint") && result.output.length === 1) {
     if (mode === "level" && levelId) {
       term.print(getLevel(levelId)?.hint || "", "meta");
@@ -254,24 +371,13 @@ function handleCommand(line) {
     }
   }
   if (result.output.includes("goal") && result.output.length === 1) {
-    if (mode === "level" && levelId) {
-      const level = getLevel(levelId);
-      if (level) {
-        const g = level.goal;
-        const lines = [];
-        if (g.commandsMax != null) lines.push(`commands ≤ ${g.commandsMax}`);
-        if (g.usedCmdlets) lines.push(`use ${g.usedCmdlets.join(", ")}`);
-        if (g.pathIs) lines.push(`cd to ${g.pathIs}`);
-        if (g.outputIncludes) lines.push(`output includes ${g.outputIncludes}`);
-        if (g.outputCount != null) lines.push(`emit ${g.outputCount} objects`);
-        if (g.pipelineCmdlets) lines.push(`pipeline: ${g.pipelineCmdlets.join(" | ")}`);
-        if (g.fileExists) lines.push(`create ${g.fileExists}`);
-        if (g.fileMissing) lines.push(`delete ${g.fileMissing}`);
-        if (g.fileContains) lines.push(`write ${g.fileContains}`);
-        if (g.variableIs) lines.push(`set $${g.variableIs.split("=")[0]}`);
-        term.print(lines.join("\n"), "meta");
-      }
-    }
+    printGoalSummary();
+  }
+  if (result.output.includes("steps") && result.output.length === 1) {
+    printSteps();
+  }
+  if (result.output.includes("curriculum") && result.output.length === 1) {
+    printCurriculum();
   }
   if (result.output.includes("build-level")) {
     openModal(
@@ -295,6 +401,8 @@ function handleCommand(line) {
       lineOut === "Opening level browser…" ||
       lineOut === "hint" ||
       lineOut === "goal" ||
+      lineOut === "steps" ||
+      lineOut === "curriculum" ||
       lineOut === "build-level" ||
       lineOut === "import-level"
     ) {
@@ -304,6 +412,9 @@ function handleCommand(line) {
   }
   if (result.error) term.print(result.error, "err");
 
+  const teach = teachAfterCommand(line);
+  if (teach) term.print(teach, "meta");
+
   lastRun = {
     output: result.output,
     usedCmdlets: result.usedCmdlets,
@@ -312,9 +423,70 @@ function handleCommand(line) {
   };
   viz.renderPipeline(result.pipeline, { reduceMotion });
   refreshVisuals();
+  term.focus();
 }
 
+function printGoalSummary() {
+  if (mode !== "level" || !levelId) {
+    term.print("No active level.", "meta");
+    return;
+  }
+  const level = getLevel(levelId);
+  if (!level) return;
+  const g = level.goal;
+  const lines = [];
+  if (g.commandsMax != null) lines.push(`commands ≤ ${g.commandsMax}`);
+  if (g.usedCmdlets) lines.push(`use ${g.usedCmdlets.join(", ")}`);
+  if (g.pathIs) lines.push(`cd to ${g.pathIs}`);
+  if (g.outputIncludes) lines.push(`output includes ${g.outputIncludes}`);
+  if (g.outputCount != null) lines.push(`emit ${g.outputCount} objects`);
+  if (g.pipelineCmdlets) lines.push(`pipeline: ${g.pipelineCmdlets.join(" | ")}`);
+  if (g.fileExists) lines.push(`create ${g.fileExists}`);
+  if (g.fileMissing) lines.push(`delete ${g.fileMissing}`);
+  if (g.fileContains) lines.push(`write ${g.fileContains}`);
+  if (g.variableIs) lines.push(`set $${g.variableIs.split("=")[0]}`);
+  term.print(lines.join("\n"), "meta");
+}
 
+function printCurriculum() {
+  const c = curriculum();
+  term.print(
+    `Progress: ${c.solvedCount}/${c.total} levels (${c.percent}%)`,
+    "meta"
+  );
+  if (c.learned.length) {
+    term.print("Learned:", "meta");
+    for (const l of c.learned) {
+      term.print(`  • ${l.seriesTitle}: ${l.name}`, "meta");
+    }
+  }
+  if (c.remaining.length) {
+    term.print("Remaining:", "meta");
+    for (const l of c.remaining.slice(0, 8)) {
+      term.print(`  • ${l.seriesTitle}: ${l.name}`, "meta");
+    }
+    if (c.remaining.length > 8) {
+      term.print(`  …and ${c.remaining.length - 8} more`, "meta");
+    }
+  }
+  if (c.next) term.print(`Next: ${c.next.name} (${c.next.id})`, "meta");
+}
+
+function printSteps() {
+  if (mode !== "level" || !levelId) {
+    term.print("No active level. Start one with levels.", "meta");
+    return;
+  }
+  const level = getLevel(levelId);
+  if (!level?.teach) return;
+  term.print(`── Guide: ${level.name} ──`, "meta");
+  term.print(`What: ${level.teach.what}`, "meta");
+  for (const w of level.teach.why) term.print(`Why: ${w}`, "meta");
+  if (level.teach.model) term.print(`Model: ${level.teach.model}`, "meta");
+  if (level.learning?.length) {
+    term.print(`You are learning: ${level.learning.join(" · ")}`, "meta");
+  }
+}
 
 function exportLevelJson() {
   return JSON.stringify(
@@ -329,45 +501,57 @@ function exportLevelJson() {
         usedCmdlets: [...session.usedCmdlets],
         pathIs: session.cwd,
       },
-      start: { cwd: "C:\\lab" },
+      teach: {
+        what: "Describe what happens when the learner runs the solution.",
+        why: ["Why this matters in real PowerShell work."],
+        model: "One-sentence mental model.",
+      },
+      learning: ["Concept A", "Concept B"],
     },
     null,
     2
   );
 }
 
-// Chrome events
 el.btnLevels.addEventListener("click", () => showLevels());
 el.btnSandbox.addEventListener("click", () => startSandbox());
 el.btnHint.addEventListener("click", () => {
-  if (mode === "level" && levelId) {
-    term.print(getLevel(levelId)?.hint || "", "meta");
-  } else {
-    term.print("No active level.", "meta");
-  }
+  if (mode === "level" && levelId) term.print(getLevel(levelId)?.hint || "", "meta");
+  else term.print("No active level.", "meta");
+  term.focus();
+});
+el.btnSteps.addEventListener("click", () => {
+  printSteps();
+  term.focus();
 });
 el.btnReset.addEventListener("click", () => {
-  session.run("reset");
-  lastRun = emptyRun();
-  levelCommandStart = session.commandCount;
   if (mode === "level" && levelId) {
-    const level = getLevel(levelId);
-    level && (level._justSolved = false);
     session = new Session();
     levelCommandStart = 0;
     lastRun = emptyRun();
+    celebrateOffered = false;
+  } else {
+    session.run("reset");
+    lastRun = emptyRun();
+    levelCommandStart = session.commandCount;
   }
   term.print("Reset.", "meta");
   viz.renderPipeline(null);
   refreshVisuals();
+  term.focus();
 });
 el.btnUndo.addEventListener("click", () => {
   session.undo();
   lastRun = emptyRun();
   viz.renderPipeline(null);
   refreshVisuals();
+  term.focus();
 });
 el.modalClose.addEventListener("click", () => closeModal());
+
+el.modal.addEventListener("click", (e) => {
+  if (e.target === el.modal) closeModal();
+});
 
 el.modalBody.addEventListener("click", (e) => {
   const t = /** @type {HTMLElement} */ (e.target);
@@ -377,7 +561,7 @@ el.modalBody.addEventListener("click", (e) => {
     return;
   }
   const action = t.closest("[data-action]")?.getAttribute("data-action");
-  if (action === "next-level") {
+  if (action === "next-level" || action === "celebrate-next") {
     const next = levelId ? nextLevelId(levelId) : null;
     if (next) startLevel(next);
     else {
@@ -385,13 +569,18 @@ el.modalBody.addEventListener("click", (e) => {
       term.print("All levels complete. Sandbox unlocked.", "meta");
     }
   }
+  if (action === "celebrate-close") {
+    closeModal();
+  }
   if (action === "levels") showLevels();
   if (action === "sandbox") {
     closeModal();
     startSandbox();
   }
   if (action === "import-go") {
-    const area = /** @type {HTMLTextAreaElement} */ (el.modalBody.querySelector("[data-import]"));
+    const area = /** @type {HTMLTextAreaElement} */ (
+      el.modalBody.querySelector("[data-import]")
+    );
     try {
       const data = JSON.parse(area.value);
       LEVELS.push(data);
@@ -403,15 +592,14 @@ el.modalBody.addEventListener("click", (e) => {
   }
 });
 
-// URL params
 const params = new URLSearchParams(location.search);
 const bootCommands = params.get("command");
 const startLevelParam = params.get("level");
 if (params.get("NODEMO") == null && !bootCommands && !startLevelParam) {
   openModal(
     "LearnPowerShell",
-    `<p class="modal-lead">An interactive PowerShell pipeline visualizer and tutorial.</p>
-     <p>Objects flow through cmdlets. Levels teach the pipeline the way learnGitBranching teaches branches.</p>
+    `<p class="modal-lead">An interactive PowerShell pipeline lab.</p>
+     <p>Objects flow through cmdlets. Levels teach the language so you leave with a mental model — not just typed lines.</p>
      <div class="modal-actions">
        <button type="button" class="btn primary" data-action="levels">Start levels</button>
        <button type="button" class="btn" data-action="sandbox">Sandbox</button>
@@ -429,7 +617,20 @@ else if (bootCommands) {
 } else {
   updateChrome();
   refreshVisuals();
-  term.print("LearnPowerShell ready. Type help or levels.", "meta");
+  const c = curriculum();
+  if (c.solvedCount) {
+    term.print(
+      `Welcome back — progress saved: ${c.solvedCount}/${c.total} levels (${c.percent}%).`,
+      "meta"
+    );
+    const learnedTitles = c.learned.map((l) => l.name).join(" · ");
+    term.print(`Learned so far: ${learnedTitles}`, "meta");
+    if (c.next) {
+      term.print(`Next up: ${c.next.name} (${c.next.id}).`, "meta");
+    }
+  } else {
+    term.print("LearnPowerShell ready. Type help or levels.", "meta");
+  }
   term.focus();
 }
 
