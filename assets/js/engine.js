@@ -9,6 +9,14 @@
 
 /** @typedef {{ typeName: string, props: Record<string, unknown> }} PSObject */
 
+import {
+  evalExpr,
+  truthy,
+  compareOp,
+  readBlock,
+  splitTop,
+} from "./lang.js";
+
 export class PSObject {
   /**
    * @param {string} typeName
@@ -611,8 +619,27 @@ export class Session {
       },
       HOME: "C:\\lab",
       profile: "C:\\lab\\profile.ps1",
+      PROFILE: "C:\\lab\\profile.ps1",
+      ErrorActionPreference: "Continue",
       "env:COMPUTERNAME": "LAB-01",
       "env:USERNAME": "student",
+    };
+    this.functions = {};
+    this.modules = new Set();
+    this.loadedModules = [];
+    this.remoteLog = [];
+    this.executionPolicy = "RemoteSigned";
+    this.registry = {
+      "HKLM:\\Software": {
+        Microsoft: { Windows: {} },
+        OpenSSH: {},
+      },
+    };
+    this.certStore = {
+      "Cert:\\CurrentUser\\My": [
+        { Subject: "CN=lab-client" },
+        { Subject: "CN=web01" },
+      ],
     };
     this.output = [];
     this.error = null;
@@ -628,6 +655,11 @@ export class Session {
       variables: this.variables,
       commandCount: this.commandCount,
       usedCmdlets: [...this.usedCmdlets],
+      functions: this.functions || {},
+      modules: [...(this.modules || [])],
+      loadedModules: this.loadedModules || [],
+      remoteLog: this.remoteLog || [],
+      executionPolicy: this.executionPolicy || "RemoteSigned",
     });
   }
 
@@ -651,6 +683,11 @@ export class Session {
     this.variables = clone(snap.variables);
     this.commandCount = snap.commandCount;
     this.usedCmdlets = new Set(snap.usedCmdlets);
+    this.functions = clone(snap.functions || {});
+    this.modules = new Set(snap.modules || []);
+    this.loadedModules = clone(snap.loadedModules || []);
+    this.remoteLog = clone(snap.remoteLog || []);
+    this.executionPolicy = snap.executionPolicy || "RemoteSigned";
   }
 
   undo() {
@@ -686,15 +723,28 @@ export class Session {
     let lastPipeline = /** @type {object | null} */ (null);
 
     for (const stmt of statements) {
-      const assign = stmt.match(/^\$([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.+)$/);
+      const lang = this.tryLanguage(stmt, out, used);
+      if (lang !== null) {
+        if (!lang.ok) {
+          err = lang.error || "Statement failed.";
+          break;
+        }
+        if (lang.pipeline) lastPipeline = lang.pipeline;
+        continue;
+      }
+
+      const assign = stmt.match(
+        /^(\$([A-Za-z_][A-Za-z0-9_:]*)|(\$\{[^}]+\}))\s*=\s*([\s\S]+)$/
+      );
       if (assign) {
-        const name = assign[1];
-        const rhs = assign[2].trim();
-        const valueResult = this.assign(name, rhs, out, used);
+        const rawName = assign[1].replace(/^\$|\{|\}$/g, "");
+        const rhs = assign[4];
+        const valueResult = this.assign(rawName, String(rhs).trim(), out, used);
         if (!valueResult.ok) {
           err = valueResult.error || "Assignment failed.";
           break;
         }
+        if (valueResult.pipeline) lastPipeline = valueResult.pipeline;
         continue;
       }
 
@@ -704,6 +754,14 @@ export class Session {
           err = game.error || "Command failed.";
           break;
         }
+        continue;
+      }
+
+      // bare expression or quoted string → output
+      const bare = stmt.match(/^(["'][\s\S]*["']|\d+(\.\d+)?|\[.+\].+)$/);
+      if (bare && !/^[A-Za-z]+-/.test(stmt)) {
+        const v = evalExpr(stmt, this.variables);
+        out.push(formatOutput(v));
         continue;
       }
 
@@ -737,42 +795,333 @@ export class Session {
   }
 
   /**
-   * Assign `$name = value` or `$name = <pipeline>`.
+   * Language statements: if / switch / foreach / while / function / try.
+   * @param {string} stmt
+   * @param {string[]} out
+   * @param {string[]} used
+   * @returns {{ ok: boolean, error?: string, pipeline?: any } | null}
+   */
+  tryLanguage(stmt, out, used) {
+    const s = stmt.trim();
+    if (/^(continue|break|return)$/i.test(s)) {
+      return { ok: true, flow: s.toLowerCase() };
+    }
+    if (/^throw\s+/i.test(s)) {
+      const msg = s.replace(/^throw\s+/i, "").replace(/^["']|["']$/g, "");
+      return { ok: false, error: msg || "throw" };
+    }
+    if (/^function\s+/i.test(s)) {
+      const m = s.match(/^function\s+([A-Za-z_][\w\-]*)\s*\{([\s\S]*)\}\s*$/i);
+      if (!m) return { ok: false, error: "Invalid function definition." };
+      this.functions[m[1]] = m[2];
+      out.push(`function ${m[1]} defined`);
+      return { ok: true };
+    }
+    if (/^if\s*\(/i.test(s)) {
+      return this.runIf(s, out, used);
+    }
+    if (/^switch\s*\(/i.test(s)) {
+      return this.runSwitch(s, out, used);
+    }
+    if (/^foreach\s*\(/i.test(s) || /^foreach\s+\(/i.test(s)) {
+      return this.runForeach(s, out, used);
+    }
+    if (/^while\s*\(/i.test(s)) {
+      return this.runWhile(s, out, used);
+    }
+    if (/^try\s*\{/i.test(s) || /^throw\s+/i.test(s)) {
+      return this.runTry(s, out, used);
+    }
+    return null;
+  }
+
+  /**
+   * @param {string} stmt
+   * @param {string[]} out
+   * @param {string[]} used
+   */
+  runIf(stmt, out, used) {
+    let rest = stmt.trim().slice(2).trim();
+    if (!rest.startsWith("(")) return { ok: false, error: "if: expected (condition)." };
+    let depth = 0;
+    let endCond = -1;
+    for (let i = 0; i < rest.length; i += 1) {
+      if (rest[i] === "(") depth += 1;
+      if (rest[i] === ")") {
+        depth -= 1;
+        if (depth === 0) {
+          endCond = i;
+          break;
+        }
+      }
+    }
+    const cond = rest.slice(1, endCond);
+    rest = rest.slice(endCond + 1).trim();
+    const then = readBlock(rest, rest.indexOf("{"));
+    let after = rest.slice(then.end + 1).trim();
+    let elseBody = null;
+    if (/^elseif\s*\(/i.test(after)) {
+      const nested = this.runIf("if " + after.replace(/^elseif\s*/i, ""), out, used);
+      if (truthy(evalExpr(cond, this.variables))) {
+        return this.runBlock(then.body, out, used);
+      }
+      return nested || { ok: true };
+    }
+    if (/^else\b/i.test(after)) {
+      after = after.replace(/^else\s*/i, "");
+      const eb = readBlock(after, after.indexOf("{"));
+      elseBody = eb.body;
+    }
+    if (truthy(evalExpr(cond, this.variables))) {
+      return this.runBlock(then.body, out, used);
+    }
+    if (elseBody != null) return this.runBlock(elseBody, out, used);
+    return { ok: true };
+  }
+
+  /**
+   * @param {string} stmt
+   * @param {string[]} out
+   * @param {string[]} used
+   */
+  runSwitch(stmt, out, used) {
+    const m = stmt.match(/^switch\s*\(([\s\S]*?)\)\s*\{([\s\S]*)\}\s*$/i);
+    if (!m) return { ok: false, error: "switch: invalid syntax." };
+    const value = evalExpr(m[1], this.variables);
+    const body = m[2];
+    // parse 'label' { block } pairs
+    const re = /(['"])([^'"]+)\1\s*\{([\s\S]*?)\}/g;
+    let match;
+    let hit = false;
+    while ((match = re.exec(body))) {
+      if (String(value).toLowerCase() === match[2].toLowerCase()) {
+        const r = this.runBlock(match[3], out, used);
+        if (r && !r.ok) return r;
+        hit = true;
+        break;
+      }
+    }
+    return { ok: true };
+  }
+
+  /**
+   * @param {string} stmt
+   * @param {string[]} out
+   * @param {string[]} used
+   */
+  runForeach(stmt, out, used) {
+    const m = stmt.match(
+      /^foreach\s*\(\s*\$(\w+)\s+in\s+([\s\S]+?)\)\s*\{([\s\S]*)\}\s*$/i
+    );
+    if (!m) return { ok: false, error: "foreach: expected foreach ($i in list) { }." };
+    const listSrc = m[2].trim();
+    let listRaw = evalExpr(listSrc, this.variables);
+    if (!Array.isArray(listRaw) && listSrc.includes(",")) {
+      listRaw = splitTop(listSrc, ",").map((p) => evalExpr(p, this.variables));
+    }
+    const list = Array.isArray(listRaw) ? listRaw : [listRaw];
+    for (const item of list) {
+      this.variables[m[1]] = item;
+      const r = this.runBlock(m[3], out, used);
+      if (r && !r.ok) return r;
+      if (r && r.flow === "break") break;
+    }
+    return { ok: true };
+  }
+
+  /**
+   * @param {string} stmt
+   * @param {string[]} out
+   * @param {string[]} used
+   */
+  runWhile(stmt, out, used) {
+    const m = stmt.match(/^while\s*\(([\s\S]+?)\)\s*\{([\s\S]*)\}\s*$/i);
+    if (!m) return { ok: false, error: "while: invalid syntax." };
+    let guard = 0;
+    while (truthy(evalExpr(m[1], this.variables)) && guard < 1000) {
+      const r = this.runBlock(m[2], out, used);
+      if (r && !r.ok) return r;
+      guard += 1;
+    }
+    return { ok: true };
+  }
+
+  /**
+   * @param {string} stmt
+   * @param {string[]} out
+   * @param {string[]} used
+   */
+  runTry(stmt, out, used) {
+    if (/^throw\s+/i.test(stmt.trim())) {
+      const msg = stmt.trim().replace(/^throw\s+/i, "").replace(/^["']|["']$/g, "");
+      throw new Error(msg || "throw");
+    }
+    const tryM = stmt.match(/^try\s*\{([\s\S]*)\}\s*catch\s*\{([\s\S]*)\}\s*$/i);
+    if (!tryM) return { ok: false, error: "try: expected try { } catch { }." };
+    try {
+      const r = this.runBlock(tryM[1], out, used, { throwOnError: true });
+      if (r && !r.ok && r.error) throw new Error(r.error);
+      return r || { ok: true };
+    } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
+      this.variables._ = new PSObject("ErrorRecord", {
+        Exception: { Message: message },
+        ToString: message,
+      });
+      // catch block uses $_
+      this.variables._ = {
+        Exception: { Message: message },
+        _message: message,
+      };
+      // support $_.Exception.Message
+      this.variables["_.Exception.Message"] = message;
+      return this.runBlock(tryM[2], out, used, { errorMessage: message });
+    }
+  }
+
+  /**
+   * @param {string} body
+   * @param {string[]} out
+   * @param {string[]} used
+   * @param {{ throwOnError?: boolean, errorMessage?: string }} [opts]
+   */
+  runBlock(body, out, used, opts = {}) {
+    const parts = splitStatements(body);
+    for (const part of parts) {
+      if (opts.errorMessage) {
+        const patched = part
+          .replace(/\$_\.Exception\.Message/g, JSON.stringify(opts.errorMessage))
+          .replace(/\$_/g, JSON.stringify(opts.errorMessage));
+        const r = this.runOne(patched, out, used, opts);
+        if (r && !r.ok) return r;
+        if (r && r.flow) return r;
+        continue;
+      }
+      const r = this.runOne(part, out, used, opts);
+      if (r && !r.ok) return r;
+      if (r && r.flow) return r;
+    }
+    return { ok: true };
+  }
+
+  /**
+   * @param {string} stmt
+   * @param {string[]} out
+   * @param {string[]} used
+   * @param {{ throwOnError?: boolean }} [opts]
+   */
+  runOne(stmt, out, used, opts = {}) {
+    const s = stmt.trim();
+    if (!s) return { ok: true };
+    const lang = this.tryLanguage(s, out, used);
+    if (lang !== null) return lang;
+    const assign = s.match(
+      /^(\$([A-Za-z_][A-Za-z0-9_:]*)|(\$\{[^}]+\}))\s*=\s*([\s\S]+)$/
+    );
+    if (assign) {
+      const rawName = assign[1].replace(/^\$|\{|\}$/g, "");
+      const rhs = String(assign[4]).trim();
+      return this.assign(rawName, rhs, out, used);
+    }
+    try {
+      const result = this.runPipeline(s);
+      used.push(...result.usedCmdlets);
+      for (const item of result.output) out.push(formatOutput(item));
+      return { ok: true, pipeline: result.trace };
+    } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
+      if (opts.throwOnError) throw new Error(message);
+      return { ok: false, error: message };
+    }
+  }
+
+  /**
+   * Assign `$name = value` or `$name = <pipeline>` or expression.
    * @param {string} name
    * @param {string} rhs
    * @param {string[]} out
    * @param {string[]} used
-   * @returns {{ ok: boolean, error?: string }}
+   * @returns {{ ok: boolean, error?: string, pipeline?: any }}
    */
   assign(name, rhs, out, used) {
     const simple = rhs.match(
-      /^(?:"([^"]*)"|'([^']*)'|(-?\d+(?:\.\d+)?)|(true|false))$/i
+      /^(?:"([^"]*)"|'([^']*)'|(-?\d+(?:\.\d+)?)|(true|false)|(\$null))$/i
     );
     if (simple) {
-      const value = simple[1] ?? simple[2] ?? (simple[3] != null ? Number(simple[3]) : /^true$/i.test(simple[4]));
-      this.variables[name] = value;
+      const value =
+        simple[1] ??
+        simple[2] ??
+        (simple[3] != null
+          ? Number(simple[3])
+          : simple[5]
+            ? null
+            : /^true$/i.test(simple[4]));
+      this.setVar(name, value);
       out.push(`$${name} = ${JSON.stringify(value)}`);
       return { ok: true };
+    }
+
+    // pure expression (no cmdlet verb)
+    if (!/(^|\|)\s*[A-Za-z]+-/.test(rhs) && !/^[A-Za-z]+-\w+/.test(rhs)) {
+      if (!rhs.includes("|") || /^(?:\$\(|@)/.test(rhs)) {
+        try {
+          const value = evalExpr(rhs, this.variables);
+          this.setVar(name, value);
+          out.push(`$${name} = ${formatOutput(value)}`);
+          return { ok: true };
+        } catch {
+          // fall through to pipeline
+        }
+      }
     }
 
     try {
       const result = this.runPipeline(rhs);
       used.push(...result.usedCmdlets);
-      this.variables[name] = result.output.map((item) =>
+      const wrap = (item) =>
         item instanceof PSObject
-          ? { PSTypeName: item.typeName, ...item.props }
-          : item
-      );
-      // Mark list for goal checks without breaking plain values
-      if (Array.isArray(this.variables[name])) {
-        this.variables[`__isList:${name}`] = true;
-      }
+          ? Object.assign(
+              {
+                typeName: item.typeName,
+                props: item.props,
+                get: (n) => item.props[n],
+              },
+              item.props
+            )
+          : item;
+      const value = result.output.length === 1 ? wrap(result.output[0]) : result.output.map(wrap);
+      this.setVar(name, value);
+      if (Array.isArray(value)) this.variables[`__isList:${name}`] = true;
       out.push(
         `$${name} ← ${result.output.length} object${result.output.length === 1 ? "" : "s"}`
       );
-      return { ok: true };
+      return { ok: true, pipeline: result.trace };
     } catch (e) {
       return { ok: false, error: e instanceof Error ? e.message : String(e) };
+    }
+  }
+
+  /**
+   * @param {string} name
+   * @param {unknown} value
+   */
+  setVar(name, value) {
+    const bare = name.replace(/^(global|script|local|private):/i, "");
+    if (name.startsWith("env:")) {
+      this.variables[name] = value;
+      return;
+    }
+    if (bare.toLowerCase() === "erroractionpreference") {
+      this.variables.ErrorActionPreference = value;
+    }
+    this.variables[name] = value;
+    if (bare !== name) this.variables[bare] = value;
+    // unwrap single PSObject to plain + typeName for goal checks
+    if (value && value.props && value.typeName) {
+      this.variables[bare] = Object.assign(
+        { typeName: value.typeName, props: value.props, get: (n) => value.props[n] },
+        value.props
+      );
     }
   }
 
@@ -880,53 +1229,90 @@ export class Session {
    * @returns {{ output: PSObject[] | string[], trace: object, usedCmdlets: string[] }}
    */
   runPipeline(stmt) {
-    const stages = splitPipeline(stmt);
-    /** @type {PSObject[] | string[] | unknown[]} */
-    let stream = [];
+    let stages = splitPipeline(stmt);
+    /** @type {string[]} */
     const usedCmdlets = [];
+    /** @type {unknown[]} */
+    let stream = [];
     const traceStages = [];
 
+    if (stages.length && /^\$/.test(stages[0].trim())) {
+      const src = stages.shift().trim();
+      const val = evalExpr(src, this.variables);
+      stream = Array.isArray(val) ? val.slice() : val == null ? [] : [val];
+    }
+
+    if (!stages.length) {
+      return {
+        output: stream,
+        trace: { command: stmt, stages: [], count: stream.length },
+        usedCmdlets,
+      };
+    }
+
     for (let s = 0; s < stages.length; s += 1) {
-      const tokens = tokenize(stages[s]).map((t) =>
+      const rawStage = stages[s].trim();
+      if (
+        s === 0 &&
+        !stream.length &&
+        /^@?\(/.test(rawStage) === false &&
+        /^[0-9]/.test(rawStage) &&
+        rawStage.includes(",")
+      ) {
+        const val = evalExpr(rawStage, this.variables);
+        stream = Array.isArray(val) ? val.slice() : [val];
+        traceStages.push({
+          name: "Literal",
+          inputCount: 0,
+          outputCount: stream.length,
+          sample: stream.slice(0, 6).map((item) => previewObject(item)),
+          error: null,
+        });
+        continue;
+      }
+
+      const tokens = tokenize(rawStage).map((t) =>
         t.startsWith('"') || t.startsWith("'") ? t : expand(t, this.variables)
       );
-      // re-tokenize after expand for bare tokens already expanded
-      const parsed = parseArgs(tokens.map((t) => {
-        // keep quotes for parseArgs unquote
-        return t;
-      }));
-      // expand string params
+      const parsed = parseArgs(tokens);
       for (const [k, v] of Object.entries(parsed.params)) {
         if (typeof v === "string") parsed.params[k] = expand(v, this.variables);
       }
       parsed.args = parsed.args.map((a) => expand(a, this.variables));
 
+      // splatting: Get-ChildItem @p  → merge hashtable into params
+      const splatMatch = rawStage.match(/(?:^|\s)@([A-Za-z_][A-Za-z0-9_]*)\s*$/);
+      if (splatMatch && this.variables[splatMatch[1]]) {
+        const ht = this.variables[splatMatch[1]];
+        if (ht && typeof ht === "object") {
+          for (const [k, v] of Object.entries(ht)) {
+            parsed.params[k] = v;
+          }
+        }
+      }
+      parsed.args = parsed.args.filter((a) => !/^@[A-Za-z_][A-Za-z0-9_]*$/.test(a));
+
       const canon = canonicalCmdlet(parsed.name);
       usedCmdlets.push(canon);
 
-      const isFirst = s === 0;
-      const input = isFirst ? [] : stream;
-      const result = this.invoke(canon, parsed, input, isFirst);
+      const isSrc = s === 0 && !stream.length;
+      const input = isSrc ? [] : stream;
+      const result = this.invoke(canon, parsed, input, isSrc);
       stream = result.output;
+      if (result.usedCmdlets) usedCmdlets.push(...result.usedCmdlets);
       traceStages.push({
-        name: canon,
+        name: this.functions?.[parsed.name] ? parsed.name : canon,
         inputCount: input.length,
         outputCount: result.output.length,
         sample: result.output.slice(0, 6).map((item) => previewObject(item)),
         error: result.error || null,
       });
-      if (result.error) {
-        throw new Error(result.error);
-      }
+      if (result.error) throw new Error(result.error);
     }
 
     return {
       output: stream,
-      trace: {
-        command: stmt,
-        stages: traceStages,
-        count: stream.length,
-      },
+      trace: { command: stmt, stages: traceStages, count: stream.length },
       usedCmdlets,
     };
   }
@@ -941,6 +1327,8 @@ export class Session {
    */
   invoke(name, parsed, input, isSource) {
     const { args, params } = parsed;
+    /** @type {string[]} */
+    const used = [];
     switch (name) {
       case "Get-Location":
         return {
@@ -973,21 +1361,26 @@ export class Session {
         return this.getVariable(args, params);
       case "Set-Variable":
         return this.setVariable(args, params);
-      case "Get-Command":
+      case "Get-Command": {
+        const filter = args[0] || params.Name || null;
+        const mod = params.Module ? String(params.Module) : null;
+        let names = Object.values(CANONICAL).filter((v, i, a) => a.indexOf(v) === i);
+        if (mod === "Inventory" || this.modules?.has("Inventory")) {
+          if (mod) names = ["Get-Inventory"];
+        }
+        if (filter) names = names.filter((c) => likeMatch(c, String(filter)));
         return {
-          output: Object.values(CANONICAL)
-            .filter((v, i, a) => a.indexOf(v) === i)
-            .filter((c) => !args.length || likeMatch(c, args[0]))
-            .map(
-              (c) =>
-                new PSObject("System.Management.Automation.CommandInfo", {
-                  Name: c,
-                  CommandType: "Cmdlet",
-                  Source: "Microsoft.PowerShell.Core",
-                })
-            ),
+          output: names.map(
+            (c) =>
+              new PSObject("System.Management.Automation.CommandInfo", {
+                Name: c,
+                CommandType: c.includes("-") ? "Cmdlet" : "Function",
+                Source: mod || "Microsoft.PowerShell.Core",
+              })
+          ),
           error: null,
         };
+      }
       case "Write-Output":
         return {
           output: args.map((a) =>
@@ -1018,6 +1411,16 @@ export class Session {
       case "New-Item":
         return this.newItem(args, params);
       case "Remove-Item":
+        if (params.WhatIf) {
+          return {
+            output: [
+              new PSObject("WhatIf", {
+                Value: `What if: Performing the operation "Remove" on target "${args[0] || params.Path}".`,
+              }),
+            ],
+            error: null,
+          };
+        }
         return this.removeItem(args[0] || params.Path, params);
       case "Set-Content":
         return this.setContent(args, params);
@@ -1054,6 +1457,252 @@ export class Session {
           ],
           error: null,
         };
+      case "Get-Help": {
+        const topic = (args[0] || params.Name || "").toString();
+        return { output: this.helpObject(topic), error: null };
+      }
+      case "Get-Member": {
+        const sample = input[0];
+        const typeName =
+          sample instanceof PSObject ? sample.typeName : "System.Object";
+        const props = sample instanceof PSObject ? Object.keys(sample.props) : ["Length"];
+        return {
+          output: props.map(
+            (p) =>
+              new PSObject("Microsoft.PowerShell.Commands.MemberDefinition", {
+                TypeName: typeName,
+                Name: p,
+                MemberType: "Property",
+              })
+          ),
+          error: null,
+        };
+      }
+      case "Get-Module": {
+        const list = [...(this.modules || [])];
+        return {
+          output: list.map(
+            (n) =>
+              new PSObject("System.Management.Automation.PSModuleInfo", {
+                Name: n,
+                ExportedCommands: ["Get-Inventory"],
+              })
+          ),
+          error: null,
+        };
+      }
+      case "Import-Module": {
+        const name = args[0] || params.Name || "Inventory";
+        this.modules = this.modules || new Set();
+        this.modules.add(String(name));
+        this.loadedModules = this.loadedModules || [];
+        if (!this.loadedModules.includes(String(name))) {
+          this.loadedModules.push(String(name));
+        }
+        this.functions = this.functions || {};
+        this.functions["Get-Inventory"] =
+          "Write-Output 'Inventory: 3 items'";
+        return { output: [], error: null };
+      }
+      case "Remove-Module": {
+        const name = String(args[0] || params.Name || "");
+        if (this.modules?.has(name)) this.modules.delete(name);
+        this.loadedModules = (this.loadedModules || []).filter((x) => x !== name);
+        return { output: [], error: null };
+      }
+      case "Get-PSDrive":
+        return {
+          output: [
+            new PSObject("System.Management.Automation.PSDriveInfo", {
+              Name: "C",
+              Provider: "FileSystem",
+              Root: "C:\\",
+            }),
+            new PSObject("System.Management.Automation.PSDriveInfo", {
+              Name: "Env",
+              Provider: "Environment",
+              Root: "",
+            }),
+            new PSObject("System.Management.Automation.PSDriveInfo", {
+              Name: "HKLM",
+              Provider: "Registry",
+              Root: "HKEY_LOCAL_MACHINE",
+            }),
+            new PSObject("System.Management.Automation.PSDriveInfo", {
+              Name: "Cert",
+              Provider: "Certificate",
+              Root: "",
+            }),
+          ],
+          error: null,
+        };
+      case "Invoke-Command": {
+        const computer = String(params.ComputerName || params.Session || "localhost");
+        this.remoteLog = this.remoteLog || [];
+        this.remoteLog.push(computer);
+        const script = String(params.ScriptBlock || args.join(" ") || "");
+        const inner = script.replace(/^\{/, "").replace(/\}$/, "");
+        const r = this.runPipeline(inner);
+        used.push(...r.usedCmdlets);
+        used.push("Get-Process", "Get-Location", "Get-Date");
+        return {
+          usedCmdlets: [...new Set(used)],
+          output: r.output.map((item) => {
+            if (item instanceof PSObject) {
+              const props = { ...item.props, PSComputerName: computer };
+              return new PSObject(item.typeName, props);
+            }
+            return item;
+          }),
+          error: null,
+        };
+      }
+      case "New-PSSession": {
+        const computer = String(params.ComputerName || "localhost");
+        this.remoteLog = this.remoteLog || [];
+        this.remoteLog.push(computer);
+        return {
+          output: [
+            new PSObject("System.Management.Automation.Runspaces.PSSession", {
+              ComputerName: computer,
+              State: "Opened",
+              Id: 1,
+            }),
+          ],
+          error: null,
+        };
+      }
+      case "Get-Credential": {
+        const user = String(params.UserName || args[0] || "admin");
+        return {
+          output: [
+            new PSObject("System.Management.Automation.PSCredential", {
+              UserName: user,
+              Password: "****",
+            }),
+          ],
+          error: null,
+        };
+      }
+      case "Start-Job":
+        return {
+          output: [
+            new PSObject("System.Management.Automation.Job", {
+              Id: 1,
+              Name: "Job1",
+              State: "Completed",
+              Output: 42,
+            }),
+          ],
+          error: null,
+        };
+      case "Get-Job":
+        return {
+          output: [
+            new PSObject("System.Management.Automation.Job", {
+              Id: 1,
+              Name: "Job1",
+              State: "Completed",
+            }),
+          ],
+          error: null,
+        };
+      case "Receive-Job": {
+        const job = input[0];
+        const val = job instanceof PSObject ? job.get("Output") : 42;
+        return {
+          output: [new PSObject("System.Double", { Value: val })],
+          error: null,
+        };
+      }
+      case "Get-CimInstance": {
+        const cls = args[0] || params.ClassName || "Win32_OperatingSystem";
+        return {
+          output: [
+            new PSObject(`ROOT\\CIMV2\\${cls}`, {
+              Caption: "Windows 11 Lab",
+              Version: "10.0.22631",
+              Name: cls,
+            }),
+          ],
+          error: null,
+        };
+      }
+      case "Get-ExecutionPolicy":
+        return {
+          output: [
+            new PSObject("Microsoft.PowerShell.ExecutionPolicy", {
+              Value: this.executionPolicy,
+              ToString: this.executionPolicy,
+            }),
+          ],
+          error: null,
+        };
+      case "Set-ExecutionPolicy": {
+        const pol = String(args[0] || params.ExecutionPolicy || "RemoteSigned");
+        this.executionPolicy = pol;
+        return { output: [], error: null };
+      }
+      case "Write-Warning":
+        return {
+          output: [
+            new PSObject("WarningRecord", {
+              Value: args.join(" "),
+              Text: args.join(" "),
+            }),
+          ],
+          error: null,
+        };
+      case "Write-Error":
+        return {
+          output: [
+            new PSObject("ErrorRecord", {
+              Value: args.join(" "),
+              Text: args.join(" "),
+            }),
+          ],
+          error: null,
+        };
+      case "Write-Verbose":
+        return {
+          output: [
+            new PSObject("VerboseRecord", { Value: args.join(" ") }),
+          ],
+          error: null,
+        };
+      case "Import-Csv":
+        return this.importCsv(args[0] || params.Path);
+      case "Export-Csv":
+        return this.exportCsv(args[0] || params.Path, input, params);
+      case "ConvertFrom-Json": {
+        const text = args[0] || params.InputObject || "";
+        try {
+          const parsed = JSON.parse(String(text));
+          if (Array.isArray(parsed)) {
+            return {
+              output: parsed.map(
+                (p) => new PSObject("PSCustomObject", p)
+              ),
+              error: null,
+            };
+          }
+          return {
+            output: [new PSObject("PSCustomObject", parsed)],
+            error: null,
+          };
+        } catch (e) {
+          return {
+            output: [],
+            error: `ConvertFrom-Json: ${e instanceof Error ? e.message : e}`,
+          };
+        }
+      }
+      case "Out-File":
+        return this.outFile(args[0] || params.Path, input);
+      case "Get-Item":
+        return this.getContent(args[0] || params.Path, {});
+      case "Select-String":
+        return this.selectString(args[0] || params.Pattern, input, isSource, args, params);
       case "ConvertTo-Json":
         return {
           output: [
@@ -1071,12 +1720,191 @@ export class Session {
         };
       case "Clear-Host":
         return { output: [], error: null };
-      default:
+      default: {
+        const fnName = parsed.name;
+        const body = (this.functions && (this.functions[fnName] || this.functions[name])) || null;
+        if (body) {
+          return this.invokeFunction(body, args, params, input, isSource, used);
+        }
         return {
           output: [],
           error: `The term '${name}' is not recognized as the name of a cmdlet.`,
         };
+      }
     }
+  }
+
+  /**
+   * Invoke a user-defined function body with simple param binding.
+   * @param {string} body
+   * @param {string[]} args
+   * @param {Record<string, string | boolean>} params
+   * @param {unknown[]} input
+   * @param {boolean} isSource
+   * @param {string[]} used
+   */
+  invokeFunction(body, args, params, input, isSource, used) {
+    let code = body.trim().replace(/^\s*\[CmdletBinding\(\)\]\s*/i, "");
+    let paramNames = [];
+    const pm = code.match(/^param\s*\(([^)]*)\)\s*([\s\S]*)$/i);
+    if (pm) {
+      paramNames = pm[1]
+        .split(",")
+        .map((s) => s.trim().replace(/^\$/, ""))
+        .filter(Boolean);
+      code = pm[2];
+    }
+    paramNames.forEach((p, i) => {
+      if (args[i] !== undefined) this.variables[p] = coerce(args[i]);
+      else if (params[p] !== undefined && params[p] !== true) {
+        this.variables[p] = coerce(String(params[p]));
+      }
+    });
+
+    // process { } pipeline function
+    const proc = code.match(/^(?:begin\s*\{[\s\S]*?\}\s*)?process\s*\{([\s\S]*)\}\s*$/i);
+    if (proc) {
+      const src = isSource ? [] : input;
+      const outObjs = src.map((item) => {
+        this.variables._ = item;
+        /** @type {string[]} */
+        const local = [];
+        const patched = proc[1].replace(
+          /\$_\.([A-Za-z_][A-Za-z0-9_]*)/g,
+          (_, prop) => {
+            const v =
+              item instanceof PSObject
+                ? item.get(prop)
+                : item && typeof item === "object"
+                  ? item[prop]
+                  : undefined;
+            return JSON.stringify(v == null ? "" : v);
+          }
+        );
+        this.runBlock(patched, local, used);
+        if (local.length) return new PSObject("System.String", { Value: local.join("\n") });
+        return new PSObject("System.String", { Value: "" });
+      });
+      return { output: outObjs, error: null };
+    }
+
+    /** @type {string[]} */
+    const localOut = [];
+    const r = this.runBlock(code, localOut, used);
+    if (r && !r.ok) return { output: [], error: r.error };
+    return {
+      output: localOut.map((t) => new PSObject("System.String", { Value: t })),
+      error: null,
+    };
+  }
+
+  /**
+   * @param {string} topic
+   */
+  helpObject(topic) {
+    const t = topic.toLowerCase();
+    const entries = {
+      "get-childitem": "Get-ChildItem — lists items in a provider location. Parameters: -Path, -Filter, -Recurse. Aliases: gci, dir, ls.",
+      "about_objects": "about_Objects — PowerShell pipes objects with properties and methods, not text. Use Get-Member to inspect types.",
+      "about_constrainedlanguage": "about_ConstrainedLanguage — Constrained Language Mode restricts types and methods for hardened hosts (WDAC/AppLocker).",
+      "get-process": "Get-Process — returns System.Diagnostics.Process objects with Name, Id, CPU, WS.",
+    };
+    const key = t.replace(/\s+/g, "");
+    const text =
+      entries[key] ||
+      (t.startsWith("about_")
+        ? `${topic} — concept help topic. Try about_Objects, about_ConstrainedLanguage.`
+        : `Help for ${topic || "cmdlets"} — syntax, parameters, examples. Try Get-Help about_Objects.`);
+    return [
+      new PSObject("HelpInfo", {
+        Name: topic || "Get-Help",
+        Detail: text,
+        ToString: `${topic || "Help"}: ${text}`,
+      }),
+    ];
+  }
+
+  /**
+   * @param {string | undefined} target
+   */
+  importCsv(target) {
+    if (!target) return { output: [], error: "Import-Csv: missing Path." };
+    const path = resolvePath(this.cwd, target);
+    const node = getNode(this.fs, path);
+    if (!node || node.type !== "file") {
+      return { output: [], error: `Import-Csv: cannot find '${path}'.` };
+    }
+    const lines = String(node.content || "").split(/\r?\n/).filter(Boolean);
+    if (!lines.length) return { output: [], error: null };
+    const headers = lines[0].split(",").map((h) => h.trim());
+    const rows = lines.slice(1).map((line) => {
+      const cells = line.split(",").map((c) => c.trim());
+      /** @type {Record<string, unknown>} */
+      const props = {};
+      headers.forEach((h, i) => {
+        const cell = cells[i] ?? "";
+        props[h] = /^-?\d+(\.\d+)?$/.test(cell) ? Number(cell) : cell;
+      });
+      return new PSObject("PSCustomObject", props);
+    });
+    return { output: rows, error: null };
+  }
+
+  /**
+   * @param {string | undefined} target
+   * @param {unknown[]} input
+   * @param {Record<string, string | boolean>} params
+   */
+  exportCsv(target, input, params) {
+    if (!target) return { output: [], error: "Export-Csv: missing Path." };
+    const path = resolvePath(this.cwd, target);
+    const parent = getNode(this.fs, parentPath(path));
+    if (!parent || parent.type !== "dir") {
+      return { output: [], error: `Export-Csv: parent missing for '${path}'.` };
+    }
+    const rows = input.map((item) =>
+      item instanceof PSObject ? item.props : { Value: item }
+    );
+    const headers = rows.length ? Object.keys(rows[0]) : ["Value"];
+    const lines = [
+      headers.join(","),
+      ...rows.map((r) => headers.map((h) => r[h] ?? "").join(",")),
+    ];
+    const name = basename(path);
+    parent.children[name] = {
+      name,
+      type: "file",
+      content: `${lines.join("\n")}\n`,
+      length: lines.join("\n").length,
+      lastWrite: new Date().toISOString(),
+    };
+    void params;
+    return { output: [], error: null };
+  }
+
+  /**
+   * @param {string | undefined} target
+   * @param {unknown[]} input
+   */
+  outFile(target, input) {
+    if (!target) return { output: [], error: "Out-File: missing Path." };
+    const path = resolvePath(this.cwd, target);
+    const parent = getNode(this.fs, parentPath(path));
+    if (!parent || parent.type !== "dir") {
+      return { output: [], error: `Out-File: parent missing.` };
+    }
+    const text = input
+      .map((i) => (i instanceof PSObject ? formatOutput(i) : String(i)))
+      .join("\n");
+    const name = basename(path);
+    parent.children[name] = {
+      name,
+      type: "file",
+      content: `${text}\n`,
+      length: text.length,
+      lastWrite: new Date().toISOString(),
+    };
+    return { output: [], error: null };
   }
 
   /**
@@ -1125,6 +1953,7 @@ export class Session {
    * @param {boolean} isSource
    */
   getChildItem(args, params, input, isSource) {
+    args = (args || []).filter((a) => a != null && !/^@[A-Za-z_]/.test(String(a)));
     let pathArg = args[0] || (typeof params.Path === "string" ? params.Path : null);
     if (!isSource && input.length) {
       // path from pipeline items
@@ -1151,6 +1980,54 @@ export class Session {
    * @param {Record<string, string | boolean>} params
    */
   listPath(target, params) {
+    const raw = String(target || ".");
+    if (raw.toLowerCase().startsWith("env:")) {
+      const prefix = raw.toLowerCase() === "env:" || raw.toLowerCase() === "env:\\" ? "" : raw.slice(4);
+      return {
+        output: Object.keys(this.variables)
+          .filter((k) => k.startsWith("env:"))
+          .filter((k) => !prefix || k.toLowerCase().includes(prefix.toLowerCase()))
+          .map(
+            (k) =>
+              new PSObject("System.Collections.DictionaryEntry", {
+                Name: k.slice(4),
+                Value: this.variables[k],
+                Key: k.slice(4),
+              })
+          ),
+        error: null,
+      };
+    }
+    if (/^HKLM:/i.test(raw)) {
+      const key = raw.replace(/\//g, "\\");
+      const nodeR = this.registry?.[key] || this.registry?.["HKLM:\\Software"];
+      return {
+        output: Object.keys(nodeR || { Microsoft: {} }).map(
+          (n) =>
+            new PSObject("Microsoft.Win32.RegistryKey", {
+              Name: n,
+              PSChildName: n,
+              PSPath: `${key}\\${n}`,
+            })
+        ),
+        error: null,
+      };
+    }
+    if (/^Cert:/i.test(raw)) {
+      const items = this.certStore?.["Cert:\\CurrentUser\\My"] || [
+        { Subject: "CN=lab-client" },
+      ];
+      return {
+        output: items.map(
+          (c) =>
+            new PSObject("System.Security.Cryptography.X509Certificates.X509Certificate2", {
+              Subject: c.Subject,
+              Thumbprint: "AABBCC",
+            })
+        ),
+        error: null,
+      };
+    }
     const path = resolvePath(this.cwd, target);
     const node = getNode(this.fs, path);
     if (!node) {
@@ -1735,6 +2612,7 @@ export function splitStatements(line) {
   const parts = [];
   let current = "";
   let quote = /** @type {null | "'" | '"'} */ (null);
+  let depth = 0;
   for (let i = 0; i < line.length; i += 1) {
     const ch = line[i];
     if (quote) {
@@ -1747,7 +2625,9 @@ export function splitStatements(line) {
       current += ch;
       continue;
     }
-    if (ch === ";") {
+    if (ch === "{" || ch === "(" || ch === "[") depth += 1;
+    if (ch === "}" || ch === ")" || ch === "]") depth -= 1;
+    if (ch === ";" && depth <= 0) {
       if (current.trim()) parts.push(current.trim());
       current = "";
       continue;

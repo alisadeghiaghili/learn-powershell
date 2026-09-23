@@ -68,31 +68,46 @@ $procs = Get-Process
 
 ## Curriculum
 
+17 series · 94 levels — each with What / Why / mental model:
+
 1. **Getting Started** — location, listing, reading, moving
 2. **Objects** — project, filter, sort, measure
 3. **Pipeline** — multi-stage pipes and `ForEach-Object`
-4. **Session & Files** — variables and filesystem verbs
-5. **Remix** — composition and golf
-
-Each level teaches what is happening, why it matters, and a mental model.
+4. **Discovery & Help** — Get-Help, Get-Member, Get-Command, common parameters
+5. **Language & Types** — operators, arrays, hashtables, PSCustomObject, casting
+6. **Flow Control** — if / switch / foreach / while, break / continue
+7. **Functions & Tools** — param, CmdletBinding, process blocks, splatting
+8. **Errors & Streams** — try/catch, throw, -ErrorAction, warning/error streams
+9. **Scope** — local / script / global, prefixed variables
+10. **Files & Data** — CSV, JSON, raw content, Join-Path
+11. **Providers** — Env, HKLM, Cert, PSDrives
+12. **Remoting** — Invoke-Command, PSSession, credentials
+13. **Modules** — Import / Remove-Module, discovery
+14. **Jobs & CIM** — Start-Job, Receive-Job, ForEach -Parallel, CIM
+15. **Security & Policy** — execution policy, $PROFILE, -WhatIf
+16. **Formatting & Export** — Format placement, Out-File, CSV vs table
+17. **Remix** — composition, capstones, golf
 
 ## Project layout
 
 ```
-index.html              app shell
-assets/css/app.css      layout and visual system
-assets/js/engine.js     simulated PowerShell session
-assets/js/levels.js     level data + goal evaluator + teaching notes
-assets/js/visuals.js    pipeline + session renderers
-assets/js/terminal.js   shell UI (history, Tab, ghost text)
-assets/js/teach.js      after-command "why" blocks
-assets/js/progress.js   localStorage + cookie persistence
-assets/js/share.js      LinkedIn / X / Facebook share payloads
-assets/js/confetti.js   celebration effects
-assets/js/app.js        wiring, modes, modals
-tests/smoke.mjs         engine smoke tests (Node)
-tests/curriculum.mjs    every level is solvable (Node)
-DESIGN.md               design notes
+index.html                 app shell
+assets/css/app.css         layout and visual system
+assets/js/engine.js        simulated PowerShell session + cmdlets
+assets/js/lang.js          expressions, operators, control-flow helpers
+assets/js/levels.js        re-exports catalog
+assets/js/levels-catalog.js 94 levels, goals, teaching notes
+assets/js/visuals.js       pipeline + session renderers
+assets/js/terminal.js      shell UI (history, Tab, ghost text)
+assets/js/teach.js         after-command "why" blocks
+assets/js/progress.js      localStorage + cookie persistence
+assets/js/share.js         LinkedIn / X / Facebook share payloads
+assets/js/confetti.js      celebration effects
+assets/js/app.js           wiring, modes, modals
+tests/smoke.mjs            engine smoke tests (Node)
+tests/curriculum.mjs       every level solvable (Node)
+DESIGN.md                  design notes
+LICENSE                    Apache-2.0
 ```
 
 ## Tests
