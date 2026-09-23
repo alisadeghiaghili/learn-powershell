@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LearnPowerShell</title>
+    <meta
+      name="description"
+      content="Interactive PowerShell pipeline visualizer, sandbox, and tutorial game — inspired by learnGitBranching."
+    />
+    <link rel="stylesheet" href="assets/css/app.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">&gt;_</span>
+          <span class="brand-name">LearnPowerShell</span>
+        </div>
+        <div class="topbar-actions">
+          <span class="chip" data-mode-label>sandbox</span>
+          <span class="chip muted" data-progress>0/0 solved</span>
+          <span class="chip muted" data-cmd-count>0 cmd</span>
+          <button type="button" class="btn ghost" data-action="levels">Levels</button>
+          <button type="button" class="btn ghost" data-action="sandbox">Sandbox</button>
+          <button type="button" class="btn ghost" data-action="hint">Hint</button>
+          <button type="button" class="btn ghost" data-action="undo">Undo</button>
+          <button type="button" class="btn ghost" data-action="reset">Reset</button>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <section class="viz-wrap" data-viz></section>
+
+        <aside class="goal-panel" aria-label="Level goal">
+          <header class="goal-header">
+            <div>
+              <p class="goal-kicker">Goal</p>
+              <h1 data-level-title>Sandbox</h1>
+            </div>
+            <span class="par-badge" data-level-par></span>
+          </header>
+          <p class="goal-brief" data-level-brief>
+            Free practice. Type help for commands, levels to train.
+          </p>
+          <p class="goal-hint-line">Hint: <code data-level-hint>help · levels · undo · reset</code></p>
+          <div class="goal-body" data-goal-body></div>
+        </aside>
+      </main>
+
+      <section class="terminal-wrap" data-term></section>
+    </div>
+
+    <div class="modal-backdrop" data-modal hidden>
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <header class="modal-header">
+          <h2 id="modal-title" data-modal-title>LearnPowerShell</h2>
+          <button type="button" class="btn ghost" data-modal-close aria-label="Close">Close</button>
+        </header>
+        <div class="modal-body" data-modal-body></div>
+      </div>
+    </div>
+
+    <script type="module" src="assets/js/app.js"></script>
+  </body>
+</html>

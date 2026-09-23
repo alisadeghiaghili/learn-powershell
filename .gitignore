@@ -1,0 +1,16 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Node (tests only, no lockfile required)
+node_modules/
+
+# Build
+dist/
+.cache/
