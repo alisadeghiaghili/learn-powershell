@@ -68,25 +68,28 @@ $procs = Get-Process
 
 ## Curriculum
 
-17 series · 94 levels — each with What / Why / mental model:
+18 series · 148 levels — each with What / Why / mental model. Official
+solutions are also checked by `labs/verify.ps1` on real pwsh.
 
 1. **Getting Started** — location, listing, reading, moving
 2. **Objects** — project, filter, sort, measure
 3. **Pipeline** — multi-stage pipes and `ForEach-Object`
-4. **Discovery & Help** — Get-Help, Get-Member, Get-Command, common parameters
+4. **Discovery & Help** — Get-Help, Get-Member, Get-Command, about_*
 5. **Language & Types** — operators, arrays, hashtables, PSCustomObject, casting
-6. **Flow Control** — if / switch / foreach / while, break / continue
+6. **Flow Control** — if / switch / foreach / while
 7. **Functions & Tools** — param, CmdletBinding, process blocks, splatting
-8. **Errors & Streams** — try/catch, throw, -ErrorAction, warning/error streams
-9. **Scope** — local / script / global, prefixed variables
-10. **Files & Data** — CSV, JSON, raw content, Join-Path
-11. **Providers** — Env, HKLM, Cert, PSDrives
-12. **Remoting** — Invoke-Command, PSSession, credentials
-13. **Modules** — Import / Remove-Module, discovery
-14. **Jobs & CIM** — Start-Job, Receive-Job, ForEach -Parallel, CIM
-15. **Security & Policy** — execution policy, $PROFILE, -WhatIf
-16. **Formatting & Export** — Format placement, Out-File, CSV vs table
+8. **Errors & Streams** — try/catch/finally, ErrorVariable, streams
+9. **Scope** — local / script / global
+10. **Files & Data** — CSV, JSON, Tee, Out-File
+11. **Providers** — Env, HKLM, Cert, Push/Pop-Location
+12. **Remoting** — fan-out, PSSession, `$using:`
+13. **Modules** — Import/Remove, Export-ModuleMember, ListAvailable
+14. **Jobs & CIM** — Start/Wait/Receive/Remove-Job, CIM
+15. **Security & Policy** — execution policy, Authenticode, -WhatIf
+16. **Formatting & Export** — Format placement, Out-File
 17. **Remix** — composition, capstones, golf
+18. **Advanced & Expert** — class/enum, `$PSItem`, `??`, ternary, `$( )`,
+    Measure-Command, breakpoints, native commands, New-Module
 
 ## Project layout
 
@@ -115,7 +118,11 @@ LICENSE                    Apache-2.0
 ```powershell
 node tests/smoke.mjs
 node tests/curriculum.mjs
+pwsh -NoProfile -File labs/verify.ps1
 ```
+
+`labs/verify.ps1` runs the same idioms on **real** PowerShell — the fidelity
+gate when the browser simulator is the learning UI.
 
 ## License
 

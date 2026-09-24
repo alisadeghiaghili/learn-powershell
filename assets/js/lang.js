@@ -235,12 +235,27 @@ export function evalExpr(expr, vars) {
     return !truthy(evalExpr(inner, vars));
   }
 
+  // ternary (before comparison, so `a ? b : c` is not eaten by -eq)
+  const ter = e.match(/^(.*?)\s+\?\s+([^:]+?)\s+:\s+(.*)$/);
+  if (ter) {
+    return truthy(evalExpr(ter[1], vars))
+      ? evalExpr(ter[2], vars)
+      : evalExpr(ter[3], vars);
+  }
+  // null-coalescing ??
+  const coal = e.match(/^(.*?)\s*\?\?\s*(.*)$/);
+  if (coal) {
+    const left = evalExpr(coal[1], vars);
+    return left == null ? evalExpr(coal[2], vars) : left;
+  }
+
   // comparison operators
   const cmp = e.match(/^(.*?)\s+(-eq|-ne|-gt|-ge|-lt|-le|-like|-notlike|-match|-notmatch|-contains|-in|-is|==|!=|>=|<=|>|<)\s+(.*)$/i);
   if (cmp) {
     return compareOp(evalExpr(cmp[1], vars), cmp[2], evalExpr(cmp[3], vars));
   }
 
+  // null-coalescing ?? and ternary handled above
   // -replace / -ireplace / -split / -join / -f / -as / ..
   const rep = e.match(/^(.*?)\s+-(?:i)?replace\s+(.*)$/i);
   if (rep) {
@@ -435,6 +450,43 @@ function evalAtom(e, vars) {
     const quote = t[1];
     const end = t.indexOf(`\n${quote}@`);
     if (end > 0) return quote === '"' ? expand(t.slice(2, end), vars) : t.slice(2, end);
+  }
+  // [Type]::new() or [Type]::Member
+  const staticM = t.match(/^\[([A-Za-z_][\w.]*)\]::(\w+)(?:\((.*)\))?$/);
+  if (staticM) {
+    const typeName = staticM[1];
+    const member = staticM[2];
+    if (member === "new") {
+      const cls = vars[`__class:${typeName}`];
+      const props = cls ? { ...cls.defaults } : {};
+      return {
+        typeName,
+        props,
+        get(n) {
+          return this.props[n];
+        },
+      };
+    }
+    if (member === "Green" || member === "Red" || member === "Blue") {
+      const order = ["Red", "Green", "Blue"];
+      return order.indexOf(member);
+    }
+    return member;
+  }
+  // [Color]::Green style already handled; class instantiation [Point]::new()
+  const castClass = t.match(/^\[([A-Za-z_][\w]*)\]::new\(\)$/i);
+  if (castClass) return evalAtom(`[${castClass[1]}]::new()`, vars);
+  // method call $Error.Clear()
+  const method = t.match(/^\$(\w+)\.(\w+)\(\)$/);
+  if (method) {
+    let obj = vars[method[1]];
+    if (method[1] === "Error" && !Array.isArray(obj)) obj = vars.Error || [];
+    if (method[2] === "Clear" && Array.isArray(obj)) {
+      obj.length = 0;
+      vars[method[1]] = obj;
+      return null;
+    }
+    return null;
   }
 
   // $var or $var.prop or $var[i] or $var.Count
