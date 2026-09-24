@@ -241,18 +241,42 @@ export function evalExpr(expr, vars) {
     return compareOp(evalExpr(cmp[1], vars), cmp[2], evalExpr(cmp[3], vars));
   }
 
-  // -replace / -split / -join
-  const rep = e.match(/^(.*?)\s+-replace\s+(.*)$/i);
+  // -replace / -ireplace / -split / -join / -f / -as / ..
+  const rep = e.match(/^(.*?)\s+-(?:i)?replace\s+(.*)$/i);
   if (rep) {
     const [pat, repl] = splitTop(rep[2], ",").map((s) => evalExpr(s, vars));
     return String(evalExpr(rep[1], vars)).replace(new RegExp(String(pat), "gi"), String(repl));
+  }
+  const fmt = e.match(/^(.*?)\s+-f\s+(.*)$/i);
+  if (fmt) {
+    const format = String(coerceVal(evalExpr(fmt[1], vars)) ?? "");
+    const parts = splitTop(fmt[2], ",").map((s) => evalExpr(s, vars));
+    return format.replace(/\{(\d+)(?::[^}]*)?\}/g, (_, n) => String(parts[Number(n)] ?? ""));
+  }
+  const asOp = e.match(/^(.*?)\s+-as\s+\[?(\w+)\]?$/i);
+  if (asOp) {
+    const v = evalExpr(asOp[1], vars);
+    const t = asOp[2].toLowerCase();
+    if (t.includes("int")) return Math.trunc(Number(v));
+    if (t.includes("string")) return String(v ?? "");
+    if (t.includes("double")) return Number(v);
+    if (t.includes("bool")) return truthy(v);
+    return v;
+  }
+  const range = e.match(/^(.+?)\.\.(.+)$/);
+  if (range && /^\s*[\w$"]/.test(range[1])) {
+    const a = Number(coerceVal(evalExpr(range[1], vars)) ?? 0);
+    const b = Number(coerceVal(evalExpr(range[2], vars)) ?? 0);
+    const out = [];
+    const step = a <= b ? 1 : -1;
+    for (let i = a; step > 0 ? i <= b : i >= b; i += step) out.push(i);
+    return out;
   }
   const spl = e.match(/^(.*?)\s+-split\s+(.*)$/i);
   if (spl) {
     const sep = evalExpr(spl[2], vars);
     return String(evalExpr(spl[1], vars)).split(String(sep));
   }
-  const join = e.match(/^-join\s+(.*)$/i) || e.match(/^(.*?)\s+-join\s*$/i);
   if (e.toLowerCase().startsWith("-join ")) {
     const inner = evalExpr(e.slice(6), vars);
     return (Array.isArray(inner) ? inner : [inner]).join("");
@@ -403,6 +427,15 @@ function evalAtom(e, vars) {
   }
   if (/^\[bool\]\s*/i.test(t)) return truthy(evalExpr(t.replace(/^\[bool\]\s*/i, ""), vars));
   if (/^\[double\]\s*/i.test(t)) return Number(coerceVal(evalExpr(t.replace(/^\[double\]\s*/i, ""), vars)) ?? 0);
+  if (/^\[datetime\]\s*/i.test(t)) {
+    const s = String(coerceVal(evalExpr(t.replace(/^\[datetime\]\s*/i, ""), vars)) ?? "");
+    return s || new Date().toISOString();
+  }
+  if (t.startsWith('@"') || t.startsWith("@'")) {
+    const quote = t[1];
+    const end = t.indexOf(`\n${quote}@`);
+    if (end > 0) return quote === '"' ? expand(t.slice(2, end), vars) : t.slice(2, end);
+  }
 
   // $var or $var.prop or $var[i] or $var.Count
   if (t.startsWith("$")) {
@@ -453,11 +486,18 @@ function resolveVarExpr(t, vars) {
     const prop = rest.match(/^\.([A-Za-z_][A-Za-z0-9_]*)/);
     const idx = rest.match(/^\[(\d+)\]/);
     if (prop) {
-      if (isPSObject(value)) value = /** @type {any} */ (value).get(prop[1]);
-      else if (value && typeof value === "object") value = /** @type {any} */ (value)[prop[1]];
-      else if (prop[1].toLowerCase() === "count" || prop[1].toLowerCase() === "length") {
-        value = Array.isArray(value) ? value.length : String(value ?? "").length;
-      } else value = undefined;
+      const pname = prop[1];
+      if (Array.isArray(value) && /^(count|length)$/i.test(pname)) {
+        value = value.length;
+      } else if (isPSObject(value)) {
+        value = /** @type {any} */ (value).get(pname);
+      } else if (value && typeof value === "object") {
+        value = /** @type {any} */ (value)[pname];
+      } else if (/^(count|length)$/i.test(pname)) {
+        value = String(value ?? "").length;
+      } else {
+        value = undefined;
+      }
       rest = rest.slice(prop[0].length);
       continue;
     }
