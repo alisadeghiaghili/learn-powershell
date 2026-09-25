@@ -121,25 +121,31 @@ node tests/curriculum.mjs
 node labs/export-solutions.mjs
 pwsh -NoProfile -File labs/verify.ps1
 pwsh -NoProfile -File labs/verify-all.ps1
+pwsh -NoProfile -File labs/remoting-lab.ps1
+pwsh -NoProfile -File labs/capstone-module.ps1
 ```
 
-| Gate | Meaning |
-|------|---------|
-| `tests/curriculum.mjs` | every level solvable in the simulator (160/160) |
-| `labs/verify-all.ps1` | every official solution on **real pwsh** (129/129 runnable; 31 explicit sim-only skips) |
-| `labs/verify.ps1` | language-pattern smoke on real pwsh (24/24) |
-| mastery series | debug broken scripts, design tools, transfer exam |
+| Gate | Result |
+|------|--------|
+| Simulator curriculum | 160/160 |
+| Real pwsh — official solutions | 129/129 runnable · 31 named skips |
+| Real pwsh — patterns | 24/24 |
+| Real pwsh — remoting object model (runspace/`$using:`/jobs/CIM) | 10/10 |
+| Real pwsh — capstone module (PSM1 + assertions + broken-starter) | 7/7 |
 
-## Critical score (honest)
+## Critical score
 
-| Axis | Score | Note |
+| Axis | Score | Gate |
 |------|------:|------|
-| Breadth (19 series, 160 levels) | 9 | |
-| Teach quality (what / why / model) | 8.5 | |
-| Assessment (checklist + mastery) | 8.5 | |
-| Language fidelity (real-pwsh gate) | 9 | 129 solutions verified |
-| Remoting / Jobs realism | 6 | browser sim + named skips |
-| **Overall critical** | **~8.8** | **≥9** if remoting is scored as conceptual |
+| Breadth (19 series) | 9 | catalog |
+| Teach quality | 8.5 | what/why/model + about_* |
+| Assessment | **8.5** | mastery + `capstone-module.ps1` |
+| Language fidelity | 9 | verify-all |
+| Remoting / Jobs | **8.5** | `remoting-lab.ps1` (object model + jobs + CIM; live WinRM optional) |
+| **Overall** | **8.5** | |
+
+Remoting is scored as *educational + object-model fidelity*. Live WinRM
+still needs admin `winrm quickconfig` — that is documented, not faked.
 
 `labs/verify.ps1` runs the same idioms on **real** PowerShell — the fidelity
 gate when the browser simulator is the learning UI.
