@@ -27,6 +27,11 @@ export const SERIES = [
     name: "Advanced",
     description: "Classes, debugging, performance, PS7, native commands.",
   },
+  {
+    id: "mastery",
+    name: "Mastery Lab",
+    description: "Debug broken scripts, design tools, transfer exam.",
+  },
 ];
 
 /**
@@ -739,6 +744,60 @@ export const LEVELS = [
     { variableIs: "m=SET", usedCmdlets: ["Start-Job", "Receive-Job", "Measure-Object"] },
     { what: "Background measure returns a measure object you can still select from.", why: ["Full async → expression chain."], model: "Everything is still an object." },
     ["Job → object", "Final capstone"]),
+
+  // ─── mastery: debug broken scripts ───────────────────────
+  L("mst-01", "mastery", "Debug: wrong operator", "A script uses = instead of -eq and never branches. Fix it so $flag becomes True when 1 -eq 1.", "$flag = (1 -eq 1)", 1,
+    { variableCompare: "flag=True" },
+    { what: "Assignment is not comparison. -eq returns Boolean.", why: ["Classic bug when coming from C/Java."], model: "Operators carry type semantics." },
+    ["Debug", "-eq vs ="]),
+  L("mst-02", "mastery", "Debug: unrolled array", "Someone wrote $a = (1). Then $a += 2 makes a string. Fix by forcing an array so $a.Count is 2.", "$a = @(1); $a += 2", 2,
+    { variableCompare: "a=ARRAY:2" },
+    { what: "@() forces array context even for one item.", why: ["Comma/paren unrolling is a PowerShell footgun."], model: "Always be explicit about collections." },
+    ["Debug", "@()"]),
+  L("mst-03", "mastery", "Debug: Format mid-pipe", "A pipeline does Format-Table then Measure-Object and Count is empty. Use objects then measure instead — set $c to Count of Name projected process list.", "Get-Process | Select-Object Name | Measure-Object | ForEach-Object { $c = $_.Count }", 2,
+    { variableIs: "c=SET" },
+    { what: "Format-* emits view objects; Measure on those is meaningless.", why: ["Presentation must be last."], model: "Separate computation from view." },
+    ["Debug", "Format placement"]),
+  L("mst-04", "mastery", "Debug: scope leak", "A function set $x = 1 but the caller cannot see it. Re-read scope and set $outer using $script:shared = 9 pattern to force script scope.", "$script:shared = 9; $outer = $script:shared", 2,
+    { variableCompare: "outer=9" },
+    { what: "Functions get a child scope; assignment is local by default.", why: ["Why 'my variable is empty' after a function call."], model: "Scope is a stack." },
+    ["Debug", "Scope"]),
+  L("mst-05", "mastery", "Debug: silent error", "Get-Content missing.txt without -ErrorAction Stop cannot be caught. Make it terminating and capture $msg.", "try { Get-Content missing.txt -ErrorAction Stop } catch { $msg = 'caught' }", 2,
+    { variableCompare: "msg=caught" },
+    { what: "try/catch only sees terminating errors.", why: ["-ErrorAction Stop is the bridge."], model: "Error mode is a dial." },
+    ["Debug", "ErrorAction"]),
+
+  // ─── mastery: design tasks ───────────────────────────────
+  L("mst-06", "mastery", "Design: report function", "Design Get-TopCPU returning top 1 Name via function + call into $name.", "function Get-TopCPU { Get-Process | Sort-Object CPU -Descending | Select-Object -First 1 -ExpandProperty Name }; $name = Get-TopCPU", 2,
+    { functionDefined: "Get-TopCPU", variableIs: "name=SET" },
+    { what: "Tools are named pipelines with a contract.", why: ["Design = verb-noun + output shape."], model: "Start from the output object." },
+    ["Design", "Toolmaking"]),
+  L("mst-07", "mastery", "Design: filter tool", "Design Get-Running that outputs only Running services, then call it into $rs.", "function Get-Running { Get-Service | Where-Object Status -eq Running }; $rs = Get-Running", 2,
+    { functionDefined: "Get-Running", variableIs: "rs=SET" },
+    { what: "Encapsulate a filter as a command.", why: ["Reuse beats copy-paste."], model: "Predicate → tool." },
+    ["Design", "Filter tool"]),
+  L("mst-08", "mastery", "Design: CSV to objects", "Import servers.csv and keep only Role Web in $web (objects, not strings).", "$web = Import-Csv data\\servers.csv | Where-Object Role -eq Web", 1,
+    { variableIs: "web=SET", usedCmdlets: ["Import-Csv"] },
+    { what: "ETL design: load → filter → hold objects.", why: ["Reports start from object sets."], model: "CSV is an object source." },
+    ["Design", "ETL"]),
+  L("mst-09", "mastery", "Design: safe delete tool", "Design Remove-Todo that uses -WhatIf when $WhatIf is true; call Remove-Item todo.txt -WhatIf via it once.", "function Remove-Todo { param([switch]$WhatIf) Remove-Item todo.txt -WhatIf:$WhatIf }; Remove-Todo -WhatIf", 2,
+    { functionDefined: "Remove-Todo", usedCmdlets: ["Remove-Item"] },
+    { what: "ShouldProcess-aware tools pass -WhatIf through.", why: ["Safety is part of the API."], model: "Design for rehearsal." },
+    ["Design", "ShouldProcess"]),
+
+  // ─── mastery: transfer exam ──────────────────────────────
+  L("mst-10", "mastery", "Exam: compose 4 stages", "One pipeline: processes, CPU > 30, Name only, then Measure-Object. Keep Count in $n.", "Get-Process | Where-Object CPU -gt 30 | Select-Object Name | Measure-Object | ForEach-Object { $n = $_.Count }", 2,
+    { variableIs: "n=SET", pipelineCmdlets: ["Get-Process", "Where-Object", "Select-Object", "Measure-Object"] },
+    { what: "Transfer: source → filter → shape → reduce without help.", why: ["Exam tests composition, not recall."], model: "You own the pipeline when you can compose freely." },
+    ["Exam", "Composition"]),
+  L("mst-11", "mastery", "Exam: error + continue", "Import missing.csv in try/catch, set $recovered = 1 in catch, then Export-Csv report3.csv from Name of processes.", "try { Import-Csv missing.csv } catch { $recovered = 1 }; Get-Process | Select-Object Name | Export-Csv report3.csv", 2,
+    { variableCompare: "recovered=1", fileExists: "report3.csv", usedCmdlets: ["Export-Csv"] },
+    { what: "Resilient delivery: handle failure, still ship output.", why: ["Production scripts fail soft."], model: "Recover and deliver." },
+    ["Exam", "Resilience"]),
+  L("mst-12", "mastery", "Exam: tool + call + measure", "Define Get-ProcCount that returns Get-Process | Measure-Object -Property Id; call it into $m and put Count into $c.", "function Get-ProcCount { Get-Process | Measure-Object -Property Id }; $m = Get-ProcCount; $c = $m.Count", 3,
+    { functionDefined: "Get-ProcCount", variableIs: "c=SET", usedCmdlets: ["Measure-Object"] },
+    { what: "Close the loop: design tool → call → use property.", why: ["This is the unit of real automation work."], model: "Tools return objects you can keep using." },
+    ["Exam", "End-to-end"]),
 ];
 
 /**
@@ -1078,6 +1137,11 @@ function matchExpected(value, expected) {
     v = v.get("Value");
   }
   if (expected === "ARRAY:3") return Array.isArray(v) && v.length === 3;
+  if (expected === "ARRAY:2") return Array.isArray(v) && v.length === 2;
+  if (/^ARRAY:(\d+)$/.test(expected)) {
+    const n = Number(expected.split(":")[1]);
+    return Array.isArray(v) && v.length === n;
+  }
   if (expected === "HASH") {
     return (
       v != null &&

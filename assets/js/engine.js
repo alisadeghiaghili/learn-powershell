@@ -2264,6 +2264,23 @@ export class Session {
 
     /** @type {string[]} */
     const localOut = [];
+    if (
+      /^[A-Za-z]+-/.test(code.trim()) &&
+      !code.includes("=$") &&
+      !/^(if|foreach|while|try|function|switch)\b/i.test(code.trim())
+    ) {
+      try {
+        const pr = this.runPipeline(code.trim());
+        used.push(...(pr.usedCmdlets || []));
+        return {
+          output: pr.output,
+          error: null,
+          usedCmdlets: [...(used || [])],
+        };
+      } catch {
+        /* fall through */
+      }
+    }
     const r = this.runBlock(code, localOut, used);
     if (r && !r.ok) return { output: [], error: r.error };
     return {
@@ -2820,6 +2837,16 @@ export class Session {
    */
   forEachObject(args, params, input) {
     const expr = args.join(" ").trim();
+    // allow side-effect script blocks: { $c = $_.Count }
+    const assignM = expr.match(/^\{\s*\$(\w+)\s*=\s*\$_\.([A-Za-z_][\w]*)\s*\}$/);
+    if (assignM) {
+      const out = input.map((item) => {
+        const val = item instanceof PSObject ? item.get(assignM[2]) : item;
+        this.setVar(assignM[1], val);
+        return new PSObject("System.Double", { Value: Number(val) || 0 });
+      });
+      return { output: out, error: null };
+    }
     const out = input.map((item) => {
       if (!expr) return item;
       const brace = expr.replace(/^\{/, "").replace(/\}$/, "").trim();

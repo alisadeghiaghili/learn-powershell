@@ -177,6 +177,18 @@ const solutions = {
   "adv-18": ["Get-Help about_Functions_Advanced_Parameters"],
   "adv-19": ["class Box { [int]$Size }; $b = [Box]::new(); $b.Size = 3"],
   "adv-20": ["$job = Start-Job { Get-Process | Measure-Object }; $m = Receive-Job $job"],
+  "mst-01": ["$flag = (1 -eq 1)"],
+  "mst-02": ["$a = @(1); $a += 2"],
+  "mst-03": ["Get-Process | Select-Object Name | Measure-Object | ForEach-Object { $c = $_.Count }"],
+  "mst-04": ["$script:shared = 9; $outer = $script:shared"],
+  "mst-05": ["try { Get-Content missing.txt -ErrorAction Stop } catch { $msg = 'caught' }"],
+  "mst-06": ["function Get-TopCPU { Get-Process | Sort-Object CPU -Descending | Select-Object -First 1 -ExpandProperty Name }; $name = Get-TopCPU"],
+  "mst-07": ["function Get-Running { Get-Service | Where-Object Status -eq Running }; $rs = Get-Running"],
+  "mst-08": ["$web = Import-Csv data\\servers.csv | Where-Object Role -eq Web"],
+  "mst-09": ["function Remove-Todo { param([switch]$WhatIf) Remove-Item todo.txt -WhatIf:$WhatIf }; Remove-Todo -WhatIf"],
+  "mst-10": ["Get-Process | Where-Object CPU -gt 30 | Select-Object Name | Measure-Object | ForEach-Object { $n = $_.Count }"],
+  "mst-11": ["try { Import-Csv missing.csv } catch { $recovered = 1 }; Get-Process | Select-Object Name | Export-Csv report3.csv"],
+  "mst-12": ["function Get-ProcCount { Get-Process | Measure-Object -Property Id }; $m = Get-ProcCount; $c = $m.Count"],
 };
 
 let failed = 0;
