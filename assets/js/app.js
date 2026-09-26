@@ -513,6 +513,23 @@ function exportLevelJson() {
   );
 }
 
+function helpText() {
+  return [
+    "LearnPowerShell guide",
+    "  Levels   level browser",
+    "  Lesson   what / why / mental model for this level",
+    "  Hint     suggested command",
+    "  Solution official command (golf still counts)",
+    "  Undo     revert last command",
+    "  Reset    reset session",
+    "  Sandbox  free practice",
+    "  ?        this help",
+    "",
+    "Pipelines pass objects: Get-Process | Where-Object CPU -gt 50",
+    "Assign objects: $procs = Get-Process",
+  ].join("\n");
+}
+
 el.btnLevels.addEventListener("click", () => showLevels());
 el.btnSandbox.addEventListener("click", () => startSandbox());
 el.btnHint.addEventListener("click", () => {
@@ -522,6 +539,27 @@ el.btnHint.addEventListener("click", () => {
 });
 el.btnSteps.addEventListener("click", () => {
   printSteps();
+  term.focus();
+});
+document.querySelector("[data-action=guide]")?.addEventListener("click", () => {
+  term.print(helpText(), "meta");
+  term.focus();
+});
+document.querySelector("[data-action=help]")?.addEventListener("click", () => {
+  term.print(helpText(), "meta");
+  term.focus();
+});
+document.querySelector("[data-action=solution]")?.addEventListener("click", () => {
+  if (mode !== "level" || !levelId) {
+    term.print("Start a level first (Levels).", "meta");
+  } else {
+    term.print(`Solution: ${getLevel(levelId)?.hint || ""}`, "meta");
+    term.print("(par " + (getLevel(levelId)?.par || 1) + " — golf the solution yourself)", "meta");
+  }
+  term.focus();
+});
+document.querySelector("[data-action=lang]")?.addEventListener("click", () => {
+  term.print("Language packs: EN active. FA/DE can be added.", "meta");
   term.focus();
 });
 el.btnReset.addEventListener("click", () => {
