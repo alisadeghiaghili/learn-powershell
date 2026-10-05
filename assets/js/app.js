@@ -1,5 +1,6 @@
 /**
- * App shell: engine + visualizer + terminal + levels + celebrate/share + progress.
+ * App shell: engine + visualizer + terminal + levels + dock + celebrate/share + i18n.
+ * Fully aligned with learn-dvc architecture while maintaining PowerShell palette.
  */
 
 import { Session } from "./engine.js";
@@ -10,22 +11,34 @@ import {
   levelsInSeries,
   nextLevelId,
   evaluateGoal,
-  seriesTitle,
 } from "./levels.js";
-import { createVisualizer, renderGoals } from "./visuals.js";
+import { createVisualizer } from "./visuals.js";
 import { createTerminal } from "./terminal.js";
 import {
   loadProgress,
   saveProgress,
   summarizeCurriculum,
 } from "./progress.js";
-import { buildShareTargets, shareWithClipboard, SHARE_URL } from "./share.js";
+import { buildShareTargets, shareWithClipboard } from "./share.js";
 import { launchConfetti, playFanfare } from "./confetti.js";
-import { teachAfterCommand, levelTeachHtml } from "./teach.js";
+import { teachAfterCommand } from "./teach.js";
+import { showModal, renderMarkdown, escapeHtml } from "./dialog.js";
+import {
+  initLocale,
+  getLocale,
+  setLocale,
+  ui,
+  localizeLevel,
+  localizeSeriesTitle,
+} from "./i18n/index.js";
+import { getVisitorCount } from "./visitor-counter.js";
 
 const reduceMotion = window.matchMedia(
   "(prefers-reduced-motion: reduce)"
 ).matches;
+
+// Initialize locale on boot (localStorage or navigator)
+initLocale();
 
 /** @type {Session} */
 let session = new Session();
@@ -46,84 +59,176 @@ function emptyRun() {
   };
 }
 
-const el = {
-  goalBody: /** @type {HTMLElement} */ (document.querySelector("[data-goal-body]")),
-  teachBody: /** @type {HTMLElement} */ (document.querySelector("[data-teach-body]")),
-  levelTitle: /** @type {HTMLElement} */ (document.querySelector("[data-level-title]")),
-  levelBrief: /** @type {HTMLElement} */ (document.querySelector("[data-level-brief]")),
-  levelHint: /** @type {HTMLElement} */ (document.querySelector("[data-level-hint]")),
-  levelPar: /** @type {HTMLElement} */ (document.querySelector("[data-level-par]")),
-  cmdCount: /** @type {HTMLElement} */ (document.querySelector("[data-cmd-count]")),
-  modeLabel: /** @type {HTMLElement} */ (document.querySelector("[data-mode-label]")),
-  progress: /** @type {HTMLElement} */ (document.querySelector("[data-progress]")),
-  modal: /** @type {HTMLElement} */ (document.querySelector("[data-modal]")),
-  modalBody: /** @type {HTMLElement} */ (document.querySelector("[data-modal-body]")),
-  modalTitle: /** @type {HTMLElement} */ (document.querySelector("[data-modal-title]")),
-  vizRoot: /** @type {HTMLElement} */ (document.querySelector("[data-viz]")),
-  termRoot: /** @type {HTMLElement} */ (document.querySelector("[data-term]")),
-  btnLevels: /** @type {HTMLButtonElement} */ (document.querySelector("[data-action=levels]")),
-  btnSandbox: /** @type {HTMLButtonElement} */ (document.querySelector("[data-action=sandbox]")),
-  btnHint: /** @type {HTMLButtonElement} */ (document.querySelector("[data-action=hint]")),
-  btnSteps: /** @type {HTMLButtonElement} */ (document.querySelector("[data-action=steps]")),
-  btnReset: /** @type {HTMLButtonElement} */ (document.querySelector("[data-action=reset]")),
-  btnUndo: /** @type {HTMLButtonElement} */ (document.querySelector("[data-action=undo]")),
-  modalClose: /** @type {HTMLButtonElement} */ (document.querySelector("[data-modal-close]")),
-};
+const boardWrapEl = /** @type {HTMLElement} */ (document.getElementById("board-wrap"));
+const dockEl = /** @type {HTMLElement} */ (document.getElementById("dock"));
+const terminalEl = /** @type {HTMLElement} */ (document.getElementById("terminal"));
+const levelTitleEl = /** @type {HTMLElement} */ (document.getElementById("level-title"));
+const langLabelEl = /** @type {HTMLElement} */ (document.querySelector("[data-lang-label]"));
+const langDropdownEl = /** @type {HTMLElement} */ (document.getElementById("lang-dropdown"));
+const navDrawerEl = /** @type {HTMLElement} */ (document.getElementById("nav-drawer"));
 
-const viz = createVisualizer(el.vizRoot);
-const term = createTerminal(el.termRoot, { onCommand: handleCommand });
+const viz = createVisualizer(boardWrapEl);
+const term = createTerminal(terminalEl, { onCommand: handleCommand });
 
 function curriculum() {
-  return summarizeCurriculum(progressMap, LEVELS, seriesTitle);
+  return summarizeCurriculum(progressMap, LEVELS, localizeSeriesTitle);
 }
 
 function updateChrome() {
   const c = curriculum();
-  el.progress.textContent = `${c.solvedCount}/${c.total} solved`;
-  el.modeLabel.textContent =
-    mode === "level" ? `level · ${levelId}` : "sandbox";
-  el.cmdCount.textContent = `${session.commandCount} cmd`;
-  if (mode === "level" && levelId) {
-    const level = getLevel(levelId);
-    if (level) {
-      el.levelTitle.textContent = level.name;
-      el.levelBrief.textContent = level.brief;
-      el.levelHint.textContent = level.hint;
-      el.levelPar.textContent = `par ${level.par}`;
-      el.teachBody.innerHTML = levelTeachHtml(level);
-    }
-  } else {
-    el.levelTitle.textContent = "Sandbox";
-    el.levelBrief.textContent =
-      "Free practice. Type help for commands, levels to train.";
-    el.levelHint.textContent = "help · levels · undo · reset";
-    el.levelPar.textContent = "";
-    el.teachBody.innerHTML = "";
-    renderGoals(el.goalBody, { checks: [], solved: false }, { reduceMotion });
+  if (langLabelEl) {
+    langLabelEl.textContent = getLocale().toUpperCase();
   }
+  document.querySelectorAll("[data-lang]").forEach((btn) => {
+    btn.classList.toggle("on", btn.getAttribute("data-lang") === getLocale());
+  });
+
+  if (levelTitleEl) {
+    if (mode === "level" && levelId) {
+      const raw = getLevel(levelId);
+      const l = raw ? localizeLevel(raw) : null;
+      levelTitleEl.textContent = l
+        ? ui().titleLine(l.id, l.name, l.par)
+        : ui().sandboxTitle;
+    } else {
+      levelTitleEl.textContent = ui().sandboxTitle;
+    }
+  }
+}
+
+function focusGuide() {
+  dockEl.classList.remove("dock-pulse");
+  void dockEl.offsetWidth;
+  dockEl.classList.add("dock-pulse");
+  dockEl.scrollTop = 0;
+}
+
+function renderDock() {
+  if (!dockEl) return;
+
+  if (mode === "sandbox" || !levelId) {
+    dockEl.innerHTML = `
+      <h2>${escapeHtml(ui().learningGuide)}</h2>
+      <p class="objective">${escapeHtml(ui().guideAlwaysOn)}</p>
+      <div class="learning-box">
+        <div class="next-title">${escapeHtml(ui().startHere)}</div>
+        <ul>
+          ${ui().startHereItems.map((item) => `<li>${renderMarkdown(item)}</li>`).join("")}
+        </ul>
+      </div>
+      <div class="learning-box">
+        <div class="next-title">${escapeHtml(ui().sandboxTip)}</div>
+        <ul>
+          ${ui().sandboxTipItems.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+        </ul>
+      </div>
+      <ul class="goal-list">
+        <li class="met">
+          <div class="g-label">${escapeHtml(ui().noActiveLevel)}</div>
+          <div class="g-detail">${escapeHtml(ui().noActiveLevelDetail)}</div>
+        </li>
+      </ul>
+      <div class="par-note">${ui().guideFlashNote}</div>
+    `;
+    return;
+  }
+
+  const rawLevel = getLevel(levelId);
+  if (!rawLevel) return;
+  const level = localizeLevel(rawLevel);
+
+  const result = evaluateGoal(level.goal, session, {
+    output: lastRun.output,
+    usedCmdlets: [...session.usedCmdlets],
+    pipeline: lastRun.pipeline,
+    commandCount: session.commandCount,
+  });
+
+  const solved = result.solved;
+  const prog = progressMap[level.id];
+  const golfNote =
+    prog?.bestCommands !== undefined
+      ? ui().bestSoFar(prog.bestCommands, level.par)
+      : ui().idealSolution(level.par);
+
+  const checks = result.checks || [];
+  const currentCheckIdx = checks.findIndex((c) => !c.passed);
+
+  const items = checks.map((c, i) => {
+    const isCurrent = !solved && i === currentCheckIdx;
+    return `
+      <li class="${c.passed ? "met" : ""}${isCurrent ? " current" : ""}">
+        <div class="g-label" dir="ltr">
+          ${c.passed ? "✓" : isCurrent ? "▶" : "○"}
+          <code>${escapeHtml(c.label)}</code>
+          ${isCurrent ? `<span class="chip current-chip">${escapeHtml(ui().nowChip)}</span>` : ""}
+        </div>
+        <div class="g-detail" dir="ltr">${escapeHtml(c.detail || "")}</div>
+      </li>
+    `;
+  });
+
+  const nextBlock = solved
+    ? `<div class="next-box met">${escapeHtml(ui().allSolutionMet)}</div>`
+    : `<div class="next-box">
+        <div class="next-title">${escapeHtml(ui().typeNextTitle)}</div>
+        <div class="next-row">
+          <span class="g-label">${escapeHtml(ui().remainingLabel)}</span>
+          <code class="g-cmd" dir="ltr">${escapeHtml(level.hint || "")}</code>
+        </div>
+        <div class="par-note">${escapeHtml(ui().wrongCommandNote)}</div>
+      </div>`;
+
+  dockEl.innerHTML = `
+    <h2>${escapeHtml(level.name)}</h2>
+    <p class="objective">${escapeHtml(level.brief)}</p>
+    ${
+      level.learning?.length
+        ? `<div class="learning-box">
+            <div class="next-title">${escapeHtml(ui().youAreLearning)}</div>
+            <ul>${level.learning.map((l) => `<li>${escapeHtml(l)}</li>`).join("")}</ul>
+          </div>`
+        : ""
+    }
+    ${
+      level.fieldNotes?.length
+        ? `<div class="field-box">
+            <div class="next-title">${escapeHtml(ui().fieldNotesTitle)}</div>
+            <ul>${level.fieldNotes.map((f) => `<li>${escapeHtml(f)}</li>`).join("")}</ul>
+          </div>`
+        : ""
+    }
+    <div class="par-note">${escapeHtml(golfNote)}</div>
+    ${solved ? `<div class="solved-banner">${escapeHtml(ui().solvedBanner(session.commandCount - levelCommandStart || null))}</div>` : ""}
+    ${nextBlock}
+    <ul class="goal-list">${items.join("")}</ul>
+    ${result.checks?.some((c) => !c.passed) ? `<div class="par-note">${escapeHtml(ui().stateNotes)} <code>${escapeHtml(level.id)}</code></div>` : ""}
+  `;
 }
 
 function refreshVisuals() {
   viz.renderSession(session);
   term.setPath(session.cwd);
-  el.cmdCount.textContent = `${session.commandCount} cmd`;
+  renderDock();
+
   if (mode === "level" && levelId) {
-    const level = getLevel(levelId);
-    if (level) {
-      const result = evaluateGoal(level.goal, session, {
+    const rawLevel = getLevel(levelId);
+    if (rawLevel) {
+      const result = evaluateGoal(rawLevel.goal, session, {
         output: lastRun.output,
         usedCmdlets: [...session.usedCmdlets],
         pipeline: lastRun.pipeline,
         commandCount: session.commandCount,
       });
-      renderGoals(el.goalBody, result, { reduceMotion });
-      term.setHint(result.solved ? null : level.hint);
+
+      term.setHint(result.solved ? null : rawLevel.hint);
+
       if (
         result.solved &&
         session.commandCount > levelCommandStart &&
         !celebrateOffered
       ) {
-        onLevelSolved(level, result);
+        onLevelSolved(rawLevel, result);
       }
     }
   } else {
@@ -132,39 +237,38 @@ function refreshVisuals() {
 }
 
 /**
- * @param {import('./levels.js').Level} level
+ * Trigger celebration modal with full confetti burst and fanfare.
+ * @param {import('./levels.js').Level} rawLevel
  * @param {{ checks: any[] }} result
  */
-function onLevelSolved(level, result) {
+function onLevelSolved(rawLevel, result) {
   celebrateOffered = true;
+  const level = localizeLevel(rawLevel);
   const used = session.commandCount - levelCommandStart;
   const prev = progressMap[level.id];
   progressMap[level.id] = {
     solved: true,
-    bestCommands: prev?.bestCommands
-      ? Math.min(prev.bestCommands, used)
-      : used,
+    bestCommands: prev?.bestCommands ? Math.min(prev.bestCommands, used) : used,
   };
   saveProgress(progressMap);
   updateChrome();
 
   const c = curriculum();
+  const next = levelId ? nextLevelId(levelId) : null;
+  const nextLevel = next ? localizeLevel(getLevel(next)) : null;
+  const total = LEVELS.length;
+  const solvedCount = c.solvedCount;
   const underPar = used <= level.par;
   const golfLine = underPar
     ? `**${used}** command${used === 1 ? "" : "s"} · on par (${level.par})`
     : `**${used}** command${used === 1 ? "" : "s"}. Ideal is ${level.par}. Still counts.`;
-  const cheers = [
-    "Clean solve.",
-    "Pipeline locked in.",
-    "That is PowerShell thinking.",
-    "Objects moved. You moved with them.",
-  ];
-  const cheer = cheers[Math.floor(Math.random() * cheers.length)];
+
+  const cheers = ui().cheers;
+  const cheer = cheers[Math.floor(Math.random() * cheers.length)] || "Clean solve.";
+
   const learnedPreview = c.learned
-    .map((l) => `<li>${escapeHtml(l.seriesTitle)}: ${escapeHtml(l.name)}</li>`)
+    .map((l) => `<li>${escapeHtml(localizeSeriesTitle(l.seriesTitle))}: ${escapeHtml(l.name)}</li>`)
     .join("");
-  const next = levelId ? nextLevelId(levelId) : null;
-  const nextLevel = next ? getLevel(next) : null;
 
   const share = buildShareTargets({
     levelName: level.name,
@@ -174,107 +278,129 @@ function onLevelSolved(level, result) {
     curriculum: c,
   });
 
-  openModal(
-    "Level cleared",
-    `
-      <div class="celebrate" aria-live="polite">
-        <div class="celebrate-visual" aria-hidden="true">
-          <div class="celebrate-ring"></div>
-          <div class="celebrate-star">★</div>
-        </div>
-        <div class="celebrate-badge">LEVEL CLEARED</div>
-        <h3 class="celebrate-title">${escapeHtml(level.name)}</h3>
-        <p class="celebrate-sub">${escapeHtml(seriesTitle(level.series))} · <code>${escapeHtml(level.id)}</code></p>
-        <p class="celebrate-cheer">${escapeHtml(cheer)}</p>
-        <div class="celebrate-stats"><p>${golfLine}</p></div>
-        <div class="celebrate-progress">
-          <div class="prog-track"><div class="prog-fill" style="width:${c.percent}%"></div></div>
-          <div class="par-note">${c.solvedCount} / ${c.total} levels · progress saved in this browser</div>
-        </div>
-        <div class="share-block">
-          <div class="next-title">Share your progress</div>
-          <div class="learned-preview">
-            <div class="par-note">What you have learned so far</div>
-            <ul>${learnedPreview || "<li>Solve a few levels to build your list.</li>"}</ul>
-          </div>
-          <div class="share-row" role="group" aria-label="Share">
-            <button type="button" class="share-btn linkedin" data-share="linkedin">LinkedIn</button>
-            <button type="button" class="share-btn x" data-share="x">X / Twitter</button>
-            <button type="button" class="share-btn facebook" data-share="facebook">Facebook</button>
-            <button type="button" class="share-btn copy" data-share="copy">Copy post</button>
-          </div>
-          <div class="share-status" data-share-status hidden></div>
-        </div>
-        ${
-          nextLevel
-            ? `<div class="celebrate-next">Next: <code>${escapeHtml(nextLevel.id)}</code> — ${escapeHtml(nextLevel.name)}</div>`
-            : `<div class="celebrate-next">Curriculum complete. Stay in sandbox and keep experimenting.</div>`
-        }
-        <div class="modal-actions">
-          <button type="button" class="btn ghost" data-action="celebrate-close">Bask in it</button>
-          ${
-            nextLevel
-              ? `<button type="button" class="btn primary" data-action="celebrate-next">Celebrate on: ${escapeHtml(nextLevel.id)}</button>`
-              : `<button type="button" class="btn primary" data-action="levels">Browse levels</button>`
-          }
-        </div>
+  const bodyHtml = `
+    <div class="celebrate" aria-live="polite">
+      <div class="celebrate-visual" aria-hidden="true">
+        <div class="celebrate-ring"></div>
+        <div class="celebrate-star">★</div>
       </div>
-    `,
-    { variant: "celebrate" }
-  );
+      <div class="celebrate-badge">${escapeHtml(ui().levelCleared)}</div>
+      <h3 class="celebrate-title">${escapeHtml(level.name)}</h3>
+      <p class="celebrate-sub">${escapeHtml(level.seriesTitle)} · <code dir="ltr">${escapeHtml(level.id)}</code></p>
+      <p class="celebrate-cheer">${escapeHtml(cheer)}</p>
+      <div class="celebrate-stats">${renderMarkdown(golfLine)}</div>
+      <div class="celebrate-progress">
+        <div class="prog-track"><div class="prog-fill" style="width:${c.percent}%"></div></div>
+        <div class="par-note">${solvedCount} / ${total} levels solved · progress saved in this browser</div>
+      </div>
+      <div class="share-block">
+        <div class="next-title">${escapeHtml(ui().shareTitle)}</div>
+        <div class="learned-preview">
+          <div class="par-note">${escapeHtml(ui().styleList)}</div>
+          <ul>${learnedPreview || `<li>${escapeHtml(ui().solveMoreLevels)}</li>`}</ul>
+        </div>
+        <div class="share-row" role="group" aria-label="${escapeHtml(ui().shareGroupLabel)}">
+          <button type="button" class="share-btn linkedin" data-share="linkedin">${escapeHtml(ui().linkedin)}</button>
+          <button type="button" class="share-btn x" data-share="x">${escapeHtml(ui().xTwitter)}</button>
+          <button type="button" class="share-btn facebook" data-share="facebook">${escapeHtml(ui().facebook)}</button>
+          <button type="button" class="share-btn copy" data-share="copy">${escapeHtml(ui().copyPost)}</button>
+        </div>
+        <div class="share-status" data-share-status hidden></div>
+      </div>
+      ${
+        nextLevel
+          ? `<div class="celebrate-next">Next: <code dir="ltr">${escapeHtml(nextLevel.id)}</code> — ${escapeHtml(nextLevel.name)}</div>`
+          : `<div class="celebrate-next">Curriculum complete. Stay in sandbox and keep experimenting.</div>`
+      }
+    </div>
+  `;
 
-  el.modal.querySelectorAll("[data-share]").forEach((btn) => {
+  const actions = [
+    {
+      label: ui().baskInIt,
+      className: "ghost",
+      onClick: () => {
+        celebrateOffered = false;
+        term.focus();
+      },
+    },
+  ];
+
+  if (nextLevel) {
+    actions.push({
+      label: ui().celebrateOn(nextLevel.id),
+      className: "primary",
+      onClick: () => {
+        celebrateOffered = false;
+        startLevel(nextLevel.id);
+      },
+    });
+  } else {
+    actions.push({
+      label: ui().browseLevels,
+      className: "primary",
+      onClick: () => {
+        celebrateOffered = false;
+        showLevels();
+      },
+    });
+  }
+
+  if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+  const confetti = launchConfetti(4800);
+  playFanfare();
+
+  const modal = showModal({
+    title: ui().levelComplete,
+    bodyHtml,
+    variant: "celebrate",
+    actions: actions.map((a) => ({
+      ...a,
+      onClick: () => {
+        confetti?.stop();
+        modal.close();
+        a.onClick();
+      },
+    })),
+    onClose: () => {
+      confetti?.stop();
+      celebrateOffered = false;
+      term.focus();
+    },
+  });
+
+  modal.el.querySelectorAll("[data-share]").forEach((btn) => {
     btn.addEventListener("click", async (ev) => {
       ev.preventDefault();
-      const kind = /** @type {any} */ (btn.getAttribute("data-share")) || "copy";
-      const status = el.modal.querySelector("[data-share-status]");
+      const kind = btn.getAttribute("data-share") || "copy";
+      const status = modal.el.querySelector("[data-share-status]");
       const result = await shareWithClipboard(kind, share);
       if (!status) return;
       status.hidden = false;
       status.textContent =
         kind === "copy"
           ? result.copied
-            ? "Copied to clipboard."
-            : "Copy failed — select the text manually."
-          : result.copied
-            ? "Share window opened. Message also copied."
-            : "Share window opened.";
+            ? ui().copied
+            : ui().copyFailed
+          : "Share window opened.";
     });
   });
-}
-
-/**
- * @param {string} title
- * @param {string} html
- * @param {{ variant?: "default" | "celebrate" }} [opts]
- */
-function openModal(title, html, opts = {}) {
-  el.modalTitle.textContent = title;
-  el.modalBody.innerHTML = html;
-  el.modal.hidden = false;
-  el.modal.classList.add("is-open");
-  el.modal.classList.toggle("is-celebrate", opts.variant === "celebrate");
-}
-
-function closeModal() {
-  el.modal.classList.remove("is-open", "is-celebrate");
-  el.modal.hidden = true;
-  celebrateOffered = false;
-  term.focus();
 }
 
 function showLevels() {
   const seriesHtml = SERIES.map((s) => {
     const levels = levelsInSeries(s.id);
+    const seriesTitleStr = localizeSeriesTitle(s.id) || s.name;
     const items = levels
       .map((l) => {
+        const locL = localizeLevel(l);
         const done = Boolean(progressMap[l.id]?.solved);
         const best = progressMap[l.id]?.bestCommands;
         return `
           <li>
             <button type="button" class="level-row ${done ? "is-done" : ""}" data-level="${l.id}">
-              <span class="level-name">${escapeHtml(l.name)}</span>
-              <span class="level-meta">par ${l.par}${done ? ` · solved${best ? ` · best ${best}` : ""}` : ""}</span>
+              <span class="level-name">${escapeHtml(locL.name)}</span>
+              <span class="level-meta">par ${l.par}${done ? ` · ${ui().solvedLabel}${best ? ` (${best})` : ""}` : ""}</span>
             </button>
           </li>`;
       })
@@ -282,19 +408,136 @@ function showLevels() {
     return `
       <section class="series-block">
         <header>
-          <h3>${escapeHtml(s.name)}</h3>
+          <h3>${escapeHtml(seriesTitleStr)}</h3>
           <p>${escapeHtml(s.description)}</p>
         </header>
         <ol class="level-list">${items}</ol>
       </section>`;
   }).join("");
 
-  openModal("Levels", seriesHtml);
+  const modal = showModal({
+    title: ui().levelsTitle,
+    bodyHtml: `<p>${escapeHtml(ui().pickChallenge)}</p>${seriesHtml}`,
+    actions: [{ label: ui().close, className: "ghost", onClick: () => term.focus() }],
+    onClose: () => term.focus(),
+  });
+
+  modal.el.querySelectorAll("[data-level]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.getAttribute("data-level");
+      if (id) {
+        modal.close();
+        startLevel(id);
+      }
+    });
+  });
 }
 
-/**
- * @param {string} id
- */
+function showSolution() {
+  if (mode !== "level" || !levelId) {
+    term.print("Start a level first (Levels).", "meta");
+    return;
+  }
+  const level = getLevel(levelId);
+  if (!level) return;
+  const cmds = [level.hint];
+  const modal = showModal({
+    title: ui().solutionTitle(level.id),
+    bodyHtml: renderMarkdown(
+      [
+        ui().solutionCommands,
+        "",
+        "```powershell",
+        cmds.join("\n"),
+        "```",
+        "",
+        ui().solutionWarn,
+      ].join("\n")
+    ),
+    actions: [
+      { label: ui().cancel, className: "ghost", onClick: () => modal.close() },
+      {
+        label: ui().runSolution,
+        className: "primary",
+        onClick: () => {
+          modal.close();
+          resetLevel();
+          for (const c of cmds) {
+            handleCommand(c);
+          }
+          term.focus();
+        },
+      },
+    ],
+    onClose: () => term.focus(),
+  });
+}
+
+function replayLesson() {
+  if (mode === "level" && levelId) {
+    const rawLevel = getLevel(levelId);
+    if (!rawLevel) return;
+    const level = localizeLevel(rawLevel);
+    const lines = [];
+    if (level.brief) lines.push(`**Objective:** ${level.brief}`);
+    if (level.learning?.length) {
+      lines.push("", `### ${ui().youAreLearning}`, ...level.learning.map((l) => `- ${l}`));
+    }
+    if (level.fieldNotes?.length) {
+      lines.push("", `### ${ui().fieldNotesTitle}`, ...level.fieldNotes.map((f) => `- ${f}`));
+    }
+    showModal({
+      title: `${ui().lesson}: ${level.name}`,
+      bodyHtml: renderMarkdown(lines.join("\n")),
+      actions: [{ label: ui().close, className: "primary", onClick: () => term.focus() }],
+      onClose: () => term.focus(),
+    });
+  } else {
+    showModal({
+      title: ui().aboutTitle,
+      bodyHtml: renderMarkdown(
+        [
+          ui().welcomeIntro,
+          "",
+          "- Pipeline passes objects, not text lines",
+          "- 19 series covering core to advanced concepts",
+          "- Double validation: in-browser simulator and real pwsh",
+        ].join("\n")
+      ),
+      actions: [{ label: ui().close, className: "primary", onClick: () => term.focus() }],
+      onClose: () => term.focus(),
+    });
+  }
+}
+
+function openUiHelp() {
+  showModal({
+    title: ui().uiGuideTitle,
+    bodyHtml: renderMarkdown(
+      [
+        "### Top Toolbar",
+        "- **Levels**: Browse all 19 series and 160 levels.",
+        "- **Lesson**: View concepts and field notes for the current challenge.",
+        "- **Guide**: Highlights the always-on Learning Guide panel on the right.",
+        "- **Hint / Solution**: Get guidance or inspect and run the official solution.",
+        "- **Undo / Reset**: Step back or restore session state without penalty.",
+        "",
+        "### Pipeline & Session (Left / Center)",
+        "- **Pipeline Visualizer**: Watches objects flow through cmdlet stages.",
+        "- **Session Panel**: Live `cwd`, `$variables`, and filesystem inspector.",
+        "",
+        "### Terminal (Bottom)",
+        "- Realistic shell habits: word-by-word Tab completion, command history (↑/↓), and auto-focus.",
+        "",
+        "### Learning Guide (Right)",
+        "- Always-on companion with what you are learning, field notes, and goal checklist.",
+      ].join("\n")
+    ),
+    actions: [{ label: ui().close, className: "primary", onClick: () => term.focus() }],
+    onClose: () => term.focus(),
+  });
+}
+
 function startLevel(id) {
   const level = getLevel(id);
   if (!level) return;
@@ -304,11 +547,12 @@ function startLevel(id) {
   session = new Session();
   lastRun = emptyRun();
   levelCommandStart = 0;
-  closeModal();
   updateChrome();
   viz.renderPipeline(null);
-  term.print(`— Level: ${level.name} —`, "meta");
-  term.print(level.brief, "meta");
+
+  const locL = localizeLevel(level);
+  term.print(`— Level: ${locL.name} —`, "meta");
+  term.print(locL.brief, "meta");
   if (level.teach?.what) {
     term.print(`What: ${level.teach.what}`, "meta");
     for (const w of level.teach.why || []) term.print(`Why: ${w}`, "meta");
@@ -328,7 +572,6 @@ function startSandbox() {
   session = new Session();
   lastRun = emptyRun();
   levelCommandStart = 0;
-  closeModal();
   updateChrome();
   viz.renderPipeline(null);
   term.print("Sandbox mode. Type help for commands.", "meta");
@@ -346,6 +589,23 @@ function startSandbox() {
     }
   }
   term.setHint(null);
+  refreshVisuals();
+  term.focus();
+}
+
+function resetLevel() {
+  if (mode === "level" && levelId) {
+    session = new Session();
+    levelCommandStart = 0;
+    lastRun = emptyRun();
+    celebrateOffered = false;
+  } else {
+    session.run("reset");
+    lastRun = emptyRun();
+    levelCommandStart = session.commandCount;
+  }
+  term.print("Reset.", "meta");
+  viz.renderPipeline(null);
   refreshVisuals();
   term.focus();
 }
@@ -371,28 +631,13 @@ function handleCommand(line) {
     }
   }
   if (result.output.includes("goal") && result.output.length === 1) {
-    printGoalSummary();
+    focusGuide();
   }
   if (result.output.includes("steps") && result.output.length === 1) {
-    printSteps();
+    focusGuide();
   }
   if (result.output.includes("curriculum") && result.output.length === 1) {
-    printCurriculum();
-  }
-  if (result.output.includes("build-level")) {
-    openModal(
-      "Build level",
-      `<p>Export the current sandbox as a level JSON. Paste it into a gist or issue.</p>
-       <pre class="code-block">${escapeHtml(exportLevelJson())}</pre>`
-    );
-  }
-  if (result.output.includes("import-level")) {
-    openModal(
-      "Import level",
-      `<p>Paste a level JSON below.</p>
-       <textarea class="import-area" data-import rows="8" placeholder='{"id":"custom-1",...}'></textarea>
-       <div class="modal-actions"><button type="button" class="btn primary" data-action="import-go">Import</button></div>`
-    );
+    showLevels();
   }
 
   for (const lineOut of result.output) {
@@ -402,9 +647,7 @@ function handleCommand(line) {
       lineOut === "hint" ||
       lineOut === "goal" ||
       lineOut === "steps" ||
-      lineOut === "curriculum" ||
-      lineOut === "build-level" ||
-      lineOut === "import-level"
+      lineOut === "curriculum"
     ) {
       continue;
     }
@@ -423,231 +666,137 @@ function handleCommand(line) {
   };
   viz.renderPipeline(result.pipeline, { reduceMotion });
   refreshVisuals();
-  term.focus();
-}
-
-function printGoalSummary() {
-  if (mode !== "level" || !levelId) {
-    term.print("No active level.", "meta");
-    return;
-  }
-  const level = getLevel(levelId);
-  if (!level) return;
-  const g = level.goal;
-  const lines = [];
-  if (g.commandsMax != null) lines.push(`commands ≤ ${g.commandsMax}`);
-  if (g.usedCmdlets) lines.push(`use ${g.usedCmdlets.join(", ")}`);
-  if (g.pathIs) lines.push(`cd to ${g.pathIs}`);
-  if (g.outputIncludes) lines.push(`output includes ${g.outputIncludes}`);
-  if (g.outputCount != null) lines.push(`emit ${g.outputCount} objects`);
-  if (g.pipelineCmdlets) lines.push(`pipeline: ${g.pipelineCmdlets.join(" | ")}`);
-  if (g.fileExists) lines.push(`create ${g.fileExists}`);
-  if (g.fileMissing) lines.push(`delete ${g.fileMissing}`);
-  if (g.fileContains) lines.push(`write ${g.fileContains}`);
-  if (g.variableIs) lines.push(`set $${g.variableIs.split("=")[0]}`);
-  term.print(lines.join("\n"), "meta");
-}
-
-function printCurriculum() {
-  const c = curriculum();
-  term.print(
-    `Progress: ${c.solvedCount}/${c.total} levels (${c.percent}%)`,
-    "meta"
-  );
-  if (c.learned.length) {
-    term.print("Learned:", "meta");
-    for (const l of c.learned) {
-      term.print(`  • ${l.seriesTitle}: ${l.name}`, "meta");
-    }
-  }
-  if (c.remaining.length) {
-    term.print("Remaining:", "meta");
-    for (const l of c.remaining.slice(0, 8)) {
-      term.print(`  • ${l.seriesTitle}: ${l.name}`, "meta");
-    }
-    if (c.remaining.length > 8) {
-      term.print(`  …and ${c.remaining.length - 8} more`, "meta");
-    }
-  }
-  if (c.next) term.print(`Next: ${c.next.name} (${c.next.id})`, "meta");
-}
-
-function printSteps() {
-  if (mode !== "level" || !levelId) {
-    term.print("No active level. Start one with levels.", "meta");
-    return;
-  }
-  const level = getLevel(levelId);
-  if (!level?.teach) return;
-  term.print(`── Guide: ${level.name} ──`, "meta");
-  term.print(`What: ${level.teach.what}`, "meta");
-  for (const w of level.teach.why) term.print(`Why: ${w}`, "meta");
-  if (level.teach.model) term.print(`Model: ${level.teach.model}`, "meta");
-  if (level.learning?.length) {
-    term.print(`You are learning: ${level.learning.join(" · ")}`, "meta");
+  if (!document.querySelector(".overlay")) {
+    term.focus();
   }
 }
 
-function exportLevelJson() {
-  return JSON.stringify(
-    {
-      id: `custom-${Date.now()}`,
-      series: "remix",
-      name: "Custom level",
-      brief: "Describe the goal.",
-      hint: "Describe the approach.",
-      par: session.commandCount || 1,
-      goal: {
-        usedCmdlets: [...session.usedCmdlets],
-        pathIs: session.cwd,
-      },
-      teach: {
-        what: "Describe what happens when the learner runs the solution.",
-        why: ["Why this matters in real PowerShell work."],
-        model: "One-sentence mental model.",
-      },
-      learning: ["Concept A", "Concept B"],
-    },
-    null,
-    2
-  );
+// Nav drawer & Language Menu
+function toggleLang() {
+  if (!langDropdownEl) return;
+  const isHidden = langDropdownEl.hidden;
+  langDropdownEl.hidden = !isHidden;
+  document.querySelector("[data-action=lang-toggle]")?.setAttribute("aria-expanded", String(isHidden));
 }
 
-function helpText() {
-  return [
-    "LearnPowerShell guide",
-    "  Levels   level browser",
-    "  Lesson   what / why / mental model for this level",
-    "  Hint     suggested command",
-    "  Solution official command (golf still counts)",
-    "  Undo     revert last command",
-    "  Reset    reset session",
-    "  Sandbox  free practice",
-    "  ?        this help",
-    "",
-    "Pipelines pass objects: Get-Process | Where-Object CPU -gt 50",
-    "Assign objects: $procs = Get-Process",
-  ].join("\n");
+function closeLang() {
+  if (!langDropdownEl) return;
+  langDropdownEl.hidden = true;
+  document.querySelector("[data-action=lang-toggle]")?.setAttribute("aria-expanded", "false");
 }
 
-el.btnLevels.addEventListener("click", () => showLevels());
-el.btnSandbox.addEventListener("click", () => startSandbox());
-el.btnHint.addEventListener("click", () => {
-  if (mode === "level" && levelId) term.print(getLevel(levelId)?.hint || "", "meta");
-  else term.print("No active level.", "meta");
-  term.focus();
-});
-el.btnSteps.addEventListener("click", () => {
-  printSteps();
-  term.focus();
-});
-document.querySelector("[data-action=guide]")?.addEventListener("click", () => {
-  term.print(helpText(), "meta");
-  term.focus();
-});
-document.querySelector("[data-action=help]")?.addEventListener("click", () => {
-  term.print(helpText(), "meta");
-  term.focus();
-});
-document.querySelector("[data-action=solution]")?.addEventListener("click", () => {
-  if (mode !== "level" || !levelId) {
-    term.print("Start a level first (Levels).", "meta");
-  } else {
-    term.print(`Solution: ${getLevel(levelId)?.hint || ""}`, "meta");
-    term.print("(par " + (getLevel(levelId)?.par || 1) + " — golf the solution yourself)", "meta");
-  }
-  term.focus();
-});
-document.querySelector("[data-action=lang]")?.addEventListener("click", () => {
-  term.print("Language packs: EN active. FA/DE can be added.", "meta");
-  term.focus();
-});
-el.btnReset.addEventListener("click", () => {
-  if (mode === "level" && levelId) {
-    session = new Session();
-    levelCommandStart = 0;
-    lastRun = emptyRun();
-    celebrateOffered = false;
-  } else {
-    session.run("reset");
-    lastRun = emptyRun();
-    levelCommandStart = session.commandCount;
-  }
-  term.print("Reset.", "meta");
-  viz.renderPipeline(null);
+function toggleNav() {
+  if (!navDrawerEl) return;
+  const open = navDrawerEl.classList.toggle("is-open");
+  navDrawerEl.hidden = !open;
+  document.querySelector("[data-action=nav-toggle]")?.setAttribute("aria-expanded", String(open));
+}
+
+function closeNav() {
+  if (!navDrawerEl) return;
+  navDrawerEl.classList.remove("is-open");
+  navDrawerEl.hidden = true;
+  document.querySelector("[data-action=nav-toggle]")?.setAttribute("aria-expanded", "false");
+}
+
+function remountAfterLocale() {
+  updateChrome();
   refreshVisuals();
-  term.focus();
-});
-el.btnUndo.addEventListener("click", () => {
-  session.undo();
-  lastRun = emptyRun();
-  viz.renderPipeline(null);
-  refreshVisuals();
-  term.focus();
-});
-el.modalClose.addEventListener("click", () => closeModal());
+}
 
-el.modal.addEventListener("click", (e) => {
-  if (e.target === el.modal) closeModal();
+// Event Listeners for Toolbar Actions
+document.querySelectorAll("[data-action]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const action = btn.getAttribute("data-action");
+    if (action === "lang-toggle") {
+      toggleLang();
+      return;
+    }
+    if (action === "nav-toggle") {
+      toggleNav();
+      return;
+    }
+    closeLang();
+    closeNav();
+
+    if (action === "levels") showLevels();
+    if (action === "lesson") replayLesson();
+    if (action === "guide") focusGuide();
+    if (action === "hint") {
+      if (mode === "level" && levelId) term.print(getLevel(levelId)?.hint || "", "meta");
+      else term.print("No active level.", "meta");
+      term.focus();
+    }
+    if (action === "solution") showSolution();
+    if (action === "undo") {
+      session.undo();
+      lastRun = emptyRun();
+      viz.renderPipeline(null);
+      refreshVisuals();
+      term.focus();
+    }
+    if (action === "reset") resetLevel();
+    if (action === "sandbox") startSandbox();
+    if (action === "help") openUiHelp();
+  });
 });
 
-el.modalBody.addEventListener("click", (e) => {
-  const t = /** @type {HTMLElement} */ (e.target);
-  const levelBtn = t.closest("[data-level]");
-  if (levelBtn) {
-    startLevel(levelBtn.getAttribute("data-level") || "");
-    return;
-  }
-  const action = t.closest("[data-action]")?.getAttribute("data-action");
-  if (action === "next-level" || action === "celebrate-next") {
-    const next = levelId ? nextLevelId(levelId) : null;
-    if (next) startLevel(next);
-    else {
-      closeModal();
-      term.print("All levels complete. Sandbox unlocked.", "meta");
+document.querySelectorAll("[data-lang]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const loc = btn.getAttribute("data-lang");
+    if (!loc || loc === getLocale()) {
+      closeLang();
+      return;
+    }
+    setLocale(loc);
+    closeLang();
+    remountAfterLocale();
+  });
+});
+
+// Close menus when clicking outside
+document.addEventListener("click", (e) => {
+  const target = /** @type {HTMLElement} */ (e.target);
+  if (!target.closest(".lang-menu")) closeLang();
+  if (!target.closest(".nav-toggle") && !target.closest(".nav-drawer")) closeNav();
+});
+
+// Visitor Counter
+getVisitorCount().then((count) => {
+  if (count !== null) {
+    const statEl = document.getElementById("visitor-stat");
+    const countEl = document.getElementById("visitor-count");
+    if (statEl && countEl) {
+      countEl.textContent = String(count);
+      statEl.hidden = false;
     }
   }
-  if (action === "celebrate-close") {
-    closeModal();
-  }
-  if (action === "levels") showLevels();
-  if (action === "sandbox") {
-    closeModal();
-    startSandbox();
-  }
-  if (action === "import-go") {
-    const area = /** @type {HTMLTextAreaElement} */ (
-      el.modalBody.querySelector("[data-import]")
-    );
-    try {
-      const data = JSON.parse(area.value);
-      LEVELS.push(data);
-      closeModal();
-      startLevel(data.id);
-    } catch {
-      term.print("Import failed: invalid JSON.", "err");
-    }
-  }
 });
 
+// URL permalinks & initial modal
 const params = new URLSearchParams(location.search);
 const bootCommands = params.get("command");
 const startLevelParam = params.get("level");
+
 if (params.get("NODEMO") == null && !bootCommands && !startLevelParam) {
-  openModal(
-    "LearnPowerShell",
-    `<p class="modal-lead">An interactive PowerShell pipeline lab.</p>
-     <p>Objects flow through cmdlets. Levels teach the language so you leave with a mental model — not just typed lines.</p>
-     <div class="modal-actions">
-       <button type="button" class="btn primary" data-action="levels">Start levels</button>
-       <button type="button" class="btn" data-action="sandbox">Sandbox</button>
-     </div>`
-  );
+  showModal({
+    title: "Welcome to Learn PowerShell",
+    titleHtml: 'Welcome to Learn <span class="brand-ps">PowerShell</span>',
+    bodyHtml: `
+      <p class="modal-lead">An interactive PowerShell pipeline lab and object sandbox.</p>
+      <p>Objects flow through cmdlets. Levels teach the language so you leave with a mental model — not just typed lines.</p>
+    `,
+    actions: [
+      { label: "Start levels", className: "primary", onClick: () => showLevels() },
+      { label: "Sandbox", className: "ghost", onClick: () => startSandbox() },
+    ],
+    onClose: () => term.focus(),
+  });
 }
 
-if (startLevelParam) startLevel(startLevelParam);
-else if (bootCommands) {
-  closeModal();
+if (startLevelParam) {
+  startLevel(startLevelParam);
+} else if (bootCommands) {
   startSandbox();
   for (const cmd of bootCommands.split(";")) {
     if (cmd.trim()) handleCommand(cmd.trim());
@@ -667,18 +816,7 @@ else if (bootCommands) {
       term.print(`Next up: ${c.next.name} (${c.next.id}).`, "meta");
     }
   } else {
-    term.print("LearnPowerShell ready. Type help or levels.", "meta");
+    term.print("Welcome to Learn PowerShell. Type help or levels to begin.", "meta");
   }
   term.focus();
-}
-
-/**
- * @param {string} s
- */
-function escapeHtml(s) {
-  return String(s)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }

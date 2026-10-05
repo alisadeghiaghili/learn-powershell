@@ -1,0 +1,107 @@
+/**
+ * German catalog for LearnPowerShell.
+ */
+
+export const de = {
+  locale: "de",
+  dir: "ltr",
+  series: {},
+  levels: {},
+  ui: {
+    appWelcome:
+      "Willkommen bei Learn PowerShell — interaktive Sandbox und Objekt-Pipeline-Visualisierer.",
+    sandboxSeeded:
+      "Virtuelles Labor mit Dateisystem, Prozessen und Diensten vorbereitet. Versuche Get-Process.",
+    progressSaved:
+      "Fortschritt wird in diesem Browser gespeichert (Cookie + localStorage).",
+    language: "Sprache",
+    levels: "Levels",
+    lesson: "Lektion",
+    lessonTitle: "Einführungsslides dieser Stufe wiederholen",
+    guide: "Leitfaden",
+    hint: "Hinweis",
+    solution: "Lösung",
+    undo: "Rückgängig",
+    reset: "Zurücksetzen",
+    sandboxBtn: "Sandbox",
+    help: "Hilfe",
+    titleLine: (id, name, par) => `${id} · ${name} · Par ${par}`,
+    sandboxTitle: "Sandbox-Modus",
+    learningGuide: "Lernleitfaden",
+    guideAlwaysOn:
+      "Ständiges Panel. Zeigt in Stufen Konzepte, Praxisnotizen und die Lösungs-Checkliste.",
+    startHere: "HIER STARTEN",
+    startHereItems: [
+      "Öffne **Levels** und beginne mit Getting Started → Say hello",
+      "Tippe `help` für eine Befehlsübersicht",
+      "Tippe `curriculum` für Lernergebnisse",
+      "Tippe `concepts` für mentale Modelle von PowerShell",
+    ],
+    sandboxTip: "SANDBOX-TIPP",
+    sandboxTipItems: [
+      "Pipeline: Überträgt typisierte Objekte, keine Textzeilen",
+      "Terminal: Tab vervollständigt Wort für Wort; ↑/↓ navigiert im Verlauf",
+      "Fortschritt: Bleibt in diesem Browser gespeichert",
+    ],
+    noActiveLevel: "Keine aktive Stufe",
+    noActiveLevelDetail: "Levels → Wähle eine Herausforderung, um die Checkliste hier zu sehen",
+    guideFlashNote:
+      "Toolbar-Leitfaden hebt dieses Panel hervor. Es bleibt über die gesamte Seitenhöhe geöffnet.",
+    youAreLearning: "DU LERNST",
+    fieldNotesTitle: "IN PRODUKTION (PRAXISNOTIZEN)",
+    typeNextTitle: "TIPPE ALS NÄCHSTES — IN ORANGE HERVORGEHOBEN",
+    remainingLabel: "○ verbleibend",
+    wrongCommandNote:
+      "Falscher Befehl? Du bleibst hier — Fortschritt bleibt erhalten. Verlauf: ↑ / ↓",
+    allSolutionMet: "Alle Lösungsschritte erfüllt.",
+    nowChip: "jetzt",
+    optionalChip: "optional",
+    stateNotes: "Statusnotizen:",
+    bestSoFar: (commands, par) =>
+      `Bisher am besten: ${commands} Befehle · Ideal: ${par}`,
+    idealSolution: (par) =>
+      `Ideale Lösung: ${par} Befehl(e)`,
+    solvedBanner: (n) => `Stufe gelöst${n !== null ? ` in ${n} Befehl(en)` : ""}.`,
+    levelCleared: "STUFE GELÖST",
+    levelComplete: "Stufe abgeschlossen",
+    baskInIt: "Genießen",
+    celebrateOn: (id) => `Weiter zu: ${id}`,
+    browseLevels: "Levels durchsuchen",
+    shareTitle: "Fortschritt teilen",
+    styleList: "Was du bisher gelernt hast",
+    solveMoreLevels: "Löse ein paar Stufen, um deine Liste aufzubauen.",
+    shareGroupLabel: "Teilen",
+    linkedin: "LinkedIn",
+    xTwitter: "X / Twitter",
+    facebook: "Facebook",
+    copyPost: "Post kopieren",
+    copied: "In die Zwischenablage kopiert.",
+    copyFailed: "Kopieren fehlgeschlagen — markiere den Text manuell.",
+    solutionTitle: (id) => `Lösung: ${id}`,
+    solutionCommands: "Führe diese Befehle der Reihe nach aus, um die Stufe zu lösen:",
+    solutionWarn: "Das Ausführen der Lösung setzt die Stufe zurück, um einen sauberen Zustand zu gewährleisten.",
+    runSolution: "Lösung ausführen",
+    cancel: "Abbrechen",
+    close: "Schließen",
+    levelsTitle: "Lernstufen",
+    pickChallenge: "Wähle eine Herausforderung. Gelöste Stufen bleiben in diesem Browser gespeichert.",
+    howToRead: "Bedeutung der Symbole",
+    difficultyLegend:
+      "**Schwierigkeit** — 1 bis 5 Punkte; mehr Punkte = mehr Konzepte. Immer 5 Plätze.",
+    idealLegend:
+      "**Ideale Befehle** — Golf-Ziel, keine harte Begrenzung.",
+    solvedLegend: "**Gelöst** — deine beste Befehlsanzahl bleibt erhalten.",
+    solvedLabel: "gelöst",
+    githubTitle: "GitHub-Repository",
+    supportTitle: "Den Autor unterstützen",
+    visitorsTitle: "Lernende, die in dieser Sandbox geübt haben",
+    uiGuideTitle: "UI-Leitfaden — Was jeder Bereich tut",
+    aboutTitle: "Über LearnPowerShell",
+    cheers: [
+      "Sauber gelöst.",
+      "Pipeline sitzt.",
+      "Das ist echtes PowerShell-Denken.",
+      "Objekte flossen — und du bist mitgegangen.",
+    ],
+  },
+};

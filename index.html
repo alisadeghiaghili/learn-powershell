@@ -3,9 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>LearnPowerShell</title>
-    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
-    <link rel="alternate icon" href="assets/favicon.svg" />
+    <title>LearnPowerShell — Interactive PowerShell Tutorial</title>
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
     <link rel="alternate icon" href="assets/favicon.svg" />
     <meta
@@ -15,63 +13,82 @@
     <link rel="stylesheet" href="assets/css/app.css" />
   </head>
   <body>
-    <div class="app">
-      <header class="topbar">
-        <div class="brand">
-          <span class="brand-mark" aria-hidden="true">&gt;_</span>
-          <span class="brand-name">LearnPowerShell</span>
-        </div>
-        <div class="topbar-actions">
-          <button type="button" class="tbtn lang" data-action="lang" aria-haspopup="listbox">
-            EN <span class="caret" aria-hidden="true">&#9662;</span>
-          </button>
-          <button type="button" class="tbtn" data-action="levels">Levels</button>
-          <button type="button" class="tbtn" data-action="steps">Lesson</button>
-          <button type="button" class="tbtn" data-action="guide">Guide</button>
-          <button type="button" class="tbtn" data-action="hint">Hint</button>
-          <button type="button" class="tbtn" data-action="solution">Solution</button>
-          <button type="button" class="tbtn" data-action="undo">Undo</button>
-          <button type="button" class="tbtn" data-action="reset">Reset</button>
-          <button type="button" class="tbtn" data-action="sandbox">Sandbox</button>
-          <button type="button" class="tbtn icon" data-action="help" aria-label="Help">?</button>
-          <a class="tbtn icon" href="https://github.com/alisadeghiaghili/learn-powershell" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-            <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
-          </a>
-          <a class="tbtn coffee" href="https://www.buymeacoffee.com/alisadeghil" target="_blank" rel="noopener noreferrer">Buy me a coffee</a>
-        </div>
-      </header>
-
-      <main class="workspace">
-        <section class="viz-wrap" data-viz></section>
-
-        <aside class="goal-panel" aria-label="Level goal">
-          <header class="goal-header">
-            <div>
-              <p class="goal-kicker">Goal</p>
-              <h1 data-level-title>Sandbox</h1>
+    <div id="app">
+      <div class="app-main">
+        <header class="toolbar">
+          <div class="brand" data-help-id="brand">Learn<span>PowerShell</span></div>
+          <div class="level-title" id="level-title" data-help-id="level-title"></div>
+          <div class="toolbar-actions" data-help-id="toolbar">
+            <div class="lang-menu">
+              <button
+                type="button"
+                class="lang-btn"
+                data-action="lang-toggle"
+                aria-haspopup="menu"
+                aria-expanded="false"
+                aria-label="Language"
+              >
+                <span data-lang-label>EN</span>
+                <span class="lang-caret" aria-hidden="true">&#9662;</span>
+              </button>
+              <div class="lang-dropdown" id="lang-dropdown" role="menu" hidden>
+                <button type="button" class="lang-option on" data-lang="en" role="menuitem">EN</button>
+                <button type="button" class="lang-option" data-lang="fa" role="menuitem">FA</button>
+                <button type="button" class="lang-option" data-lang="de" role="menuitem">DE</button>
+              </div>
             </div>
-            <span class="par-badge" data-level-par></span>
-          </header>
-          <p class="goal-brief" data-level-brief>
-            Free practice. Type help for commands, levels to train.
-          </p>
-          <p class="goal-hint-line">Hint: <code data-level-hint>help · levels · undo · reset</code></p>
-          <div class="goal-body" data-goal-body></div>
-          <div class="teach-body" data-teach-body></div>
-        </aside>
-      </main>
-
-      <section class="terminal-wrap" data-term></section>
-    </div>
-
-    <div class="modal-backdrop" data-modal hidden>
-      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-        <header class="modal-header">
-          <h2 id="modal-title" data-modal-title>LearnPowerShell</h2>
-          <button type="button" class="btn ghost" data-modal-close aria-label="Close">Close</button>
+            <button
+              type="button"
+              class="nav-toggle"
+              data-action="nav-toggle"
+              aria-label="Navigation menu"
+              aria-expanded="false"
+              aria-controls="nav-drawer"
+            >
+              <span class="nav-bars" aria-hidden="true"></span>
+            </button>
+            <div class="nav-drawer" id="nav-drawer" hidden>
+              <button type="button" data-action="levels">Levels</button>
+              <button type="button" data-action="lesson" title="Replay intro lesson slides">Lesson</button>
+              <button type="button" data-action="guide">Guide</button>
+              <button type="button" data-action="hint">Hint</button>
+              <button type="button" data-action="solution">Solution</button>
+              <button type="button" data-action="undo">Undo</button>
+              <button type="button" data-action="reset">Reset</button>
+              <button type="button" data-action="sandbox" class="ghost">Sandbox</button>
+              <button type="button" class="help-btn" data-action="help" title="UI Guide" aria-label="Help">?</button>
+            </div>
+            <span class="tb-stat visitors" id="visitor-stat" data-help-id="links" title="Learners who practiced PowerShell" hidden>
+              <svg class="visitor-icon" viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0-2.21-2.69-4-6-4s-6 1.79-6 4v1h12v-1zm-1.07 0H3.07C3.56 11.83 5.48 11 8 11s4.44.83 4.93 2z"/></svg>
+              <span class="visitor-count" id="visitor-count"></span>
+            </span>
+            <a
+              class="tb-link gh"
+              data-help-id="links"
+              href="https://github.com/alisadeghiaghili/learn-powershell"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="GitHub repository"
+              aria-label="GitHub repository"
+            >
+              <svg class="gh-mark" viewBox="0 0 16 16" aria-hidden="true" width="18" height="18"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+            </a>
+            <a
+              class="tb-link support"
+              data-help-id="links"
+              href="https://www.buymeacoffee.com/alisadeghil"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Support the author"
+            >Buy me a coffee</a>
+          </div>
         </header>
-        <div class="modal-body" data-modal-body></div>
+
+        <div class="board-wrap" id="board-wrap" data-viz></div>
+        <div class="terminal" id="terminal" data-term></div>
       </div>
+
+      <aside class="dock" id="dock" aria-label="Learning guide"></aside>
     </div>
 
     <script type="module" src="assets/js/app.js"></script>

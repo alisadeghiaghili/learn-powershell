@@ -1,0 +1,107 @@
+/**
+ * English catalog for LearnPowerShell.
+ */
+
+export const en = {
+  locale: "en",
+  dir: "ltr",
+  series: {},
+  levels: {},
+  ui: {
+    appWelcome:
+      "Welcome to Learn PowerShell — interactive sandbox and object pipeline visualizer.",
+    sandboxSeeded:
+      "Virtual lab seeded with filesystem, processes, and services. Try Get-Process.",
+    progressSaved:
+      "Progress saves in this browser (cookie + localStorage). Resume anytime.",
+    language: "Language",
+    levels: "Levels",
+    lesson: "Lesson",
+    lessonTitle: "Replay intro lesson slides",
+    guide: "Guide",
+    hint: "Hint",
+    solution: "Solution",
+    undo: "Undo",
+    reset: "Reset",
+    sandboxBtn: "Sandbox",
+    help: "Help",
+    titleLine: (id, name, par) => `${id} · ${name} · par ${par}`,
+    sandboxTitle: "Sandbox mode",
+    learningGuide: "Learning guide",
+    guideAlwaysOn:
+      "Always-on panel. In a level it shows concepts, field notes, and the solution checklist.",
+    startHere: "START HERE",
+    startHereItems: [
+      "Open **Levels** and begin with Getting Started → Say hello",
+      "Type `help` for a map of commands",
+      "Type `curriculum` for outcomes you will own",
+      "Type `concepts` for PowerShell mental models",
+    ],
+    sandboxTip: "SANDBOX TIP",
+    sandboxTipItems: [
+      "Pipeline: Passes typed objects, not text lines",
+      "Terminal: Tab completes word-by-word; ↑/↓ walks history",
+      "Progress: Saved in this browser (cookie + localStorage)",
+    ],
+    noActiveLevel: "No active level",
+    noActiveLevelDetail: "Levels → pick a challenge to see the checklist here",
+    guideFlashNote:
+      "Toolbar Guide flashes this panel. It stays open at full page height.",
+    youAreLearning: "YOU ARE LEARNING",
+    fieldNotesTitle: "IN PRODUCTION (FIELD NOTES)",
+    typeNextTitle: "TYPE NEXT — HIGHLIGHTED IN ORANGE",
+    remainingLabel: "○ remaining",
+    wrongCommandNote:
+      "Wrong command? You stay here — progress is kept. History: ↑ / ↓",
+    allSolutionMet: "All solution steps met.",
+    nowChip: "now",
+    optionalChip: "optional",
+    stateNotes: "State notes:",
+    bestSoFar: (commands, par) =>
+      `Best so far: ${commands} command${commands === 1 ? "" : "s"} · ideal: ${par}`,
+    idealSolution: (par) =>
+      `Ideal solution: ${par} command${par === 1 ? "" : "s"}`,
+    solvedBanner: (n) => `Level solved${n !== null ? ` in ${n} command${n === 1 ? "" : "s"}` : ""}.`,
+    levelCleared: "LEVEL CLEARED",
+    levelComplete: "Level cleared",
+    baskInIt: "Bask in it",
+    celebrateOn: (id) => `Celebrate on: ${id}`,
+    browseLevels: "Browse levels",
+    shareTitle: "Share your progress",
+    styleList: "What you have learned so far",
+    solveMoreLevels: "Solve a few levels to build your list.",
+    shareGroupLabel: "Share",
+    linkedin: "LinkedIn",
+    xTwitter: "X / Twitter",
+    facebook: "Facebook",
+    copyPost: "Copy post",
+    copied: "Copied to clipboard.",
+    copyFailed: "Copy failed — select the text manually.",
+    solutionTitle: (id) => `Solution: ${id}`,
+    solutionCommands: "Run these commands in order to solve the level:",
+    solutionWarn: "Running the solution resets the level to ensure clean state.",
+    runSolution: "Run solution",
+    cancel: "Cancel",
+    close: "Close",
+    levelsTitle: "Levels",
+    pickChallenge: "Pick a challenge. Solved levels stay saved in this browser.",
+    howToRead: "How to read a level row",
+    difficultyLegend:
+      "**Difficulty** — 1 to 5 dots; more dots = more concepts. Always 5 slots.",
+    idealLegend:
+      "**Ideal commands** — golf target, not a hard limit.",
+    solvedLegend: "**Solved** — your best command count is preserved.",
+    solvedLabel: "solved",
+    githubTitle: "GitHub repository",
+    supportTitle: "Support the author",
+    visitorsTitle: "Learners who practiced PowerShell in this sandbox",
+    uiGuideTitle: "UI Guide — What Each Region Does",
+    aboutTitle: "About LearnPowerShell",
+    cheers: [
+      "Clean solve.",
+      "Pipeline locked in.",
+      "That is PowerShell thinking.",
+      "Objects moved. You moved with them.",
+    ],
+  },
+};
