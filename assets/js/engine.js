@@ -15,6 +15,7 @@ import {
   compareOp,
   readBlock,
   splitTop,
+  equals,
 } from "./lang.js";
 
 export class PSObject {
@@ -58,6 +59,7 @@ export function splitPipeline(line) {
   const stages = [];
   let current = "";
   let quote = /** @type {null | "'" | '"'} */ (null);
+  let depth = 0;
 
   for (let i = 0; i < line.length; i += 1) {
     const ch = line[i];
@@ -71,7 +73,9 @@ export function splitPipeline(line) {
       current += ch;
       continue;
     }
-    if (ch === "|") {
+    if (ch === "{" || ch === "(" || ch === "[") depth += 1;
+    if (ch === "}" || ch === ")" || ch === "]") depth -= 1;
+    if (ch === "|" && depth <= 0) {
       stages.push(current.trim());
       current = "";
       continue;
@@ -523,6 +527,29 @@ const CANONICAL = {
   "get-module": "Get-Module",
   "invoke-command": "Invoke-Command",
   "select-unique": "Select-Object",
+  "invoke-restmethod": "Invoke-RestMethod",
+  irm: "Invoke-RestMethod",
+  "invoke-webrequest": "Invoke-WebRequest",
+  iwr: "Invoke-WebRequest",
+  curl: "Invoke-WebRequest",
+  wget: "Invoke-WebRequest",
+  "convertto-securestring": "ConvertTo-SecureString",
+  "convertfrom-securestring": "ConvertFrom-SecureString",
+  "get-filehash": "Get-FileHash",
+  "start-transcript": "Start-Transcript",
+  "stop-transcript": "Stop-Transcript",
+  "new-modulemanifest": "New-ModuleManifest",
+  "test-modulemanifest": "Test-ModuleManifest",
+  "update-typedata": "Update-TypeData",
+  "get-typedata": "Get-TypeData",
+  "add-type": "Add-Type",
+  "new-pssessionconfigurationfile": "New-PSSessionConfigurationFile",
+  "new-psrolecapabilityfile": "New-PSRoleCapabilityFile",
+  "describe": "Describe",
+  "context": "Context",
+  "it": "It",
+  "mock": "Mock",
+  "should": "Should",
 };
 
 /**
@@ -690,6 +717,11 @@ export class Session {
       Error: [],
       "env:COMPUTERNAME": "LAB-01",
       "env:USERNAME": "student",
+      ExecutionContext: {
+        SessionState: {
+          LanguageMode: "FullLanguage",
+        },
+      },
     };
     this.functions = {};
     this.modules = new Set();
@@ -712,6 +744,10 @@ export class Session {
     };
     this.output = [];
     this.error = null;
+    this.transcribing = false;
+    this.transcriptPath = null;
+    this.customTypes = {};
+    this.typeData = {};
   }
 
   /** Snapshot for undo. */
@@ -729,6 +765,10 @@ export class Session {
       loadedModules: this.loadedModules || [],
       remoteLog: this.remoteLog || [],
       executionPolicy: this.executionPolicy || "RemoteSigned",
+      transcribing: this.transcribing || false,
+      transcriptPath: this.transcriptPath || null,
+      customTypes: this.customTypes || {},
+      typeData: this.typeData || {},
     });
   }
 
@@ -757,6 +797,10 @@ export class Session {
     this.loadedModules = clone(snap.loadedModules || []);
     this.remoteLog = clone(snap.remoteLog || []);
     this.executionPolicy = snap.executionPolicy || "RemoteSigned";
+    this.transcribing = snap.transcribing || false;
+    this.transcriptPath = snap.transcriptPath || null;
+    this.customTypes = clone(snap.customTypes || {});
+    this.typeData = clone(snap.typeData || {});
   }
 
   undo() {
@@ -847,7 +891,7 @@ export class Session {
       }
 
       // bare expression or quoted string → output
-      const bare = stmt.match(/^(["'][\s\S]*["']|\d+(\.\d+)?|\[.+\].+)$/);
+      const bare = !stmt.includes("|") && stmt.match(/^(["'][\s\S]*["']|\d+(\.\d+)?|\[.+\].+)$/);
       if (bare && !/^[A-Za-z]+-/.test(stmt)) {
         const v = evalExpr(stmt, this.variables);
         out.push(formatOutput(v));
@@ -923,9 +967,13 @@ export class Session {
       return { ok: false, error: msg || "throw" };
     }
     if (/^function\s+/i.test(s)) {
-      const m = s.match(/^function\s+([A-Za-z_][\w\-]*)\s*\{([\s\S]*)\}\s*$/i);
+      const m = s.match(/^function\s+([A-Za-z_][\w\-]*)(?:\s*\(([^)]*)\))?\s*\{([\s\S]*)\}\s*$/i);
       if (!m) return { ok: false, error: "Invalid function definition." };
-      this.functions[m[1]] = m[2];
+      let body = m[3];
+      if (m[2]) {
+        body = `param(${m[2]})\n${body}`;
+      }
+      this.functions[m[1]] = body;
       out.push(`function ${m[1]} defined`);
       return { ok: true };
     }
@@ -1372,7 +1420,21 @@ export class Session {
     let stream = [];
     const traceStages = [];
 
-    if (stages.length && /^\$/.test(stages[0].trim())) {
+    if (
+      stages.length &&
+      stages.length > 1 &&
+      (/^[\$'"@\(\{\d]/.test(stages[0].trim())) &&
+      !/^[A-Za-z]+-[A-Za-z]+/.test(stages[0].trim())
+    ) {
+      const src = stages.shift().trim();
+      let val;
+      if (src.startsWith("{") && src.endsWith("}")) {
+        val = src;
+      } else {
+        val = evalExpr(src, this.variables);
+      }
+      stream = Array.isArray(val) ? val.slice() : val == null ? [] : [val];
+    } else if (stages.length && /^\$/.test(stages[0].trim())) {
       const src = stages.shift().trim();
       const val = evalExpr(src, this.variables);
       stream = Array.isArray(val) ? val.slice() : val == null ? [] : [val];
@@ -1957,12 +2019,17 @@ export class Session {
       case "Start-Job": {
         const name = String(params.Name || `Job${(this.jobs?.length || 0) + 1}`);
         let outputVal = 42;
+        const jobUsed = new Set(["Start-Job"]);
         const script = String(params.ScriptBlock || args.join(" ") || "");
         const inner = script.replace(/^\{/, "").replace(/\}$/, "").trim();
+        for (const word of inner.matchAll(/\b([A-Za-z]+-[A-Za-z]+)\b/g)) {
+          jobUsed.add(canonicalCmdlet(word[1]));
+        }
         if (/^\d+$/.test(inner)) outputVal = Number(inner);
         else if (inner) {
           try {
             const r = this.runPipeline(inner);
+            if (r.usedCmdlets) r.usedCmdlets.forEach((c) => jobUsed.add(c));
             outputVal = r.output[0] ?? 0;
             if (outputVal instanceof PSObject) {
               outputVal = outputVal.get("Value") ?? outputVal.get("Name") ?? outputVal;
@@ -1980,7 +2047,7 @@ export class Session {
         });
         this.jobs = this.jobs || [];
         this.jobs.push(job);
-        return { output: [job], error: null };
+        return { output: [job], error: null, usedCmdlets: [...jobUsed] };
       }
       case "Get-Job":
         return {
@@ -2171,6 +2238,350 @@ export class Session {
         };
       case "Clear-Host":
         return { output: [], error: null };
+      case "Invoke-RestMethod": {
+        const uri = String(args[0] || params.Uri || params.uri || "");
+        const method = String(params.Method || "Get").toUpperCase();
+        if (/powershell/i.test(uri) || /github\.com/i.test(uri)) {
+          return {
+            output: [
+              new PSObject("PSCustomObject", {
+                name: "PowerShell",
+                full_name: "PowerShell/PowerShell",
+                stars: 42500,
+                stargazers_count: 42500,
+                open_issues: 120,
+                description: "PowerShell for every system!",
+              }),
+            ],
+            error: null,
+          };
+        }
+        if (method === "POST" || params.Body || String(params.Method || "").toUpperCase() === "POST") {
+          return {
+            output: [
+              new PSObject("PSCustomObject", {
+                status: "Created",
+                id: 101,
+                success: true,
+              }),
+            ],
+            error: null,
+          };
+        }
+        if (/servers|hosts/i.test(uri)) {
+          return {
+            output: [
+              new PSObject("PSCustomObject", {
+                id: 1,
+                host: "web01",
+                status: "Healthy",
+                ip: "10.0.0.1",
+              }),
+              new PSObject("PSCustomObject", {
+                id: 2,
+                host: "db01",
+                status: "Healthy",
+                ip: "10.0.0.2",
+              }),
+            ],
+            error: null,
+          };
+        }
+        return {
+          output: [
+            new PSObject("PSCustomObject", {
+              status: "OK",
+              code: 200,
+              data: "Mock response for " + uri,
+            }),
+          ],
+          error: null,
+        };
+      }
+      case "Invoke-WebRequest": {
+        return {
+          output: [
+            new PSObject("Microsoft.PowerShell.Commands.HtmlWebResponseObject", {
+              StatusCode: 200,
+              StatusDescription: "OK",
+              Content: "<html><body>PowerShell API Endpoint</body></html>",
+              RawContentLength: 48,
+            }),
+          ],
+          error: null,
+        };
+      }
+      case "ConvertTo-SecureString": {
+        const str = String(args[0] || params.String || "secret");
+        return {
+          output: [
+            new PSObject("System.Security.SecureString", {
+              Length: str.length,
+              Value: "System.Security.SecureString",
+              Encrypted: true,
+            }),
+          ],
+          error: null,
+        };
+      }
+      case "ConvertFrom-SecureString": {
+        return {
+          output: [
+            new PSObject("System.String", {
+              Value: "01000000d08c9ddf0115d1118c7a00c04fc297eb010000007b82f06b",
+              ToString: "01000000d08c9ddf0115d1118c7a00c04fc297eb010000007b82f06b",
+            }),
+          ],
+          error: null,
+        };
+      }
+      case "Get-FileHash": {
+        const target = String(args[0] || params.Path || "data\\notes.txt");
+        const algo = String(params.Algorithm || "SHA256").toUpperCase();
+        return {
+          output: [
+            new PSObject("Microsoft.PowerShell.Utility.FileHash", {
+              Algorithm: algo,
+              Hash: "A35B7C28E184F5921D3899C5E47900B5B6D4F90A61B5E86E53B0B74205BE19C3",
+              Path: target,
+            }),
+          ],
+          error: null,
+        };
+      }
+      case "Start-Transcript": {
+        const target = String(args[0] || params.Path || "C:\\lab\\transcript.txt");
+        this.transcribing = true;
+        this.transcriptPath = target;
+        this.setContent([target, "**********************\nWindows PowerShell Transcript Start\n**********************"], { Value: "Transcript started" });
+        return {
+          output: [
+            new PSObject("System.String", {
+              Value: `Transcript started, output file is ${target}`,
+            }),
+          ],
+          error: null,
+        };
+      }
+      case "Stop-Transcript": {
+        this.transcribing = false;
+        return {
+          output: [
+            new PSObject("System.String", {
+              Value: "Transcript stopped.",
+            }),
+          ],
+          error: null,
+        };
+      }
+      case "New-ModuleManifest": {
+        const target = String(args[0] || params.Path || "MyModule.psd1");
+        const author = String(params.Author || "DevOps");
+        const root = String(params.RootModule || "MyModule.psm1");
+        const ver = String(params.ModuleVersion || "1.0.0");
+        const content = `@{\n  RootModule = '${root}'\n  ModuleVersion = '${ver}'\n  Author = '${author}'\n}`;
+        this.setContent([target, content], { Value: content });
+        return {
+          output: [
+            new PSObject("System.Management.Automation.PSModuleInfo", {
+              Path: target,
+              Name: target.replace(/\.[^.]+$/, ""),
+              Author: author,
+              Version: ver,
+            }),
+          ],
+          error: null,
+        };
+      }
+      case "Test-ModuleManifest": {
+        const target = String(args[0] || params.Path || "MyModule.psd1");
+        return {
+          output: [
+            new PSObject("System.Management.Automation.PSModuleInfo", {
+              Name: target.replace(/\.[^.]+$/, ""),
+              Path: target,
+              Version: "1.0.0",
+              Valid: true,
+            }),
+          ],
+          error: null,
+        };
+      }
+      case "Update-TypeData": {
+        this.typeData = this.typeData || {};
+        const tname = String(params.TypeName || args[0] || "System.Diagnostics.Process");
+        const mname = String(params.MemberName || "IsHeavy");
+        const mtype = String(params.MemberType || "ScriptProperty");
+        this.typeData[tname] = { memberName: mname, memberType: mtype, value: params.Value };
+        return { output: [], error: null };
+      }
+      case "Get-TypeData": {
+        const tname = String(params.TypeName || args[0] || "System.Diagnostics.Process");
+        return {
+          output: [
+            new PSObject("System.Management.Automation.TypeData", {
+              TypeName: tname,
+              Members: ["IsHeavy", "Age"],
+            }),
+          ],
+          error: null,
+        };
+      }
+      case "Add-Type": {
+        const def = String(params.TypeDefinition || args.join(" ") || "");
+        const matchClass = def.match(/class\s+([A-Za-z_]\w*)/i);
+        const className = matchClass ? matchClass[1] : "Calc";
+        this.customTypes = this.customTypes || {};
+        this.customTypes[className] = {
+          name: className,
+          definition: def,
+          methods: {
+            Add: (a, b) => Number(a) + Number(b),
+          },
+        };
+        this.variables[`__type:${className}`] = this.customTypes[className];
+        return { output: [], error: null };
+      }
+      case "New-PSRoleCapabilityFile": {
+        const target = String(args[0] || params.Path || "Maintenance.psrc");
+        const content = `@{\n  VisibleCmdlets = 'Get-Process', 'Restart-Service'\n  VisibleFunctions = 'Get-*'\n}`;
+        this.setContent([target, content], { Value: content });
+        return {
+          output: [
+            new PSObject("System.String", {
+              Value: `Role capability file created at ${target}`,
+            }),
+          ],
+          error: null,
+        };
+      }
+      case "New-PSSessionConfigurationFile": {
+        const target = String(args[0] || params.Path || "JEA.pssc");
+        const sessionType = String(params.SessionType || "RestrictedRemoteServer");
+        const content = `@{\n  SessionType = '${sessionType}'\n  RoleDefinitions = @{ 'LAB\\\\HelpDesk' = @{ RoleCapabilities = 'Maintenance' } }\n}`;
+        this.setContent([target, content], { Value: content });
+        return {
+          output: [
+            new PSObject("System.String", {
+              Value: `Session configuration file created at ${target}`,
+            }),
+          ],
+          error: null,
+        };
+      }
+      case "Should": {
+        const isNot = Boolean(params.Not);
+        const target = input.length ? input[0] : null;
+        let actual = target;
+        if (actual instanceof PSObject) {
+          actual = actual.get("Value") ?? actual.get("Name") ?? actual.get("Status") ?? actual.props;
+        }
+        let passed = true;
+        let expected = null;
+
+        if (params.Be !== undefined) {
+          expected = params.Be;
+          const eq = equals(actual, expected);
+          passed = isNot ? !eq : eq;
+        } else if (params.Throw !== undefined || args.includes("-Throw") || args.includes("Throw")) {
+          passed = true;
+        } else if (params.BeGreaterThan !== undefined) {
+          passed = Number(actual) > Number(params.BeGreaterThan);
+          if (isNot) passed = !passed;
+        } else if (params.BeNullOrEmpty !== undefined) {
+          const empty = actual == null || actual === "" || (Array.isArray(actual) && actual.length === 0);
+          passed = isNot ? !empty : empty;
+        }
+
+        if (!passed) {
+          return {
+            output: [],
+            error: `Expected ${JSON.stringify(expected)}, but got ${JSON.stringify(actual)}.`,
+          };
+        }
+        return {
+          output: [
+            new PSObject("System.String", {
+              Value: "[+] Passed",
+            }),
+          ],
+          error: null,
+        };
+      }
+      case "Describe": {
+        const name = String(args[0] || params.Name || "Tests");
+        const block = String(params.ScriptBlock || args.slice(1).join(" ") || "");
+        const inner = block.replace(/^\s*\{/, "").replace(/\}\s*$/, "").trim();
+        if (inner) {
+          try {
+            const r = this.runPipeline(inner);
+            used.push(...r.usedCmdlets);
+          } catch {}
+        }
+        const hasContext = inner.includes("Context");
+        const contextLine = hasContext ? `  Context scenario\n` : "";
+        const allUsed = ["Describe", "It", "Should", ...used];
+        if (hasContext) allUsed.push("Context");
+        return {
+          usedCmdlets: Array.from(new Set(allUsed)),
+          output: [
+            new PSObject("System.String", {
+              Value: `Describing ${name}\n${contextLine}  [+] test passed in 10ms\nTests completed. Passed: 1, Failed: 0.`,
+            }),
+          ],
+          error: null,
+        };
+      }
+      case "Context": {
+        const name = String(args[0] || params.Name || "Context");
+        const block = String(params.ScriptBlock || args.slice(1).join(" ") || "");
+        const inner = block.replace(/^\s*\{/, "").replace(/\}\s*$/, "").trim();
+        if (inner) {
+          try {
+            const r = this.runPipeline(inner);
+            used.push(...r.usedCmdlets);
+          } catch {}
+        }
+        return {
+          usedCmdlets: Array.from(new Set(["Context", "It", "Should", ...used])),
+          output: [
+            new PSObject("System.String", {
+              Value: `  Context ${name}`,
+            }),
+          ],
+          error: null,
+        };
+      }
+      case "It": {
+        const name = String(args[0] || params.Name || "Test");
+        const block = String(params.ScriptBlock || args.slice(1).join(" ") || "");
+        const inner = block.replace(/^\s*\{/, "").replace(/\}\s*$/, "").trim();
+        if (inner) {
+          try {
+            const r = this.runPipeline(inner);
+            used.push(...r.usedCmdlets);
+          } catch {}
+        }
+        return {
+          usedCmdlets: ["It", "Should"],
+          output: [
+            new PSObject("System.String", {
+              Value: `    [+] ${name} 5ms`,
+            }),
+          ],
+          error: null,
+        };
+      }
+      case "Mock": {
+        const cmd = String(args[0] || params.CommandName || "");
+        const block = String(params.ScriptBlock || args.slice(1).join(" ") || "");
+        this.functions = this.functions || {};
+        this.functions[cmd] = block.replace(/^\s*\{/, "").replace(/\}\s*$/, "").trim() || "Write-Output 'mocked'";
+        return {
+          output: [],
+          error: null,
+        };
+      }
       default: {
         const lower = name.toLowerCase();
         if (lower === "ipconfig") {
@@ -2212,20 +2623,51 @@ export class Session {
    * @param {string[]} used
    */
   invokeFunction(body, args, params, input, isSource, used) {
-    let code = body.trim().replace(/^\s*\[CmdletBinding\(\)\]\s*/i, "");
-    // strip parameter attributes: [Parameter(...)], [ValidateSet(...)]
+    let code = body.trim().replace(/^\s*\[CmdletBinding\([^)]*\)\]\s*/i, "");
+    // strip parameter attributes: [Parameter(...)], [ValidateSet(...)], [ValidateScript(...)]
     code = code.replace(
-      /\[(Parameter|ValidateSet|Alias|ValidateRange|ValidateNotNullOrEmpty)[^\]]*\]\s*/gi,
+      /\[(Parameter|ValidateSet|Alias|ValidateRange|ValidateNotNullOrEmpty|ValidateScript)[^\]]*\]\s*/gi,
       ""
     );
+    this.variables["PSCmdlet"] = {
+      ShouldProcess: (target) => {
+        if (params.WhatIf) return false;
+        return true;
+      },
+    };
+    if (body.includes("ShouldProcess") && params.WhatIf) {
+      return {
+        output: [
+          new PSObject("System.String", {
+            Value: `What if: Performing the operation on target.`,
+          }),
+        ],
+        error: null,
+      };
+    }
     let paramNames = [];
-    const pm = code.match(/^param\s*\(([^)]*)\)\s*([\s\S]*)$/i);
-    if (pm) {
-      paramNames = pm[1]
-        .split(",")
-        .map((s) => s.trim().replace(/^\$/, ""))
-        .filter(Boolean);
-      code = pm[2];
+    const openIdx = code.indexOf("(");
+    if (/^param\s*\(/i.test(code) && openIdx >= 0) {
+      let depth = 0;
+      let closeIdx = -1;
+      for (let i = openIdx; i < code.length; i++) {
+        if (code[i] === "(") depth++;
+        else if (code[i] === ")") {
+          depth--;
+          if (depth === 0) {
+            closeIdx = i;
+            break;
+          }
+        }
+      }
+      if (closeIdx > 0) {
+        const paramBody = code.slice(openIdx + 1, closeIdx);
+        code = code.slice(closeIdx + 1).trim();
+        paramNames = paramBody
+          .split(",")
+          .map((s) => s.trim().replace(/^(\[[^\]]*\])+\s*/g, "").replace(/^\$/, ""))
+          .filter(Boolean);
+      }
     }
     paramNames.forEach((p, i) => {
       const bare = p.replace(/^\$/, "").trim();
@@ -2342,6 +2784,8 @@ export class Session {
         "about_Functions_Advanced_Parameters — Mandatory, ValueFromPipeline, ValidateSet, dynamic parameters.",
       "about_windows_compatibility":
         "about_Windows_Compatibility — Windows PowerShell 5.1 vs pwsh 7 differences.",
+      "about_logging":
+        "about_Logging — Script Block Logging (Event ID 4104) and Transcription capture code execution and telemetry for security auditing.",
     };
     const text =
       entries[t] ||

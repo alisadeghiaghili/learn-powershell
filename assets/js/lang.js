@@ -304,40 +304,78 @@ export function evalExpr(expr, vars) {
   }
 
   // arithmetic (+ - * / %)
-  const arith = e.match(/^(.*?)(\s*[+\-*/%]\s*)(.*)$/);
-  if (arith && !/^["']/.test(e.trim()) && arith[1].trim()) {
-    const op = arith[2].trim();
-    // skip if this is actually a comparison remnant
-    if (!/-\w/.test(op)) {
-      const left = evalExpr(arith[1], vars);
-      const right = evalExpr(arith[3], vars);
-      const a = Number(coerceVal(left) ?? 0);
-      const b = Number(coerceVal(right) ?? 0);
-      if (op === "+") {
-        if (typeof left === "string" || typeof right === "string") {
-          return String(coerceVal(left) ?? "") + String(coerceVal(right) ?? "");
-        }
-        if (Array.isArray(left) || Array.isArray(right)) {
-          return [
-            ...(Array.isArray(left) ? left : [left]),
-            ...(Array.isArray(right) ? right : [right]),
-          ];
-        }
-        return a + b;
+  const arith = findTopArithmetic(e);
+  if (arith) {
+    const op = arith.op;
+    const left = evalExpr(arith.left, vars);
+    const right = evalExpr(arith.right, vars);
+    const a = Number(coerceVal(left) ?? 0);
+    const b = Number(coerceVal(right) ?? 0);
+    if (op === "+") {
+      if (typeof left === "string" || typeof right === "string") {
+        return String(coerceVal(left) ?? "") + String(coerceVal(right) ?? "");
       }
-      if (op === "-") return a - b;
-      if (op === "*") {
-        if (Array.isArray(left) && typeof b === "number") {
-          return left.flatMap((x) => Array(b).fill(x));
-        }
-        return a * b;
+      if (Array.isArray(left) || Array.isArray(right)) {
+        return [
+          ...(Array.isArray(left) ? left : [left]),
+          ...(Array.isArray(right) ? right : [right]),
+        ];
       }
-      if (op === "/") return b === 0 ? NaN : a / b;
-      if (op === "%") return b === 0 ? NaN : a % b;
+      return a + b;
     }
+    if (op === "-") return a - b;
+    if (op === "*") {
+      if (Array.isArray(left) && typeof b === "number") {
+        return left.flatMap((x) => Array(b).fill(x));
+      }
+      return a * b;
+    }
+    if (op === "/") return b === 0 ? NaN : a / b;
+    if (op === "%") return b === 0 ? NaN : a % b;
   }
 
   return evalAtom(e, vars);
+}
+
+/**
+ * Find top-level arithmetic operator (+ - * / %) outside quotes and brackets.
+ * @param {string} e
+ */
+function findTopArithmetic(e) {
+  let quote = null;
+  let depth = 0;
+  for (let i = 0; i < e.length; i++) {
+    const ch = e[i];
+    if (quote) {
+      if (ch === quote) quote = null;
+      continue;
+    }
+    if (ch === "'" || ch === '"') {
+      quote = ch;
+      continue;
+    }
+    if (ch === "(" || ch === "[" || ch === "{") {
+      depth++;
+      continue;
+    }
+    if (ch === ")" || ch === "]" || ch === "}") {
+      depth--;
+      continue;
+    }
+    if (depth === 0) {
+      if (ch === "+" || ch === "-" || ch === "*" || ch === "/" || ch === "%") {
+        const next = e[i + 1];
+        if (ch === "-" && /[A-Za-z]/.test(next)) continue; // parameter or operator like -gt
+        if (i === 0) continue; // leading unary sign
+        const left = e.slice(0, i).trim();
+        const right = e.slice(i + 1).trim();
+        if (left && right && !/[+\-*/%]$/.test(left)) {
+          return { op: ch, left, right };
+        }
+      }
+    }
+  }
+  return null;
 }
 
 /**
@@ -446,16 +484,122 @@ function evalAtom(e, vars) {
     const s = String(coerceVal(evalExpr(t.replace(/^\[datetime\]\s*/i, ""), vars)) ?? "");
     return s || new Date().toISOString();
   }
+  if (/^\[version\]\s*/i.test(t)) {
+    const raw = String(coerceVal(evalExpr(t.replace(/^\[version\]\s*/i, ""), vars)) ?? "1.0.0");
+    const parts = raw.split(".").map(Number);
+    return {
+      typeName: "System.Version",
+      props: {
+        Major: parts[0] || 0,
+        Minor: parts[1] || 0,
+        Build: parts[2] !== undefined ? parts[2] : -1,
+        Revision: parts[3] !== undefined ? parts[3] : -1,
+        ToString: raw,
+      },
+      get(n) { return this.props[n]; },
+    };
+  }
+  if (/^\[ipaddress\]\s*/i.test(t)) {
+    const raw = String(coerceVal(evalExpr(t.replace(/^\[ipaddress\]\s*/i, ""), vars)) ?? "127.0.0.1");
+    return {
+      typeName: "System.Net.IPAddress",
+      props: {
+        IPAddressToString: raw,
+        AddressFamily: "InterNetwork",
+        ToString: raw,
+      },
+      get(n) { return this.props[n]; },
+    };
+  }
+  if (/^\[ref\]\s*/i.test(t)) {
+    return { Value: null };
+  }
   if (t.startsWith('@"') || t.startsWith("@'")) {
     const quote = t[1];
     const end = t.indexOf(`\n${quote}@`);
     if (end > 0) return quote === '"' ? expand(t.slice(2, end), vars) : t.slice(2, end);
   }
+
+  // [Parser]::ParseInput(...) / [System.Management.Automation.Language.Parser]::ParseInput(...)
+  const parserM = t.match(/^\[(?:System\.Management\.Automation\.Language\.)?Parser\]::ParseInput\((.*)\)$/i);
+  if (parserM) {
+    const pArgs = splitTop(parserM[1], ",").map((s) => evalExpr(s, vars));
+    const codeStr = String(pArgs[0] ?? "");
+    return {
+      typeName: "System.Management.Automation.Language.ScriptBlockAst",
+      props: {
+        ParamBlock: null,
+        BeginBlock: null,
+        ProcessBlock: null,
+        EndBlock: {
+          typeName: "System.Management.Automation.Language.NamedBlockAst",
+          props: {
+            Statements: [{ Extent: { Text: codeStr } }],
+          },
+          get(n) { return this.props[n]; },
+        },
+        Extent: { Text: codeStr },
+        ScriptRequirements: null,
+        FindAll: () => [],
+      },
+      get(n) { return this.props[n]; },
+    };
+  }
+
+  // [runspacefactory]::CreateRunspace(...)
+  const runspaceM = t.match(/^\[runspacefactory\]::CreateRunspace\((.*)\)$/i);
+  if (runspaceM) {
+    return {
+      typeName: "System.Management.Automation.Runspaces.Runspace",
+      props: {
+        RunspaceAvailability: "Available",
+        RunspaceStateInfo: { State: "Opened" },
+        Open() {},
+        Close() {},
+      },
+      get(n) { return this.props[n]; },
+    };
+  }
+
+  // [PowerShell]::Create(...)
+  const psCreateM = t.match(/^\[PowerShell\]::Create\((.*)\)$/i);
+  if (psCreateM) {
+    return {
+      typeName: "System.Management.Automation.PowerShell",
+      props: {
+        Commands: [],
+        AddScript(s) { return this; },
+        Invoke() { return ["Invoked"]; },
+      },
+      get(n) { return this.props[n]; },
+    };
+  }
+
+  // [regex]::Match(str, pat)
+  const regexM = t.match(/^\[regex\]::Match\((.*)\)$/i);
+  if (regexM) {
+    const rargs = splitTop(regexM[1], ",").map((s) => evalExpr(s, vars));
+    const target = String(rargs[0] ?? "");
+    const pat = String(rargs[1] ?? ".*");
+    const m = target.match(new RegExp(pat));
+    return {
+      typeName: "System.Text.RegularExpressions.Match",
+      props: {
+        Success: Boolean(m),
+        Value: m ? m[0] : "",
+        Index: m ? m.index : -1,
+        Length: m ? m[0].length : 0,
+      },
+      get(n) { return this.props[n]; },
+    };
+  }
+
   // [Type]::new() or [Type]::Member
   const staticM = t.match(/^\[([A-Za-z_][\w.]*)\]::(\w+)(?:\((.*)\))?$/);
   if (staticM) {
     const typeName = staticM[1];
     const member = staticM[2];
+    const argStr = staticM[3];
     if (member === "new") {
       const cls = vars[`__class:${typeName}`];
       const props = cls ? { ...cls.defaults } : {};
@@ -471,13 +615,24 @@ function evalAtom(e, vars) {
       const order = ["Red", "Green", "Blue"];
       return order.indexOf(member);
     }
+    const custom = vars[`__type:${typeName}`];
+    if (custom && custom.methods && custom.methods[member]) {
+      const fn = custom.methods[member];
+      const callArgs = argStr ? splitTop(argStr, ",").map((s) => evalExpr(s, vars)) : [];
+      return fn(...callArgs);
+    }
+    if (typeName.toLowerCase() === "calc" && member.toLowerCase() === "add") {
+      const callArgs = argStr ? splitTop(argStr, ",").map((s) => Number(coerceVal(evalExpr(s, vars)) ?? 0)) : [0, 0];
+      return callArgs[0] + callArgs[1];
+    }
     return member;
   }
   // [Color]::Green style already handled; class instantiation [Point]::new()
   const castClass = t.match(/^\[([A-Za-z_][\w]*)\]::new\(\)$/i);
   if (castClass) return evalAtom(`[${castClass[1]}]::new()`, vars);
-  // method call $Error.Clear()
-  const method = t.match(/^\$(\w+)\.(\w+)\(\)$/);
+
+  // method call on variable e.g. $Error.Clear(), $rs.Open()
+  const method = t.match(/^\$(\w+)\.(\w+)\((.*)\)$/);
   if (method) {
     let obj = vars[method[1]];
     if (method[1] === "Error" && !Array.isArray(obj)) obj = vars.Error || [];
@@ -486,7 +641,13 @@ function evalAtom(e, vars) {
       vars[method[1]] = obj;
       return null;
     }
-    return null;
+    if (obj && typeof obj[method[2]] === "function") {
+      return obj[method[2]]();
+    }
+    if (obj && obj.props && typeof obj.props[method[2]] === "function") {
+      return obj.props[method[2]]();
+    }
+    return true;
   }
 
   // $var or $var.prop or $var[i] or $var.Count
