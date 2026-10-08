@@ -523,6 +523,28 @@ export const SERIES_DEPTHS = {
       en: "Synthesizing deep language mastery: evaluating execution context state, pipeline object streams, error handling records, and operational design patterns across the entire engine.",
       fa: "تسلط جامع بر معماری زبان: ارزیابی تعامل میان وضعیت سشن، جریان اشیاء خط لوله، ثبت رکوردهای خطا و الگوهای طراحی پایدار در سرتاسر انجین."
     }
+  },
+  capstone: {
+    eli5: {
+      en: "Imagine you run an emergency toy hospital. First you count every bed on your clipboard, find the overheating robot toys, put a tamper-proof wax seal on the medicine cabinet, test the alarm bell in drill mode without panic, send a radio message to headquarters, print the clean inspection certificate, run a test race, and box it up with an official gold medal sticker.",
+      fa: "تصور کنید مدیر یک بیمارستان اورژانسی برای اسباب‌بازی‌ها هستید: ابتدا تمام تخت‌ها را روی تخته‌شاسی می‌شمارید، اسباب‌بازی‌های داغ‌شده را جدا می‌کنید، روی جعبه داروها یک مهروموم ضد دستکاری می‌زنید، آژیر خطر را در حالت مانور آزمایشی تست می‌کنید، یک پیام فوری به مرکز مخابره می‌کنید، گواهی سلامت نهایی را چاپ می‌کنید، یک تست سرعت ماشینی می‌گیرید و کل پکیج را با یک برچسب طلایی رسمی بسته‌بندی می‌کنید."
+    },
+    eli10: {
+      en: "An end-to-end operational mission: import fleet data with Import-Csv, filter high CPU with Where-Object, verify file fingerprints with Get-FileHash, execute safe dry-runs with -WhatIf, dispatch alerts via Invoke-RestMethod, export reports to CSV, assert health with Pester, and seal a module manifest.",
+      fa: "یک مأموریت عملیاتی کامل: ورود اطلاعات ناوگان با Import-Csv، فیلتر پردازش‌های سنگین با Where-Object، بررسی اثرانگشت امنیتی فایل با Get-FileHash، اجرای امن با سوئیچ WhatIf-، ارسال هشدار به وب با Invoke-RestMethod، تولید گزارش CSV، اعتبارسنجی با Pester و ساخت مانفیست ماژول."
+    },
+    eli15: {
+      en: "Production DevOps runbook: ingest typed CSV rows, pipeline object projection, cryptographic SHA256 integrity, advanced functions using ShouldProcess, JSON REST telemetry, CSV serialization, BDD test gates with Should, and semver module manifests.",
+      fa: "ران‌بوک استاندارد پروداکشن دوآپس: بارگذاری ساختاریافته ردیف‌های CSV، پایپ‌لاین فیلتر و پروجکشن اشیاء، راستی‌آزمایی یکپارچگی داده با هش SHA256، ابزارسازی پیشرفته با ShouldProcess، تله‌متری با وب‌هوک REST، خروجی CSV، گیت آزمون کیفی Pester و مانفیست ماژول."
+    },
+    eli20: {
+      en: "Enterprise SRE & Automated Incident Response: establishing immutable configuration baselines, blast-radius mitigation via ShouldProcess dry-runs, incident dispatch to observability hubs, auditable compliance artifacts, and automated verification gates.",
+      fa: "مهندسی قابلیت اطمینان سایت (SRE) و پاسخ خودکار به حوادث: ایجاد خطوط مبنای تغییرناپذیر، مهار شعاع انفجار تغییرات با گارد WhatIf-، مخابره حادثه به سیستم‌های مانیتورینگ، تولید اسناد حسابرسی رسمی و گیت‌های کنترل کیفی خودکار."
+    },
+    eliphd: {
+      en: "Holistic systems engineering synthesis: AST parameter validation binding, pipeline streaming mechanics, Extended Type System metadata projection, managed crypto provider hashing, DLR dynamic call sites, and module export boundary security.",
+      fa: "ترکیب جامع معماری سیستم: بایندینگ و اعتبارسنجی پارامترها در درخت نحو AST، مکانیک جریان اشیاء در خط لوله، پروجکشن متادیتا در سیستم ETS، هشینگ در لایه رمزنگاری دات‌نت، فراخوانی پویا در DLR و کنترل مرزهای اکسپورت ماژول."
+    }
   }
 };
 

@@ -225,6 +225,20 @@ const solutions = {
   "hardening-06": ["Get-Help about_Logging"],
   "hardening-07": ["Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process"],
   "hardening-08": ["$mode = $ExecutionContext.SessionState.LanguageMode"],
+  "capstone-01": ["$inventory = Import-Csv data\\servers.csv"],
+  "capstone-02": ["$degraded = Get-Process | Where-Object CPU -gt 50 | Select-Object Name, CPU"],
+  "capstone-03": ["Get-FileHash todo.txt -Algorithm SHA256"],
+  "capstone-04": [
+    'function Invoke-Remediation { [CmdletBinding(SupportsShouldProcess)] param() if ($PSCmdlet.ShouldProcess("fleet")) { Remove-Item todo.txt } }; Invoke-Remediation -WhatIf',
+  ],
+  "capstone-05": ["Invoke-RestMethod https://api.github.com/repos/powershell/powershell"],
+  "capstone-06": [
+    "Import-Csv data\\servers.csv | Where-Object Role -eq Web | Select-Object Name, Role | Export-Csv fleet-audit.csv",
+  ],
+  "capstone-07": ["Describe 'Fleet' { It 'has servers' { 4 | Should -BeGreaterThan 0 } }"],
+  "capstone-08": [
+    "New-ModuleManifest -Path FleetOps.psd1 -RootModule FleetOps.psm1 -ModuleVersion 1.0.0",
+  ],
 };
 
 let failed = 0;

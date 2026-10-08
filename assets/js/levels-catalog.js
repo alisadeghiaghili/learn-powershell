@@ -52,6 +52,11 @@ export const SERIES = [
     name: "Mastery Lab",
     description: "Debug broken scripts, design tools, transfer exam.",
   },
+  {
+    id: "capstone",
+    name: "Enterprise Capstone Project",
+    description: "Production runbook: fleet audit, cryptographic baseline, safe remediation, telemetry, and Pester gates.",
+  },
 ];
 
 /**
@@ -970,6 +975,47 @@ export const LEVELS = [
     { functionDefined: "Get-ProcCount", variableIs: "c=SET", usedCmdlets: ["Measure-Object"] },
     { what: "Close the loop: design tool → call → use property.", why: ["This is the unit of real automation work."], model: "Tools return objects you can keep using." },
     ["Exam", "End-to-end"]),
+
+  // ─── enterprise capstone project ─────────────────────────
+  L("capstone-01", "capstone", "Fleet Inventory Preflight", "Import data\\servers.csv into $inventory to discover infrastructure assets.", "$inventory = Import-Csv data\\servers.csv", 1,
+    { variableIs: "inventory=PSOBJECT_LIST", usedCmdlets: ["Import-Csv"] },
+    { what: "Fleet discovery begins with importing structured asset records into live pipeline objects.", why: ["Never parse server lists as fragile text strings.", "Properties like Name, Role, CPU are immediately accessible."], model: "The fleet enters memory as a structured roster of living objects." },
+    ["Fleet discovery", "Import-Csv", "Inventory objects"]),
+
+  L("capstone-02", "capstone", "Degraded Node Triage", "Isolate unhealthy processes with CPU > 50 and project Name and CPU into $degraded.", "$degraded = Get-Process | Where-Object CPU -gt 50 | Select-Object Name, CPU", 1,
+    { variableIs: "degraded=SET", pipelineCmdlets: ["Get-Process", "Where-Object", "Select-Object"] },
+    { what: "Filtering and shaping telemetry in a single pipeline isolates degraded workloads.", why: ["Downstream automation operates solely on nodes requiring remediation.", "Reduces compute overhead and network churn."], model: "The conveyor belt routes only overheating machines to the triage station." },
+    ["Telemetry triage", "Threshold filtering", "Where-Object -gt"]),
+
+  L("capstone-03", "capstone", "Configuration Baseline Integrity", "Calculate the SHA256 cryptographic hash of configuration file todo.txt with Get-FileHash.", "Get-FileHash todo.txt -Algorithm SHA256", 1,
+    { usedCmdlets: ["Get-FileHash"], outputTypeName: "Microsoft.PowerShell.Utility.FileHash" },
+    { what: "Get-FileHash generates a cryptographic checksum to detect unauthorized tampering.", why: ["Verify system baseline integrity before executing remediation scripts.", "Essential for security compliance (SOC2/ISO27001)."], model: "A digital wax seal proving the configuration has not been altered." },
+    ["Get-FileHash", "SHA256", "Configuration baseline"]),
+
+  L("capstone-04", "capstone", "Safe Remediation with -WhatIf", "Define tool Invoke-Remediation with SupportsShouldProcess and run with -WhatIf.", "function Invoke-Remediation { [CmdletBinding(SupportsShouldProcess)] param() if ($PSCmdlet.ShouldProcess(\"fleet\")) { Remove-Item todo.txt } }; Invoke-Remediation -WhatIf", 2,
+    { functionDefined: "Invoke-Remediation", usedCmdlets: ["Invoke-Remediation"] },
+    { what: "SupportsShouldProcess equips production tools with dry-run safety gates.", why: ["Allows simulation in production without mutating live state.", "Guarantees safe operational changes."], model: "A flight simulator interlock testing controls before live deployment." },
+    ["SupportsShouldProcess", "$PSCmdlet.ShouldProcess", "-WhatIf dry run"]),
+
+  L("capstone-05", "capstone", "Cloud Webhook Alert Dispatch", "Transmit automated incident alert to API endpoint with Invoke-RestMethod.", "Invoke-RestMethod https://api.github.com/repos/powershell/powershell", 1,
+    { usedCmdlets: ["Invoke-RestMethod"] },
+    { what: "Invoke-RestMethod transmits incident telemetry to remote observability hubs.", why: ["Connects automated scripts directly to webhook receivers, Slack, Teams, or PagerDuty.", "Parses JSON responses into native objects."], model: "A pneumatic dispatch tube delivering an incident ticket to headquarters." },
+    ["Invoke-RestMethod", "Incident webhook", "Cloud telemetry"]),
+
+  L("capstone-06", "capstone", "Executive Audit Report Delivery", "Export Web servers Name and Role to fleet-audit.csv with Export-Csv.", "Import-Csv data\\servers.csv | Where-Object Role -eq Web | Select-Object Name, Role | Export-Csv fleet-audit.csv", 1,
+    { fileExists: "fleet-audit.csv", usedCmdlets: ["Export-Csv"] },
+    { what: "Export-Csv formats structured fleet objects into persistent executive artifacts.", why: ["Provides immutable evidence of compliance after automated remediation.", "Readily archived or consumed by BI dashboards."], model: "A certified inspection report stamped and filed in the compliance vault." },
+    ["Export-Csv", "Audit artifact", "Compliance reporting"]),
+
+  L("capstone-07", "capstone", "Pester Verification Gate", "Run automated Pester suite asserting fleet servers count > 0 with Should -BeGreaterThan.", "Describe 'Fleet' { It 'has servers' { 4 | Should -BeGreaterThan 0 } }", 1,
+    { usedCmdlets: ["Describe", "It", "Should"] },
+    { what: "Pester assertions act as automated quality gates in operational pipelines.", why: ["Verifies fleet health before marking automated incident resolved.", "Eliminates manual verification human error."], model: "An automated inspector validating repaired machinery before release." },
+    ["Pester v5", "Should -BeGreaterThan", "Automated verification"]),
+
+  L("capstone-08", "capstone", "Enterprise Module Release", "Generate a production module manifest FleetOps.psd1 with New-ModuleManifest.", "New-ModuleManifest -Path FleetOps.psd1 -RootModule FleetOps.psm1 -ModuleVersion 1.0.0", 1,
+    { fileExists: "FleetOps.psd1", usedCmdlets: ["New-ModuleManifest"] },
+    { what: "New-ModuleManifest seals production tools into a versioned, deployable package.", why: ["Enables reliable distribution via internal PowerShell Gallery or CI/CD.", "Enforces dependency requirements and author metadata."], model: "The final product sealed in a branded box with an official serial number." },
+    ["New-ModuleManifest", "Module packaging", "Enterprise deployment"]),
 ];
 
 /**

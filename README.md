@@ -68,7 +68,7 @@ $procs = Get-Process
 
 ## Curriculum
 
-23 series · 196 levels — each with What / Why / mental model. Official
+24 series · 204 levels — each with What / Why / mental model. Official
 solutions are also checked by `labs/verify.ps1` on real pwsh.
 
 1. **Getting Started** — location, listing, reading, moving
@@ -94,6 +94,7 @@ solutions are also checked by `labs/verify.ps1` on real pwsh.
 21. **Unit Testing & Pester** — Should assertions (-Be, -Not, -BeGreaterThan, -Throw), Describe & It, Context suites, Mocking
 22. **Engine Internals & AST** — AST parsing ([Language.Parser]), AST node traversal, Extended Type System (Update-TypeData, Get-TypeData), Roslyn C# in-memory compilation (Add-Type), Type Accelerators, Runspaces
 23. **Security Hardening & Auditing** — Cryptographic hashing (Get-FileHash SHA256), Session transcription (Start-Transcript/Stop-Transcript), JEA (.psrc / .pssc), Script Block Logging audit (Event ID 4104), Process-scoped execution policies, ConstrainedLanguage verification
+24. **Enterprise Capstone Project** — Fleet discovery preflight, threshold triage, cryptographic baseline hashing (Get-FileHash SHA256), defensive remediation (-WhatIf), cloud telemetry dispatch (Invoke-RestMethod), executive audit CSV export, automated Pester quality gates (Should -BeGreaterThan), and production module packaging (New-ModuleManifest)
 
 ## Reference Literature Coverage (>= 90% Benchmark)
 
@@ -159,8 +160,8 @@ pwsh -NoProfile -File labs/capstone-module.ps1
 
 | Gate | Result |
 |------|--------|
-| Simulator curriculum | 196/196 |
-| Real pwsh — official solutions | 149/149 runnable · 47 named skips |
+| Simulator curriculum | 204/204 |
+| Real pwsh — official solutions | 155/155 runnable · 49 named skips |
 | Real pwsh — patterns | 24/24 |
 | Real pwsh — remoting object model (runspace/`$using:`/jobs/CIM) | 10/10 |
 | Real pwsh — capstone module (PSM1 + assertions + broken-starter) | 7/7 |
@@ -169,12 +170,12 @@ pwsh -NoProfile -File labs/capstone-module.ps1
 
 | Axis | Score | Gate |
 |------|------:|------|
-| Breadth (23 series) | 9.5 | catalog |
-| Teach quality | 9.0 | what/why/model + about_* |
-| Assessment | **9.0** | mastery + `capstone-module.ps1` |
+| Breadth (24 series) | 9.6 | catalog |
+| Teach quality | 9.2 | what/why/model + 5-tier depth + about_* |
+| Assessment | **9.2** | mastery + capstone runbook + `capstone-module.ps1` |
 | Language fidelity | 9.5 | verify-all |
-| Remoting / Jobs / APIs | **9.0** | `remoting-lab.ps1` + API suites |
-| **Overall** | **9.2** | |
+| Remoting / Jobs / APIs | **9.2** | `remoting-lab.ps1` + API suites |
+| **Overall** | **9.4** | |
 
 Remoting is scored as *educational + object-model fidelity*. Live WinRM
 still needs admin `winrm quickconfig` — that is documented, not faked.

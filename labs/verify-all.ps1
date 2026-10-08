@@ -34,6 +34,7 @@ function New-Lab {
   Set-Content (Join-Path $lab 'data/notes.txt') "Objects > text`nSelect-Object projects properties`n"
   Set-Content (Join-Path $lab 'data/servers.csv') "Name,Role,CPU`nweb01,Web,42`nweb02,Web,18`ndb01,Database,77`napp01,App,55`n"
   Set-Content (Join-Path $lab 'ServiceTools.psm1') "function Get-Tool { 1 }`n"
+  Set-Content (Join-Path $lab 'FleetOps.psm1') "function Get-Fleet { 1 }`n"
   return $lab
 }
 
@@ -58,7 +59,7 @@ foreach ($id in ($all.PSObject.Properties.Name | Sort-Object)) {
   elseif ($joined -match 'Set-ExecutionPolicy') { $skip = 'host-policy' }
   elseif ($joined -match 'Get-AuthenticodeSignature') { $skip = 'signature-store' }
   elseif ($joined -match 'api\.contoso\.com') { $skip = 'mock-web-endpoint' }
-  elseif ($id -like 'pester-*') { $skip = 'pester-v5-syntax' }
+  elseif ($id -like 'pester-*' -or $id -eq 'capstone-07') { $skip = 'pester-v5-syntax' }
 
   if ($skip) {
     Write-Host "skip $id ($skip)" -ForegroundColor DarkYellow
@@ -90,6 +91,8 @@ foreach ($id in ($all.PSObject.Properties.Name | Sort-Object)) {
     if ($id -eq 'formatting-07' -and -not (Test-Path (Join-Path $lab 'loc.txt'))) { throw 'loc.txt missing' }
     if ($id -eq 'data-07' -and -not (Test-Path (Join-Path $lab 'files.txt'))) { throw 'files.txt missing' }
     if ($id -eq 'data-08' -and -not (Test-Path (Join-Path $lab 'tee.txt'))) { throw 'tee.txt missing' }
+    if ($id -eq 'capstone-06' -and -not (Test-Path (Join-Path $lab 'fleet-audit.csv'))) { throw 'fleet-audit.csv missing' }
+    if ($id -eq 'capstone-08' -and -not (Test-Path (Join-Path $lab 'FleetOps.psd1'))) { throw 'FleetOps.psd1 missing' }
   } catch {
     $ok = $false
     $err = $_.Exception.Message

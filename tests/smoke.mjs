@@ -117,7 +117,7 @@ const introDepthEn = getDepthContent("intro", "intro-01", "en");
 ok("depth content en", typeof introDepthEn?.eli5 === "string" && introDepthEn.eli5.length > 0);
 const introDepthFa = getDepthContent("intro", "intro-01", "fa");
 ok("depth content fa", typeof introDepthFa?.eli5 === "string" && introDepthFa.eli5.length > 0);
-const allSeriesCovered = Object.keys(SERIES_DEPTHS).length >= 23;
+const allSeriesCovered = Object.keys(SERIES_DEPTHS).length >= 24;
 ok("all series covered in depth", allSeriesCovered, Object.keys(SERIES_DEPTHS).length);
 
 console.log(`\n${passed} passed, ${failed} failed`);
