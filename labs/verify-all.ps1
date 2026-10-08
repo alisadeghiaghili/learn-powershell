@@ -33,6 +33,7 @@ function New-Lab {
   Set-Content (Join-Path $lab 'docs/pipeline.md') "The pipeline passes objects, not text.`nSelect-Object projects properties`n"
   Set-Content (Join-Path $lab 'data/notes.txt') "Objects > text`nSelect-Object projects properties`n"
   Set-Content (Join-Path $lab 'data/servers.csv') "Name,Role,CPU`nweb01,Web,42`nweb02,Web,18`ndb01,Database,77`napp01,App,55`n"
+  Set-Content (Join-Path $lab 'ServiceTools.psm1') "function Get-Tool { 1 }`n"
   return $lab
 }
 
@@ -56,6 +57,8 @@ foreach ($id in ($all.PSObject.Properties.Name | Sort-Object)) {
   elseif ($joined -match 'Get-Help about_') { $skip = 'help-topic-not-installed' }
   elseif ($joined -match 'Set-ExecutionPolicy') { $skip = 'host-policy' }
   elseif ($joined -match 'Get-AuthenticodeSignature') { $skip = 'signature-store' }
+  elseif ($joined -match 'api\.contoso\.com') { $skip = 'mock-web-endpoint' }
+  elseif ($id -like 'pester-*') { $skip = 'pester-v5-syntax' }
 
   if ($skip) {
     Write-Host "skip $id ($skip)" -ForegroundColor DarkYellow

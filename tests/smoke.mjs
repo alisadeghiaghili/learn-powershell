@@ -110,5 +110,15 @@ ok("level intro-01 solvable", goalResult.solved, goalResult);
 
 ok("levels loaded", LEVELS.length >= 20, LEVELS.length);
 
+// depth tiers verification
+import { DEPTH_TIERS, getDepthContent, SERIES_DEPTHS } from "../assets/js/depth.js";
+ok("depth tiers count", Array.isArray(DEPTH_TIERS) && DEPTH_TIERS.length === 5);
+const introDepthEn = getDepthContent("intro", "intro-01", "en");
+ok("depth content en", typeof introDepthEn?.eli5 === "string" && introDepthEn.eli5.length > 0);
+const introDepthFa = getDepthContent("intro", "intro-01", "fa");
+ok("depth content fa", typeof introDepthFa?.eli5 === "string" && introDepthFa.eli5.length > 0);
+const allSeriesCovered = Object.keys(SERIES_DEPTHS).length >= 23;
+ok("all series covered in depth", allSeriesCovered, Object.keys(SERIES_DEPTHS).length);
+
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exit(failed ? 1 : 0);

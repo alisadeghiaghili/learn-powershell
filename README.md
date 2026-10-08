@@ -160,7 +160,7 @@ pwsh -NoProfile -File labs/capstone-module.ps1
 | Gate | Result |
 |------|--------|
 | Simulator curriculum | 196/196 |
-| Real pwsh — official solutions | 129/129 runnable · 31 named skips |
+| Real pwsh — official solutions | 149/149 runnable · 47 named skips |
 | Real pwsh — patterns | 24/24 |
 | Real pwsh — remoting object model (runspace/`$using:`/jobs/CIM) | 10/10 |
 | Real pwsh — capstone module (PSM1 + assertions + broken-starter) | 7/7 |
