@@ -108,6 +108,20 @@ The curriculum is benchmarked against the 5 canonical reference books of the Pow
 | **5. Enterprise Hardening & Forensics** | *PowerShell Cookbook* (Lee Holmes) | Cryptographic verification (`Get-FileHash`), forensic session auditing (`Start-Transcript`), Just Enough Administration (`.psrc`/`.pssc`), Script Block Logging (Event ID 4104), ConstrainedLanguage mode | **92%** (25/27 core topics) | Verified $\ge 90\%$ |
 | **Program Average** | **Comprehensive 5-Pillar Master Curriculum** | **Complete end-to-end coverage across modern operations, toolmaking, and internals** | **93.2%** | **$\ge 90\%$ Standard Achieved** |
 
+## 5-Tier Cognitive Progression (ELI5 to ELIPHD)
+
+To guarantee both zero intimidation for beginners and research-grade rigor for senior architects, every module is mapped across 5 distinct cognitive depth tiers:
+
+| Tier | Target Audience & Mental Model | Pedagogical Lens | Core Concepts & Abstraction Level |
+|:---:|---|---|---|
+| 🧸 **ELI5** | Complete beginners, non-programmers | **Pure Physical Metaphors** | Conveyor belts, Lego cars, luggage conveyor, sealed envelopes, flight simulators, crash test dummies, hotel keycards, factory inspection gates. Zero technical jargon. |
+| 🎒 **ELI10** | Junior operators, students | **Mechanics & Grammar** | `Verb-Noun` naming, switch flags, line pipes `\|`, prompt locations, simple parameter passing. |
+| 💻 **ELI15** | Programmers, sysadmins | **Coding & Data Structures** | Object properties, streaming vs buffering pipelines, hashtables, arrays, scriptblocks, parameter binding. |
+| 🚀 **ELI20** | Senior DevOps, Platform Engineers | **Production Engineering** | Idempotency, enterprise error handling (`$ErrorActionPreference = 'Stop'`), CI/CD gates, Pester suites, security defense-in-depth. |
+| 🔬 **ELIPHD** | Systems Architects, Compiler Researchers | **Engine Internals & Runtime** | Abstract Syntax Tree (`[Language.Parser]`), Extended Type System (ETS) metadata adaptation, DLR expression trees, CLR reflection, Win32 / Roslyn compilation, thread runspaces, DPAPI/CNG cryptography, ETW/AMSI telemetry. |
+
+In the web interface dock, learners can switch between individual tiers or expand the **Full 5-Tier Spectrum Ladder** at any time. Preferences persist automatically in `localStorage`.
+
 ## Project layout
 
 ```
@@ -115,6 +129,7 @@ index.html                 app shell
 assets/css/app.css         layout and visual system
 assets/js/engine.js        simulated PowerShell session + cmdlets
 assets/js/lang.js          expressions, operators, control-flow helpers
+assets/js/depth.js         5-tier cognitive progression engine (ELI5 to ELIPHD)
 assets/js/levels.js        re-exports catalog
 assets/js/levels-catalog.js 196 levels, goals, teaching notes
 assets/js/visuals.js       pipeline + session renderers

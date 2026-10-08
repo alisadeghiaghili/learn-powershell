@@ -118,6 +118,22 @@ Each level: `{ id, series, name, brief, hint, par, goal, teach, learning }`.
 `fileExists`, `fileMissing`, `fileContains`, `outputIncludes`, `outputCount`,
 `pipelineCmdlets`.
 
+## Cognitive Depth Ladder (ELI5 to ELIPHD)
+
+To avoid cognitive fatigue and jargon alienation while preserving deep engineering rigor, the pedagogical surface is decoupled into 5 interactive cognitive tiers (`assets/js/depth.js`):
+
+1. **ELI5** (Kindergarten / Physical Metaphors): Zero jargon. Every concept is mapped to an everyday tangible artifact (conveyor belts, Lego blocks, luggage carousels, sealed envelopes, factory inspection gates, flight simulators, crash test dummies).
+2. **ELI10** (Primary / Grammar & Mechanics): Command structure, `Verb-Noun` taxonomy, switch flags, line pipes `|`, path navigation.
+3. **ELI15** (Secondary / Coding & Data): Objects vs strings, streaming execution, scriptblocks, hashtables, parameter binding mechanics.
+4. **ELI20** (Undergraduate & DevOps / Enterprise Engineering): Production idempotency, error streams, CI/CD pipeline verification, automated test suites (Pester), security defense-in-depth.
+5. **ELIPHD** (Doctorate / Runtime Internals): Abstract Syntax Tree (`[Language.Parser]`), Extended Type System (ETS) metadata adapters, DLR expression trees, CLR reflection, Win32 / Roslyn compilation, thread runspaces, DPAPI/CNG cryptography, ETW/AMSI telemetry.
+
+UI Integration:
+- In the `.dock` learning guide, users can toggle between depth tiers with quick pills (`🧸 ELI5`, `🎒 ELI10`, `💻 ELI15`, `🚀 ELI20`, `🔬 ELIPHD`).
+- Users can toggle between **Focused View** (single selected tier) and **Full 5-Tier Spectrum Ladder** (stacked simultaneous view).
+- Preferred depth tier is persisted in `localStorage` (`learnpowershell-depth`).
+
+
 ## Engine
 
 Client-side simulated PowerShell (no real `pwsh` execution):

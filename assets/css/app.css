@@ -789,6 +789,144 @@ html[dir="rtl"] .lang-option {
   color: #f0e0c0;
 }
 
+/* =========================================================
+   Cognitive Depth Progression (ELI5 -> ELIPHD)
+   ========================================================= */
+.depth-section {
+  margin: 0 0 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.depth-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.depth-bar-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.depth-mode-btn {
+  appearance: none;
+  background: transparent;
+  border: none;
+  color: var(--accent-soft);
+  font-family: var(--ui);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all 120ms ease;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.depth-mode-btn:hover {
+  color: #fff;
+  background: var(--elevated);
+}
+
+.depth-pills {
+  display: flex;
+  gap: 4px;
+  background: rgba(12, 17, 27, 0.7);
+  padding: 3px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  overflow-x: auto;
+}
+
+.depth-pill {
+  appearance: none;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 150ms ease;
+  flex: 1;
+  justify-content: center;
+}
+
+.depth-pill:hover {
+  color: var(--ink);
+  background: rgba(28, 37, 56, 0.5);
+}
+
+.depth-pill.active {
+  color: #fff;
+  background: var(--elevated);
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--border));
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.depth-card {
+  background: color-mix(in srgb, var(--panel) 90%, #fff);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  animation: depth-fade-in 180ms ease;
+}
+
+@keyframes depth-fade-in {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.depth-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.depth-badge {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid currentColor;
+}
+
+.depth-tier-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.depth-card-body {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #dbe4f0;
+}
+
+.depth-spectrum {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 /* Next command box */
 .next-box {
   border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--border));

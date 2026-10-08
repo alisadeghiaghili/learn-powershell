@@ -138,6 +138,69 @@ const TEACH = {
       "Format-* is a view at the end of a pipe — never put it in the middle of a chain.",
     ],
   },
+  "invoke-restmethod": {
+    title: "🧸 Letters to the cloud: Web APIs without manual parsing",
+    lines: [
+      "Invoke-RestMethod automatically unpacks JSON responses into native objects.",
+      "Treat remote web endpoints as natural pipelines of typed properties.",
+    ],
+  },
+  "invoke-webrequest": {
+    title: "🧸 Looking at the raw envelope: HTTP status codes and headers",
+    lines: [
+      "Invoke-WebRequest gives you the raw HTTP status code, headers, and payload.",
+      "Essential for network health checks and HTTP protocol inspection.",
+    ],
+  },
+  "should": {
+    title: "🧸 The crash test dummy: Fluent assertions in Pester",
+    lines: [
+      "Should asserts that your pipeline output satisfies expectations.",
+      "Unit testing prevents production regressions before code reaches servers.",
+    ],
+  },
+  "describe": {
+    title: "🧸 The testing laboratory: BDD test suites in Pester",
+    lines: [
+      "Describe groups features, Context isolates state, and It defines behaviors.",
+      "Clear, hierarchical test reports ready for automated CI/CD pipelines.",
+    ],
+  },
+  "add-type": {
+    title: "🧸 Rocket booster on the board: Roslyn in-memory C# compilation",
+    lines: [
+      "Add-Type compiles C# source directly into memory within the PowerShell session.",
+      "Gain raw .NET execution speed and P/Invoke Win32 API interop in scripts.",
+    ],
+  },
+  "get-filehash": {
+    title: "🧸 The digital fingerprint: Cryptographic integrity checking",
+    lines: [
+      "Get-FileHash calculates cryptographic SHA256 checksums of files.",
+      "Verify that downloaded packages and scripts have not been tampered with.",
+    ],
+  },
+  "start-transcript": {
+    title: "🧸 The detective's recorder: Full-session forensic auditing",
+    lines: [
+      "Start-Transcript records every typed command and output line to an audit log.",
+      "Crucial for compliance, incident response, and regulatory auditing.",
+    ],
+  },
+  "new-modulemanifest": {
+    title: "🧸 The official tool label: Packaging PowerShell modules",
+    lines: [
+      "New-ModuleManifest generates the .psd1 manifest defining version and exports.",
+      "Professional packaging enables publishing to internal and public galleries.",
+    ],
+  },
+  "convertto-securestring": {
+    title: "🧸 The memory safe: Protecting credentials with DPAPI",
+    lines: [
+      "SecureString encrypts sensitive strings in memory via Windows DPAPI.",
+      "Never store or pass plaintext passwords in raw variables.",
+    ],
+  },
 };
 
 /**
@@ -177,6 +240,15 @@ export function teachAfterCommand(raw) {
   if (/set-content|^sc\b/.test(cmd)) return teachFromKey("set-content");
   if (/remove-item|^ri\b|^rm\b|^del\b/.test(cmd)) return teachFromKey("remove-item");
   if (/test-path/.test(cmd)) return teachFromKey("test-path");
+  if (/invoke-restmethod|^irm\b/.test(cmd)) return teachFromKey("invoke-restmethod");
+  if (/invoke-webrequest|^iwr\b|^curl\b|^wget\b/.test(cmd)) return teachFromKey("invoke-webrequest");
+  if (/\bshould\b/.test(cmd)) return teachFromKey("should");
+  if (/\bdescribe\b|\bcontext\b|\bit\b/.test(cmd)) return teachFromKey("describe");
+  if (/add-type/.test(cmd)) return teachFromKey("add-type");
+  if (/get-filehash/.test(cmd)) return teachFromKey("get-filehash");
+  if (/start-transcript|stop-transcript/.test(cmd)) return teachFromKey("start-transcript");
+  if (/new-modulemanifest|test-modulemanifest/.test(cmd)) return teachFromKey("new-modulemanifest");
+  if (/convertto-securestring|convertfrom-securestring/.test(cmd)) return teachFromKey("convertto-securestring");
   if (cmd.includes("|")) return teachFromKey("pipeline");
   return null;
 }
