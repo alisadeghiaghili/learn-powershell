@@ -99,6 +99,42 @@ export const fa = {
     supportTitle: "از ناشر حمایت کنید",
     visitorsTitle: "تعداد افراد یکتایی که در این سامانه پاورشل را تمرین کرده‌اند",
     uiGuideTitle: "راهنمای محیط برنامه — هر بخش چه نقشی دارد",
+    uiGuideIntro:
+      "برای چشمک‌دادن هر بخش روی صفحه، روی دکمه‌ی **هایلایت** آن بزنید، یا برای روشن‌کردن همه در یکجا `tour` را اجرا کنید.",
+    uiGuideHighlight: "هایلایت",
+    uiGuideHowTo: "نحوه استفاده:",
+    quizHeader: (num, total) => `سوال ${num} از ${total}`,
+    quizAnswerUsage: "پاسخ با دستور: quiz A یا quiz B یا quiz C",
+    quizFinished: "آزمون به پایان رسید! تمامی سوالات را پاسخ دادید.",
+    quizCorrect: "درست است.",
+    quizIncorrect: (letter, answer) => `اشتباه. بهترین پاسخ: ${letter} — ${answer}`,
+    quiz: [
+      {
+        q: "کدام عملگر برای مقایسه‌ی دو مقدار با برابری در فیلتر Where-Object استفاده می‌شود؟",
+        a: ["==", "-eq", "-match"],
+        correct: 1,
+      },
+      {
+        q: "عملگر پایپ | بین cmdletها چه چیزی را منتقل می‌کند؟",
+        a: ["متن خالص و خط‌به‌خط", "اشیای تایپ‌شده", "هیچ‌چیز"],
+        correct: 1,
+      },
+      {
+        q: "کدام نماد به شیء فعلی داخل ForEach-Object { } اشاره می‌کند؟",
+        a: ["$_", "$this", "%item%"],
+        correct: 0,
+      },
+      {
+        q: "کدام cmdlet اشیای پایپ‌لاین را بر اساس یک خاصیت مرتب می‌کند؟",
+        a: ["Group-Object", "Sort-Object", "Select-Object"],
+        correct: 1,
+      },
+      {
+        q: "کدام سوییچ باعث می‌شود Get-ChildItem موارد پنهان را هم نشان دهد؟",
+        a: ["-All", "-Force", "-Verbose"],
+        correct: 1,
+      },
+    ],
     aboutTitle: "درباره LearnPowerShell",
     cheers: [
       "حل تمیز و بی‌نقص.",

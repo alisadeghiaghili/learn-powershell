@@ -33,6 +33,10 @@ import {
 } from "./i18n/index.js";
 import { getVisitorCount } from "./visitor-counter.js";
 import { DEPTH_TIERS, getDepthContent } from "./depth.js";
+import {
+  uiHelpModalHtml,
+  startUiTour,
+} from "./ui-help.js";
 
 const reduceMotion = window.matchMedia(
   "(prefers-reduced-motion: reduce)"
@@ -660,32 +664,79 @@ function replayLesson() {
   }
 }
 
-function openUiHelp() {
-  showModal({
+/**
+ * Open the UI guide. When `runTour` is set, also pulse every region on the
+ * page so the learner sees where each documented element lives.
+ * @param {boolean} [runTour=false]
+ */
+function openUiHelp(runTour = false) {
+  const modal = showModal({
     title: ui().uiGuideTitle,
-    bodyHtml: renderMarkdown(
-      [
-        "### Top Toolbar",
-        "- **Levels**: Browse all 19 series and 160 levels.",
-        "- **Lesson**: View concepts and field notes for the current challenge.",
-        "- **Guide**: Highlights the always-on Learning Guide panel on the right.",
-        "- **Hint / Solution**: Get guidance or inspect and run the official solution.",
-        "- **Undo / Reset**: Step back or restore session state without penalty.",
-        "",
-        "### Pipeline & Session (Left / Center)",
-        "- **Pipeline Visualizer**: Watches objects flow through cmdlet stages.",
-        "- **Session Panel**: Live `cwd`, `$variables`, and filesystem inspector.",
-        "",
-        "### Terminal (Bottom)",
-        "- Realistic shell habits: word-by-word Tab completion, command history (↑/↓), and auto-focus.",
-        "",
-        "### Learning Guide (Right)",
-        "- Always-on companion with what you are learning, field notes, and goal checklist.",
-      ].join("\n")
-    ),
+    bodyHtml: uiHelpModalHtml(),
     actions: [{ label: ui().close, className: "primary", onClick: () => term.focus() }],
     onClose: () => term.focus(),
   });
+  if (runTour) startUiTour(document);
+
+  modal.el.querySelectorAll("[data-focus-id]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.getAttribute("data-focus-id");
+      modal.close();
+      if (id) startUiTour(document, id, 3500);
+    });
+  });
+}
+
+// Terminal quiz state (mirrors learn-cmd's `quiz` command)
+let quizIndex = 0;
+
+/**
+ * Run the quiz or grade an answer.
+ * @param {string} arg
+ */
+function runQuiz(arg) {
+  const qList = ui().quiz;
+  if (!arg) {
+    quizIndex = 0;
+    askQuiz();
+    return;
+  }
+  const item = qList[quizIndex];
+  if (!item) return;
+
+  const pick = arg.toUpperCase();
+  const idx = pick === "A" ? 0 : pick === "B" ? 1 : pick === "C" ? 2 : -1;
+  if (idx < 0) {
+    term.print(ui().quizAnswerUsage, "err");
+    return;
+  }
+  if (idx === item.correct) {
+    term.print(`✓ ${ui().quizCorrect}`, "out");
+  } else {
+    term.print(ui().quizIncorrect(["A", "B", "C"][item.correct], item.a[item.correct]), "err");
+  }
+  quizIndex += 1;
+  askQuiz();
+}
+
+/**
+ * Print the current quiz question (or finish the set).
+ */
+function askQuiz() {
+  const qList = ui().quiz;
+  const item = qList[quizIndex];
+  if (!item) {
+    term.print(ui().quizFinished, "out");
+    quizIndex = 0;
+    return;
+  }
+  const letters = ["A", "B", "C"];
+  term.print(`${ui().quizHeader(quizIndex + 1, qList.length)}: ${item.q}`, "out");
+  item.a.forEach((choice, i) => {
+    term.print(`  ${letters[i]}) ${choice}`, "out");
+  });
+  term.print(ui().quizAnswerUsage, "meta");
+  term.focus();
 }
 
 function startLevel(id) {
@@ -772,7 +823,20 @@ function handleCommand(line) {
     refreshVisuals();
     return;
   }
+  if (result.output.includes("ui-tour") && result.output.length === 1) {
+    lastRun = emptyRun();
+    refreshVisuals();
+    openUiHelp(true);
+    return;
+  }
   if (result.output.includes("Opening level browser…")) showLevels();
+  const quizLine = result.output.find((l) => typeof l === "string" && l.startsWith("quiz:"));
+  if (quizLine && result.output.length === 1) {
+    lastRun = emptyRun();
+    runQuiz(quizLine.slice(5).trim());
+    refreshVisuals();
+    return;
+  }
   if (result.output.includes("hint") && result.output.length === 1) {
     if (mode === "level" && levelId) {
       term.print(getLevel(levelId)?.hint || "", "meta");
@@ -797,7 +861,9 @@ function handleCommand(line) {
       lineOut === "hint" ||
       lineOut === "goal" ||
       lineOut === "steps" ||
-      lineOut === "curriculum"
+      lineOut === "curriculum" ||
+      lineOut === "ui-tour" ||
+      (typeof lineOut === "string" && lineOut.startsWith("quiz:"))
     ) {
       continue;
     }

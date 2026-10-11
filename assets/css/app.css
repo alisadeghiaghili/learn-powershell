@@ -1550,3 +1550,71 @@ html[dir="rtl"] pre {
     display: flex;
   }
 }
+
+/* UI Tour pulse — outlines live regions while the guide is open */
+.ui-tour-on {
+  outline: 2px dashed color-mix(in srgb, var(--accent) 85%, transparent) !important;
+  outline-offset: 3px;
+  border-radius: 6px;
+  animation: tour-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes tour-pulse {
+  0%,
+  100% {
+    outline-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+  50% {
+    outline-color: color-mix(in srgb, var(--success) 85%, transparent);
+  }
+}
+
+/* UI Guide modal — per-region cards with a Highlight button */
+.ui-help {
+  display: grid;
+  gap: 10px;
+}
+
+.ui-help-intro {
+  margin: 0;
+  color: var(--haze);
+  font-size: 13px;
+}
+
+.ui-help-item {
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.ui-help-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.ui-help-head h3 {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--accent);
+}
+
+.ui-help-focus {
+  font-size: 11px;
+  padding: 4px 8px;
+  min-height: 28px;
+}
+
+.ui-help-what p,
+.ui-help-how p {
+  margin: 0;
+  font-size: 12.5px;
+}
+
+.ui-help-how {
+  margin-top: 4px;
+  color: var(--haze);
+}

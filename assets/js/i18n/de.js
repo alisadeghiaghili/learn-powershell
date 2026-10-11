@@ -96,6 +96,43 @@ export const de = {
     supportTitle: "Den Autor unterstützen",
     visitorsTitle: "Lernende, die in dieser Sandbox geübt haben",
     uiGuideTitle: "UI-Leitfaden — Was jeder Bereich tut",
+    uiGuideIntro:
+      "Tippe **Hervorheben** auf einen Bereich, damit er auf der Seite pulsierend markiert wird, oder führe `tour` aus, um alle gleichzeitig zu beleuchten.",
+    uiGuideHighlight: "Hervorheben",
+    uiGuideHowTo: "Verwendung:",
+    quizHeader: (num, total) => `Frage ${num} von ${total}`,
+    quizAnswerUsage: "Antworte mit: quiz A, quiz B oder quiz C",
+    quizFinished: "Quiz beendet! Alle Fragen wurden beantwortet.",
+    quizCorrect: "Richtig.",
+    quizIncorrect: (letter, answer) =>
+      `Falsch. Beste Antwort: ${letter} — ${answer}`,
+    quiz: [
+      {
+        q: "Welcher Operator vergleicht zwei Werte auf Gleichheit in einem Where-Object-Filter?",
+        a: ["==", "-eq", "-match"],
+        correct: 1,
+      },
+      {
+        q: "Was übergibt der Pipeline-Operator | zwischen Cmdlets?",
+        a: ["Rohe Textzeilen", "Typisierte Objekte", "Nichts"],
+        correct: 1,
+      },
+      {
+        q: "Welches Platzhalter-Symbol verweist auf das aktuelle Objekt in ForEach-Object { }?",
+        a: ["$_", "$this", "%item%"],
+        correct: 0,
+      },
+      {
+        q: "Welches Cmdlet sortiert Pipeline-Objekte nach einer Eigenschaft?",
+        a: ["Group-Object", "Sort-Object", "Select-Object"],
+        correct: 1,
+      },
+      {
+        q: "Welcher Schalter lässt Get-ChildItem verborgene Elemente anzeigen?",
+        a: ["-All", "-Force", "-Verbose"],
+        correct: 1,
+      },
+    ],
     aboutTitle: "Über LearnPowerShell",
     cheers: [
       "Sauber gelöst.",

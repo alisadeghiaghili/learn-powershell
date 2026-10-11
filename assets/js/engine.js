@@ -1334,9 +1334,13 @@ export class Session {
       "clear",
       "build",
       "import",
+      "tour",
+      "quiz",
     ]);
+    // `help ui` / `help ui`-style tour trigger
+    const isHelpUi = head === "help" && (tokens[1] || "").toLowerCase() === "ui";
     // clear maps to Clear-Host which is also a cmdlet — handle here for UX
-    if (!gameHeads.has(head) && head !== "clear-host") return null;
+    if (!gameHeads.has(head) && !isHelpUi && head !== "clear-host") return null;
 
     if (head === "undo") {
       const r = this.undo();
@@ -1392,6 +1396,17 @@ export class Session {
     if (head === "import" && (tokens[1] || "").toLowerCase() === "level") {
       out.push("import-level");
       used.push("import level");
+      return { ok: true };
+    }
+    if (isHelpUi || head === "tour") {
+      out.push("ui-tour");
+      used.push("help ui");
+      return { ok: true };
+    }
+    if (head === "quiz") {
+      // sentinel: app layer reads the rest of the line as the answer
+      out.push("quiz:" + tokens.slice(1).join(" "));
+      used.push("quiz");
       return { ok: true };
     }
     if (head === "help" || head === "get-help") {
@@ -3786,6 +3801,9 @@ function helpText(topic) {
   curriculum    list what you have learned and what is left
   undo          revert the last command
   reset         reset session state
+  tour          highlight every region of the UI on screen
+  help ui       open the interactive UI guide
+  quiz          start a short PowerShell knowledge quiz
   build level   export a custom level JSON
   import level  import a level JSON
 

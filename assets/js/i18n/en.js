@@ -96,6 +96,42 @@ export const en = {
     supportTitle: "Support the author",
     visitorsTitle: "Learners who practiced PowerShell in this sandbox",
     uiGuideTitle: "UI Guide — What Each Region Does",
+    uiGuideIntro:
+      "Tap **Highlight** on any region to see it pulse on the page, or run `tour` to light them all up at once.",
+    uiGuideHighlight: "Highlight",
+    uiGuideHowTo: "How to use:",
+    quizHeader: (num, total) => `Question ${num} of ${total}`,
+    quizAnswerUsage: "Answer with: quiz A, quiz B, or quiz C",
+    quizFinished: "Quiz finished! You have completed all questions.",
+    quizCorrect: "Correct.",
+    quizIncorrect: (letter, answer) => `Incorrect. Best answer: ${letter} — ${answer}`,
+    quiz: [
+      {
+        q: "Which operator compares two values for equality inside a Where-Object filter?",
+        a: ["==", "-eq", "-match"],
+        correct: 1,
+      },
+      {
+        q: "What does the pipeline operator | pass between cmdlets?",
+        a: ["Raw text lines", "Typed objects", "Nothing"],
+        correct: 1,
+      },
+      {
+        q: "Which placeholder refers to the current object inside ForEach-Object { }?",
+        a: ["$_", "$this", "%item%"],
+        correct: 0,
+      },
+      {
+        q: "Which cmdlet sorts pipeline objects by a property?",
+        a: ["Group-Object", "Sort-Object", "Select-Object"],
+        correct: 1,
+      },
+      {
+        q: "Which switch makes Get-ChildItem include hidden items?",
+        a: ["-All", "-Force", "-Verbose"],
+        correct: 1,
+      },
+    ],
     aboutTitle: "About LearnPowerShell",
     cheers: [
       "Clean solve.",
