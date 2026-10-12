@@ -11,6 +11,27 @@ export const fa = {
   series: faSeries,
   levels: faLevels,
   ui: {
+    welcomeTitle: "Welcome to Learn PowerShell",
+    welcomeTitleHtml: 'Welcome to Learn <span class="brand-ps">PowerShell</span>',
+    welcomeIntro: "آموزش تعاملی **PowerShell Object Pipeline** — سندباکس + مراحل هدایت‌شده.",
+    welcomeBoard:
+      "بورد تعاملی جریان **Cmdlet → Pipeline → Objects → Session State** را نشان می‌دهد. این همان حرکت زنده اشیای دات‌نت است که پاورشل مدیریت می‌کند.",
+    welcomeTracks:
+      "- **مبانی**: `Verb-Noun`، درایوها و پرووایدرها، اشیاء و پایپ‌لاین\n- **اسکریپت‌نویسی**: متغیرها، هش‌تیبل‌ها، حلقه‌ها، توابع پیشرفته\n- **مدیریت سیستم**: استریم خطاها، ریموت‌زدن (WinRM/SSH)، ماژول‌ها و جاب‌ها\n- **پروداکشن و دوآپس**: کار با REST APIها، آزمون Pester، امنیت و معماری (AST/ETS)",
+    welcomeMeta:
+      "دستورات متا: `levels` · `why` · `curriculum` · `concepts` · `lesson` · `hint` · `steps` · `show solution` · `undo` · `reset`.",
+    welcomeLevelsCount: (n) =>
+      `**${n}** مرحله گنجانده شده. برای شروع مرحله‌ها را باز کنید، یا در سندباکس بمانید.`,
+    welcomeWhat: "**LearnPowerShell چیست؟**",
+    welcomeWhatBody:
+      "یک آزمایشگاه مرورگری برای پاورشل مدرن: فرمان‌های واقعی‌شکل cmdlet را تایپ می‌کنید و جریان اشیای زنده، فیلترهای خط لوله، متغیرها و وضعیت سشن را بلادرنگ می‌بینید. برای هسته آموزش هیچ نیازی به نصب محلی نیست.",
+    welcomePublisher: "**ناشر**",
+    welcomePublisherBody:
+      "انتشار و نگهداری توسط **Ali Sadeghi Aghili** — برنامه‌نویس، مهندس/دانشمند داده، مهندس ML. [linktr.ee/aliaghili](https://linktr.ee/aliaghili)",
+    welcomeGithub: "- [GitHub — سورس و ایشو](https://github.com/alisadeghiaghili/learn-powershell)",
+    welcomeCoffee: "Buy Me a Coffee (از ناشر حمایت می‌کند):",
+    openLevels: "باز کردن مرحله‌ها",
+    whyPowerShellBtn: "چرا پاورشل؟",
     appWelcome:
       "Welcome to Learn PowerShell — سندباکس تعاملی و ویژوالایزر خط لوله شیءگرای پاورشل.",
     sandboxSeeded:

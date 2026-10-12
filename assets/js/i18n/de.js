@@ -8,6 +8,27 @@ export const de = {
   series: {},
   levels: {},
   ui: {
+    welcomeTitle: "Willkommen bei Learn PowerShell",
+    welcomeTitleHtml: 'Willkommen bei Learn <span class="brand-ps">PowerShell</span>',
+    welcomeIntro: "Interaktives **PowerShell-Objekt-Pipeline**-Tutorial — Sandbox + geführte Stufen.",
+    welcomeBoard:
+      "Das Board zeigt **Cmdlet → Pipeline → Objekte → Session-Status**. Das ist der Materialfluss, den PowerShell verwaltet.",
+    welcomeTracks:
+      "- **Grundlagen**: `Verb-Noun`-Cmdlets, Provider, Objekte & Pipeline\n- **Skripterstellung**: Variablen, Hashtables, Schleifen, Funktionen\n- **SysAdmin**: Fehlerströme, Remoting (WinRM/SSH), Module, Jobs\n- **Produktion**: REST-APIs, Pester-Tests, Sicherheit & Interna (AST/ETS)",
+    welcomeMeta:
+      "Meta: `levels`, `why`, `curriculum`, `concepts`, `lesson`, `hint`, `steps`, `show solution`, `undo`, `reset`.",
+    welcomeLevelsCount: (n) =>
+      `**${n}** Stufen enthalten. Öffnen Sie die Stufen, um zu beginnen, oder bleiben Sie in der Sandbox.`,
+    welcomeWhat: "**Was ist LearnPowerShell?**",
+    welcomeWhatBody:
+      "Eine Browser-Laborbank für modernes PowerShell: Sie tippen reale Cmdlets und beobachten Live-Objekte, Pipeline-Filter und den Session-Status in Echtzeit. Keine lokale Installation erforderlich.",
+    welcomePublisher: "**Herausgeber**",
+    welcomePublisherBody:
+      "Veröffentlicht und gepflegt von **Ali Sadeghi Aghili** — Programmierer, Dateningenieur / -wissenschaftler, ML-Ingenieur. [linktr.ee/aliaghili](https://linktr.ee/aliaghili)",
+    welcomeGithub: "- [GitHub — Quellcode & Issues](https://github.com/alisadeghiaghili/learn-powershell)",
+    welcomeCoffee: "Buy Me a Coffee (unterstützt den Herausgeber):",
+    openLevels: "Stufen öffnen",
+    whyPowerShellBtn: "Warum PowerShell?",
     appWelcome:
       "Willkommen bei Learn PowerShell — interaktive Sandbox und Objekt-Pipeline-Visualisierer.",
     sandboxSeeded:

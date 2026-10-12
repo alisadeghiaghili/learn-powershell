@@ -5,6 +5,8 @@
 
 export const SHARE_URL = "https://alisadeghiaghili.github.io/learn-powershell/";
 export const REPO_URL = "https://github.com/alisadeghiaghili/learn-powershell";
+export const COFFEE_URL = "https://www.buymeacoffee.com/alisadeghil";
+export const COFFEE_BUTTON_HTML = `<a href="${COFFEE_URL}" target="_blank" rel="noopener noreferrer"><img src="https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=&slug=alisadeghil&button_colour=0078D4&font_colour=ffffff&font_family=Cookie&outline_colour=ffffff&coffee_colour=FFDD00" alt="Buy me a coffee" /></a>`;
 
 /**
  * @param {{ name: string, seriesTitle: string }[]} items

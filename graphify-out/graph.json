@@ -1434,12 +1434,132 @@
       "source_location": "L806"
     },
     {
+      "id": "assets_js_levels_catalog_describe",
+      "label": "describe()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "levels-catalog.js",
+      "file_type": "code",
+      "norm_label": "describe()",
+      "source_file": "assets/js/levels-catalog.js",
+      "source_location": "L1475"
+    },
+    {
+      "id": "assets_js_levels_catalog_evaluategoal",
+      "label": "evaluateGoal()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "levels-catalog.js",
+      "file_type": "code",
+      "norm_label": "evaluategoal()",
+      "source_file": "assets/js/levels-catalog.js",
+      "source_location": "L1168"
+    },
+    {
+      "id": "assets_js_levels_catalog_fileexistson",
+      "label": "fileExistsOn()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "levels-catalog.js",
+      "file_type": "code",
+      "norm_label": "fileexistson()",
+      "source_file": "assets/js/levels-catalog.js",
+      "source_location": "L1121"
+    },
+    {
+      "id": "assets_js_levels_catalog_l",
+      "label": "L()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "levels-catalog.js",
+      "file_type": "code",
+      "norm_label": "l()",
+      "source_file": "assets/js/levels-catalog.js",
+      "source_location": "L112"
+    },
+    {
+      "id": "assets_js_levels_catalog_lookupvar",
+      "label": "lookupVar()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "levels-catalog.js",
+      "file_type": "code",
+      "norm_label": "lookupvar()",
+      "source_file": "assets/js/levels-catalog.js",
+      "source_location": "L1427"
+    },
+    {
+      "id": "assets_js_levels_catalog_makemindset",
+      "label": "makeMindset()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "levels-catalog.js",
+      "file_type": "code",
+      "norm_label": "makemindset()",
+      "source_file": "assets/js/levels-catalog.js",
+      "source_location": "L123"
+    },
+    {
+      "id": "assets_js_levels_catalog_matchexpected",
+      "label": "matchExpected()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "levels-catalog.js",
+      "file_type": "code",
+      "norm_label": "matchexpected()",
+      "source_file": "assets/js/levels-catalog.js",
+      "source_location": "L1436"
+    },
+    {
+      "id": "assets_js_levels_catalog_readgoalfile",
+      "label": "readGoalFile()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "levels-catalog.js",
+      "file_type": "code",
+      "norm_label": "readgoalfile()",
+      "source_file": "assets/js/levels-catalog.js",
+      "source_location": "L1144"
+    },
+    {
+      "id": "assets_js_levels_catalog_resolvegoalpath",
+      "label": "resolveGoalPath()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "levels-catalog.js",
+      "file_type": "code",
+      "norm_label": "resolvegoalpath()",
+      "source_file": "assets/js/levels-catalog.js",
+      "source_location": "L1112"
+    },
+    {
+      "id": "assets_js_levels_catalog_seriestitle",
+      "label": "seriesTitle()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "levels-catalog.js",
+      "file_type": "code",
+      "norm_label": "seriestitle()",
+      "source_file": "assets/js/levels-catalog.js",
+      "source_location": "L1094"
+    },
+    {
       "id": "assets_js_teach_escapehtml",
       "label": "escapeHtml()",
       "_callable": true,
       "_origin": "ast",
       "community": 16,
-      "community_name": "teach.js",
+      "community_name": "levels-catalog.js",
       "file_type": "code",
       "norm_label": "escapehtml()",
       "source_file": "assets/js/teach.js",
@@ -1451,7 +1571,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 16,
-      "community_name": "teach.js",
+      "community_name": "levels-catalog.js",
       "file_type": "code",
       "norm_label": "levelteachhtml()",
       "source_file": "assets/js/teach.js",
@@ -1463,7 +1583,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 16,
-      "community_name": "teach.js",
+      "community_name": "levels-catalog.js",
       "file_type": "code",
       "norm_label": "teachaftercommand()",
       "source_file": "assets/js/teach.js",
@@ -1475,11 +1595,23 @@
       "_callable": true,
       "_origin": "ast",
       "community": 16,
-      "community_name": "teach.js",
+      "community_name": "levels-catalog.js",
       "file_type": "code",
       "norm_label": "teachfromkey()",
       "source_file": "assets/js/teach.js",
       "source_location": "L209"
+    },
+    {
+      "id": "tests_curriculum_solve",
+      "label": "solve()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "levels-catalog.js",
+      "file_type": "code",
+      "norm_label": "solve()",
+      "source_file": "tests/curriculum.mjs",
+      "source_location": "L9"
     },
     {
       "id": "assets_js_engine_session_runblock",
@@ -1780,138 +1912,6 @@
       "norm_label": "unquote()",
       "source_file": "assets/js/lang.js",
       "source_location": "L12"
-    },
-    {
-      "id": "assets_js_levels_catalog_describe",
-      "label": "describe()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "smoke.mjs",
-      "file_type": "code",
-      "norm_label": "describe()",
-      "source_file": "assets/js/levels-catalog.js",
-      "source_location": "L1475"
-    },
-    {
-      "id": "assets_js_levels_catalog_evaluategoal",
-      "label": "evaluateGoal()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "smoke.mjs",
-      "file_type": "code",
-      "norm_label": "evaluategoal()",
-      "source_file": "assets/js/levels-catalog.js",
-      "source_location": "L1168"
-    },
-    {
-      "id": "assets_js_levels_catalog_fileexistson",
-      "label": "fileExistsOn()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "smoke.mjs",
-      "file_type": "code",
-      "norm_label": "fileexistson()",
-      "source_file": "assets/js/levels-catalog.js",
-      "source_location": "L1121"
-    },
-    {
-      "id": "assets_js_levels_catalog_l",
-      "label": "L()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "smoke.mjs",
-      "file_type": "code",
-      "norm_label": "l()",
-      "source_file": "assets/js/levels-catalog.js",
-      "source_location": "L112"
-    },
-    {
-      "id": "assets_js_levels_catalog_lookupvar",
-      "label": "lookupVar()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "smoke.mjs",
-      "file_type": "code",
-      "norm_label": "lookupvar()",
-      "source_file": "assets/js/levels-catalog.js",
-      "source_location": "L1427"
-    },
-    {
-      "id": "assets_js_levels_catalog_makemindset",
-      "label": "makeMindset()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "smoke.mjs",
-      "file_type": "code",
-      "norm_label": "makemindset()",
-      "source_file": "assets/js/levels-catalog.js",
-      "source_location": "L123"
-    },
-    {
-      "id": "assets_js_levels_catalog_matchexpected",
-      "label": "matchExpected()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "smoke.mjs",
-      "file_type": "code",
-      "norm_label": "matchexpected()",
-      "source_file": "assets/js/levels-catalog.js",
-      "source_location": "L1436"
-    },
-    {
-      "id": "assets_js_levels_catalog_readgoalfile",
-      "label": "readGoalFile()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "smoke.mjs",
-      "file_type": "code",
-      "norm_label": "readgoalfile()",
-      "source_file": "assets/js/levels-catalog.js",
-      "source_location": "L1144"
-    },
-    {
-      "id": "assets_js_levels_catalog_resolvegoalpath",
-      "label": "resolveGoalPath()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "smoke.mjs",
-      "file_type": "code",
-      "norm_label": "resolvegoalpath()",
-      "source_file": "assets/js/levels-catalog.js",
-      "source_location": "L1112"
-    },
-    {
-      "id": "assets_js_levels_catalog_seriestitle",
-      "label": "seriesTitle()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "smoke.mjs",
-      "file_type": "code",
-      "norm_label": "seriestitle()",
-      "source_file": "assets/js/levels-catalog.js",
-      "source_location": "L1094"
-    },
-    {
-      "id": "tests_curriculum_solve",
-      "label": "solve()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "smoke.mjs",
-      "file_type": "code",
-      "norm_label": "solve()",
-      "source_file": "tests/curriculum.mjs",
-      "source_location": "L9"
     },
     {
       "id": "tests_smoke_ok",
@@ -2303,7 +2303,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "progress.js",
+      "community_name": "share.js",
       "file_type": "code",
       "norm_label": "loadprogress()",
       "source_file": "assets/js/progress.js",
@@ -2315,7 +2315,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "progress.js",
+      "community_name": "share.js",
       "file_type": "code",
       "norm_label": "parseblob()",
       "source_file": "assets/js/progress.js",
@@ -2327,7 +2327,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "progress.js",
+      "community_name": "share.js",
       "file_type": "code",
       "norm_label": "readcookie()",
       "source_file": "assets/js/progress.js",
@@ -2339,7 +2339,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "progress.js",
+      "community_name": "share.js",
       "file_type": "code",
       "norm_label": "saveprogress()",
       "source_file": "assets/js/progress.js",
@@ -2351,7 +2351,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "progress.js",
+      "community_name": "share.js",
       "file_type": "code",
       "norm_label": "writecookie()",
       "source_file": "assets/js/progress.js",
@@ -2363,11 +2363,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "progress.js",
+      "community_name": "share.js",
       "file_type": "code",
       "norm_label": "buildsharetargets()",
       "source_file": "assets/js/share.js",
-      "source_location": "L75"
+      "source_location": "L77"
     },
     {
       "id": "assets_js_share_bulletlist",
@@ -2375,11 +2375,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "progress.js",
+      "community_name": "share.js",
       "file_type": "code",
       "norm_label": "bulletlist()",
       "source_file": "assets/js/share.js",
-      "source_location": "L13"
+      "source_location": "L15"
     },
     {
       "id": "assets_js_share_copysharepayload",
@@ -2387,11 +2387,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "progress.js",
+      "community_name": "share.js",
       "file_type": "code",
       "norm_label": "copysharepayload()",
       "source_file": "assets/js/share.js",
-      "source_location": "L100"
+      "source_location": "L102"
     },
     {
       "id": "assets_js_share_opensharewindow",
@@ -2399,11 +2399,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "progress.js",
+      "community_name": "share.js",
       "file_type": "code",
       "norm_label": "opensharewindow()",
       "source_file": "assets/js/share.js",
-      "source_location": "L93"
+      "source_location": "L95"
     },
     {
       "id": "assets_js_share_sharemessagelinkedin",
@@ -2411,11 +2411,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "progress.js",
+      "community_name": "share.js",
       "file_type": "code",
       "norm_label": "sharemessagelinkedin()",
       "source_file": "assets/js/share.js",
-      "source_location": "L31"
+      "source_location": "L33"
     },
     {
       "id": "assets_js_share_sharemessagex",
@@ -2423,11 +2423,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "progress.js",
+      "community_name": "share.js",
       "file_type": "code",
       "norm_label": "sharemessagex()",
       "source_file": "assets/js/share.js",
-      "source_location": "L63"
+      "source_location": "L65"
     },
     {
       "id": "assets_js_share_sharewithclipboard",
@@ -2435,11 +2435,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "progress.js",
+      "community_name": "share.js",
       "file_type": "code",
       "norm_label": "sharewithclipboard()",
       "source_file": "assets/js/share.js",
-      "source_location": "L126"
+      "source_location": "L128"
     },
     {
       "id": "assets_js_engine",
@@ -3065,11 +3065,55 @@
       "source_location": "L28"
     },
     {
+      "id": "assets_js_levels",
+      "label": "levels.js",
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "levels-catalog.js",
+      "file_type": "code",
+      "norm_label": "levels.js",
+      "source_file": "assets/js/levels.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "assets_js_levels_catalog",
+      "label": "levels-catalog.js",
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "levels-catalog.js",
+      "file_type": "code",
+      "norm_label": "levels-catalog.js",
+      "source_file": "assets/js/levels-catalog.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "assets_js_levels_catalog_levels",
+      "label": "LEVELS",
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "levels-catalog.js",
+      "file_type": "code",
+      "norm_label": "levels",
+      "source_file": "assets/js/levels-catalog.js",
+      "source_location": "L143"
+    },
+    {
+      "id": "assets_js_levels_catalog_series",
+      "label": "SERIES",
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "levels-catalog.js",
+      "file_type": "code",
+      "norm_label": "series",
+      "source_file": "assets/js/levels-catalog.js",
+      "source_location": "L9"
+    },
+    {
       "id": "assets_js_teach",
       "label": "teach.js",
       "_origin": "ast",
       "community": 16,
-      "community_name": "teach.js",
+      "community_name": "levels-catalog.js",
       "file_type": "code",
       "norm_label": "teach.js",
       "source_file": "assets/js/teach.js",
@@ -3080,11 +3124,44 @@
       "label": "TEACH",
       "_origin": "ast",
       "community": 16,
-      "community_name": "teach.js",
+      "community_name": "levels-catalog.js",
       "file_type": "code",
       "norm_label": "teach",
       "source_file": "assets/js/teach.js",
       "source_location": "L7"
+    },
+    {
+      "id": "tests_curriculum",
+      "label": "curriculum.mjs",
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "levels-catalog.js",
+      "file_type": "code",
+      "norm_label": "curriculum.mjs",
+      "source_file": "tests/curriculum.mjs",
+      "source_location": "L1"
+    },
+    {
+      "id": "tests_curriculum_missing",
+      "label": "missing",
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "levels-catalog.js",
+      "file_type": "code",
+      "norm_label": "missing",
+      "source_file": "tests/curriculum.mjs",
+      "source_location": "L280"
+    },
+    {
+      "id": "tests_curriculum_solutions",
+      "label": "solutions",
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "levels-catalog.js",
+      "file_type": "code",
+      "norm_label": "solutions",
+      "source_file": "tests/curriculum.mjs",
+      "source_location": "L31"
     },
     {
       "id": "claude",
@@ -3153,83 +3230,6 @@
       "norm_label": "series_depths",
       "source_file": "assets/js/depth.js",
       "source_location": "L20"
-    },
-    {
-      "id": "assets_js_levels",
-      "label": "levels.js",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "smoke.mjs",
-      "file_type": "code",
-      "norm_label": "levels.js",
-      "source_file": "assets/js/levels.js",
-      "source_location": "L1"
-    },
-    {
-      "id": "assets_js_levels_catalog",
-      "label": "levels-catalog.js",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "smoke.mjs",
-      "file_type": "code",
-      "norm_label": "levels-catalog.js",
-      "source_file": "assets/js/levels-catalog.js",
-      "source_location": "L1"
-    },
-    {
-      "id": "assets_js_levels_catalog_levels",
-      "label": "LEVELS",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "smoke.mjs",
-      "file_type": "code",
-      "norm_label": "levels",
-      "source_file": "assets/js/levels-catalog.js",
-      "source_location": "L143"
-    },
-    {
-      "id": "assets_js_levels_catalog_series",
-      "label": "SERIES",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "smoke.mjs",
-      "file_type": "code",
-      "norm_label": "series",
-      "source_file": "assets/js/levels-catalog.js",
-      "source_location": "L9"
-    },
-    {
-      "id": "tests_curriculum",
-      "label": "curriculum.mjs",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "smoke.mjs",
-      "file_type": "code",
-      "norm_label": "curriculum.mjs",
-      "source_file": "tests/curriculum.mjs",
-      "source_location": "L1"
-    },
-    {
-      "id": "tests_curriculum_missing",
-      "label": "missing",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "smoke.mjs",
-      "file_type": "code",
-      "norm_label": "missing",
-      "source_file": "tests/curriculum.mjs",
-      "source_location": "L280"
-    },
-    {
-      "id": "tests_curriculum_solutions",
-      "label": "solutions",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "smoke.mjs",
-      "file_type": "code",
-      "norm_label": "solutions",
-      "source_file": "tests/curriculum.mjs",
-      "source_location": "L31"
     },
     {
       "id": "tests_smoke",
@@ -3665,7 +3665,7 @@
       "label": "progress.js",
       "_origin": "ast",
       "community": 7,
-      "community_name": "progress.js",
+      "community_name": "share.js",
       "file_type": "code",
       "norm_label": "progress.js",
       "source_file": "assets/js/progress.js",
@@ -3676,7 +3676,7 @@
       "label": "COOKIE_KEY",
       "_origin": "ast",
       "community": 7,
-      "community_name": "progress.js",
+      "community_name": "share.js",
       "file_type": "code",
       "norm_label": "cookie_key",
       "source_file": "assets/js/progress.js",
@@ -3687,7 +3687,7 @@
       "label": "STORAGE_KEY",
       "_origin": "ast",
       "community": 7,
-      "community_name": "progress.js",
+      "community_name": "share.js",
       "file_type": "code",
       "norm_label": "storage_key",
       "source_file": "assets/js/progress.js",
@@ -3698,18 +3698,40 @@
       "label": "share.js",
       "_origin": "ast",
       "community": 7,
-      "community_name": "progress.js",
+      "community_name": "share.js",
       "file_type": "code",
       "norm_label": "share.js",
       "source_file": "assets/js/share.js",
       "source_location": "L1"
     },
     {
+      "id": "assets_js_share_coffee_button_html",
+      "label": "COFFEE_BUTTON_HTML",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "share.js",
+      "file_type": "code",
+      "norm_label": "coffee_button_html",
+      "source_file": "assets/js/share.js",
+      "source_location": "L9"
+    },
+    {
+      "id": "assets_js_share_coffee_url",
+      "label": "COFFEE_URL",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "share.js",
+      "file_type": "code",
+      "norm_label": "coffee_url",
+      "source_file": "assets/js/share.js",
+      "source_location": "L8"
+    },
+    {
       "id": "assets_js_share_repo_url",
       "label": "REPO_URL",
       "_origin": "ast",
       "community": 7,
-      "community_name": "progress.js",
+      "community_name": "share.js",
       "file_type": "code",
       "norm_label": "repo_url",
       "source_file": "assets/js/share.js",
@@ -3720,7 +3742,7 @@
       "label": "SHARE_URL",
       "_origin": "ast",
       "community": 7,
-      "community_name": "progress.js",
+      "community_name": "share.js",
       "file_type": "code",
       "norm_label": "share_url",
       "source_file": "assets/js/share.js",
@@ -8074,7 +8096,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/share.js",
-      "source_location": "L76",
+      "source_location": "L78",
       "weight": 1.0
     },
     {
@@ -8086,7 +8108,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/share.js",
-      "source_location": "L77",
+      "source_location": "L79",
       "weight": 1.0
     },
     {
@@ -8098,7 +8120,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/share.js",
-      "source_location": "L86",
+      "source_location": "L88",
       "weight": 1.0
     },
     {
@@ -8110,7 +8132,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/share.js",
-      "source_location": "L33",
+      "source_location": "L35",
       "weight": 1.0
     },
     {
@@ -8122,7 +8144,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/share.js",
-      "source_location": "L128",
+      "source_location": "L130",
       "weight": 1.0
     },
     {
@@ -8134,7 +8156,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/share.js",
-      "source_location": "L139",
+      "source_location": "L141",
       "weight": 1.0
     },
     {
@@ -8836,6 +8858,18 @@
     {
       "source": "assets_js_app",
       "target": "assets_js_share_buildsharetargets",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "assets/js/app.js",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "assets_js_app",
+      "target": "assets_js_share_coffee_button_html",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11254,7 +11288,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/share.js",
-      "source_location": "L100",
+      "source_location": "L102",
       "weight": 1.0
     },
     {
@@ -11265,7 +11299,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/share.js",
-      "source_location": "L126",
+      "source_location": "L128",
       "weight": 1.0
     },
     {
@@ -11276,7 +11310,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/share.js",
-      "source_location": "L13",
+      "source_location": "L15",
       "weight": 1.0
     },
     {
@@ -11287,7 +11321,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/share.js",
-      "source_location": "L31",
+      "source_location": "L33",
       "weight": 1.0
     },
     {
@@ -11309,7 +11343,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/share.js",
-      "source_location": "L63",
+      "source_location": "L65",
       "weight": 1.0
     },
     {
@@ -11331,7 +11365,29 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/share.js",
-      "source_location": "L75",
+      "source_location": "L77",
+      "weight": 1.0
+    },
+    {
+      "source": "assets_js_share",
+      "target": "assets_js_share_coffee_url",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "assets/js/share.js",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "assets_js_share",
+      "target": "assets_js_share_coffee_button_html",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "assets/js/share.js",
+      "source_location": "L9",
       "weight": 1.0
     },
     {
@@ -11342,7 +11398,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/share.js",
-      "source_location": "L93",
+      "source_location": "L95",
       "weight": 1.0
     },
     {
@@ -13110,5 +13166,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "24f753545f17db12665373b98539d70e8bc00531"
+  "built_at_commit": "51820aa8349c37602bb6d0d36af48cf8b4062267"
 }

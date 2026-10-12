@@ -19,7 +19,7 @@ import {
   saveProgress,
   summarizeCurriculum,
 } from "./progress.js";
-import { buildShareTargets, shareWithClipboard } from "./share.js";
+import { buildShareTargets, shareWithClipboard, COFFEE_BUTTON_HTML } from "./share.js";
 import { launchConfetti, playFanfare } from "./confetti.js";
 import { teachAfterCommand } from "./teach.js";
 import { showModal, renderMarkdown, escapeHtml } from "./dialog.js";
@@ -1225,33 +1225,51 @@ const bootCommands = params.get("command");
 const startLevelParam = params.get("level");
 
 if (params.get("NODEMO") == null && !bootCommands && !startLevelParam) {
-  const isFa = getLocale() === "fa";
+  const u = ui();
   showModal({
-    title: isFa ? "به LearnPowerShell خوش آمدید" : "Welcome to Learn PowerShell",
-    titleHtml: isFa
-      ? 'به آزمایشگاه تعاملی <span class="brand-ps">PowerShell</span> خوش آمدید'
-      : 'Welcome to Learn <span class="brand-ps">PowerShell</span>',
-    bodyHtml: isFa ? `
-      <p class="modal-lead">چرا پاورشل و به چه دردی می‌خورد؟</p>
-      <div style="font-size: 13px; line-height: 1.6; margin-bottom: 12px; color: var(--text);">
-        در خط‌فرمان‌های سنتی (مثل CMD یا شل‌های متنی)، خروجی ابزارها رشته‌های متنی خام و شکننده است که با هر تغییر می‌شکند.
-        <strong>پاورشل متولد شد تا اشیاء زنده دات‌نت (.NET Objects) را در پایپ‌لاین عبور دهد.</strong>
-        <br/><br/>
-        <strong>کاربردهای محوری:</strong> اتوماسیون وظایف روزمره، مدیریت ناوگان سرورها و شبکه‌ها، زیرساخت ابری (DevOps/Cloud)، اسکریپت‌های امنیتی و مانیتورینگ بدون نیاز به کلیک‌های تکراری در محیط گرافیکی.
-      </div>
-    ` : `
-      <p class="modal-lead">Why PowerShell & What Is It Good For?</p>
-      <div style="font-size: 13px; line-height: 1.6; margin-bottom: 12px; color: var(--text);">
-        Legacy shells treat everything as fragile unstructured text lines that break easily.
-        <strong>PowerShell was created to stream typed .NET objects across the pipeline</strong> — giving you direct access to properties without fragile text parsing.
-        <br/><br/>
-        <strong>Real-world roles:</strong> Cross-platform OS automation, server & cloud infrastructure (Azure/AWS), CI/CD DevOps workflows, and enterprise security auditing.
-      </div>
-    `,
+    title: u.welcomeTitle,
+    titleHtml: u.welcomeTitleHtml,
+    bodyHtml: renderMarkdown(
+      [
+        u.welcomeIntro,
+        "",
+        u.welcomeBoard,
+        "",
+        u.welcomeTracks,
+        "",
+        u.welcomeMeta,
+        "",
+        u.welcomeLevelsCount(LEVELS.length),
+        "",
+        u.welcomeWhat,
+        u.welcomeWhatBody,
+        "",
+        u.welcomePublisher,
+        u.welcomePublisherBody,
+        "",
+        u.welcomeGithub,
+        "",
+        u.welcomeCoffee,
+        "",
+        COFFEE_BUTTON_HTML,
+      ].join("\n")
+    ),
     actions: [
-      { label: isFa ? "شروع مراحل آموزشی" : "Start levels", className: "primary", onClick: () => showLevels() },
-      { label: isFa ? "چرا پاورشل؟ (توضیح کامل)" : "Why PowerShell? (Deep Dive)", className: "ghost", onClick: () => showWhyPowerShell() },
-      { label: isFa ? "محیط آزاد (سندباکس)" : "Sandbox", className: "ghost", onClick: () => startSandbox() },
+      {
+        label: u.sandbox,
+        className: "ghost",
+        onClick: () => startSandbox(),
+      },
+      {
+        label: u.whyPowerShellBtn,
+        className: "ghost",
+        onClick: () => showWhyPowerShell(),
+      },
+      {
+        label: u.openLevels,
+        className: "primary",
+        onClick: () => showLevels(),
+      },
     ],
     onClose: () => term.focus(),
   });

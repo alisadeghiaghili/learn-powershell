@@ -1,17 +1,17 @@
 # Graph Report - learn-powershell  (2026-10-12)
 
 ## Corpus Check
-- 33 files · ~62,018 words
+- 33 files · ~63,457 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 3 file(s) not represented in the graph (top: (none) 2, .css 1)
 
 ## Summary
-- 326 nodes · 791 edges · 17 communities (12 shown, 5 thin omitted)
+- 327 nodes · 796 edges · 17 communities (12 shown, 5 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 15 edges (avg confidence: 0.87)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `fea7190b`
+- Built from commit: `24f75354`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -27,7 +27,7 @@
 - export-solutions.mjs
 - visuals.js
 - LearnPowerShell — Design Notes
-- levels-catalog.js
+- teach.js
 - CLAUDE.md
 
 ## God Nodes (most connected - your core abstractions)
@@ -37,8 +37,8 @@
 4. `onLevelSolved()` - 22 edges
 5. `ui()` - 16 edges
 6. `createTerminal()` - 16 edges
-7. `LearnPowerShell — Design Notes` - 15 edges
-8. `handleCommand()` - 14 edges
+7. `handleCommand()` - 15 edges
+8. `LearnPowerShell — Design Notes` - 15 edges
 9. `resolvePath()` - 14 edges
 10. `getLevel()` - 14 edges
 
@@ -65,15 +65,15 @@ Nodes (27): basename(), CANONICAL, canonicalCmdlet(), clone(), coerce(), compare
 
 ### Community 1 - "app.js"
 Cohesion: 0.10
-Nodes (49): askQuiz(), bootCommands, curriculum(), emptyRun(), focusGuide(), handleCommand(), lastRun, onLevelSolved() (+41 more)
+Nodes (50): askQuiz(), bootCommands, curriculum(), emptyRun(), focusGuide(), handleCommand(), lastRun, onLevelSolved() (+42 more)
 
 ### Community 2 - "evalExpr"
-Cohesion: 0.19
+Cohesion: 0.20
 Nodes (18): balanced(), coerceVal(), compareOp(), equals(), evalAtom(), evalExpr(), expand(), findTopArithmetic() (+10 more)
 
 ### Community 3 - "smoke.mjs"
-Cohesion: 0.08
-Nodes (25): DEPTH_TIERS, SERIES_DEPTHS, goalResult, introDepthEn, introDepthFa, level, node, r1 (+17 more)
+Cohesion: 0.06
+Nodes (40): DEPTH_TIERS, SERIES_DEPTHS, describe(), evaluateGoal(), fileExistsOn(), L(), LEVELS, lookupVar() (+32 more)
 
 ### Community 4 - "dialog.js"
 Cohesion: 0.53
@@ -103,9 +103,9 @@ Nodes (7): createVisualizer(), renderPipeline(), renderSession(), escapeHtml(), 
 Cohesion: 0.07
 Nodes (27): Build, Cognitive Depth Ladder (ELI5 to ELIPHD), Curriculum (level series), Engine, Layout system, LearnPowerShell — Design Notes, License, Non-goals (v1) (+19 more)
 
-### Community 16 - "levels-catalog.js"
-Cohesion: 0.14
-Nodes (20): describe(), evaluateGoal(), fileExistsOn(), L(), LEVELS, lookupVar(), makeMindset(), matchExpected() (+12 more)
+### Community 16 - "teach.js"
+Cohesion: 0.47
+Nodes (5): escapeHtml(), levelTeachHtml(), TEACH, teachAfterCommand(), teachFromKey()
 
 ## Knowledge Gaps
 - **72 isolated node(s):** `session`, `lastRun`, `progressMap`, `viz`, `term` (+67 more)
@@ -115,17 +115,17 @@ Nodes (20): describe(), evaluateGoal(), fileExistsOn(), L(), LEVELS, lookupVar()
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Session` connect `Session` to `app.js`, `evalExpr`, `smoke.mjs`, `LearnPowerShell — Design Notes`, `levels-catalog.js`?**
-  _High betweenness centrality (0.328) - this node is a cross-community bridge._
+- **Why does `Session` connect `Session` to `app.js`, `evalExpr`, `smoke.mjs`, `LearnPowerShell — Design Notes`?**
+  _High betweenness centrality (0.327) - this node is a cross-community bridge._
 - **What connects `session`, `lastRun`, `progressMap` to the rest of the system?**
   _72 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Session` be split into smaller, more focused modules?**
-  _Cohesion score 0.09769335142469471 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.09657594381035997 - nodes in this community are weakly interconnected._
 - **Why does `createTerminal()` connect `createTerminal` to `app.js`?**
   _High betweenness centrality (0.078) - this node is a cross-community bridge._
 - **Should `app.js` be split into smaller, more focused modules?**
-  _Cohesion score 0.10213032581453634 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.10163339382940109 - nodes in this community are weakly interconnected._
 - **Should `smoke.mjs` be split into smaller, more focused modules?**
-  _Cohesion score 0.07671957671957672 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06376811594202898 - nodes in this community are weakly interconnected._
 - **Should `LearnPowerShell — Design Notes` be split into smaller, more focused modules?**
   _Cohesion score 0.06896551724137931 - nodes in this community are weakly interconnected._
