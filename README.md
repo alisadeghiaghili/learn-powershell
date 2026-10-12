@@ -39,13 +39,19 @@ Permalinks:
 | Terminal habits | History (↑/↓), word-by-word Tab, caret stays in the box |
 | `undo` / `reset` | Snapshot restore for the whole session |
 | `build level` / `import level` | Export / load custom level JSON |
+| Interactive UI tour | `tour` / `help ui` — guided walkthrough that highlights each region of the app |
+| Terminal quiz | `quiz` — quick A/B/C self-check on core PowerShell concepts |
 
 ## Commands to know
 
 ```
-help          levels        hint          goal          steps
-undo          reset         sandbox       curriculum
+help          help ui       tour          quiz          levels
+hint          goal          steps         curriculum    sandbox
+undo          reset
 ```
+
+- `help ui` (or `tour`) — open the interactive UI tour and highlight each app region
+- `quiz` — run a short A/B/C knowledge quiz; `quiz <n>` jumps to question n
 
 Simulated cmdlets include `Get-Location`, `Set-Location`, `Get-ChildItem`,
 `Get-Content`, `Get-Process`, `Get-Service`, `Select-Object`, `Where-Object`,
@@ -135,6 +141,8 @@ assets/js/levels.js        re-exports catalog
 assets/js/levels-catalog.js 196 levels, goals, teaching notes
 assets/js/visuals.js       pipeline + session renderers
 assets/js/terminal.js      shell UI (history, Tab, ghost text)
+assets/js/ui-help.js       interactive UI tour + terminal quiz
+assets/js/i18n/            locale catalogs (en / fa / de)
 assets/js/teach.js         after-command "why" blocks
 assets/js/progress.js      localStorage + cookie persistence
 assets/js/share.js         LinkedIn / X / Facebook share payloads
