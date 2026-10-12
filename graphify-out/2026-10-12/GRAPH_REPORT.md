@@ -1,17 +1,17 @@
 # Graph Report - learn-powershell  (2026-10-12)
 
 ## Corpus Check
-- 33 files · ~61,903 words
+- 33 files · ~61,875 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 3 file(s) not represented in the graph (top: (none) 2, .css 1)
 
 ## Summary
-- 326 nodes · 790 edges · 16 communities (11 shown, 5 thin omitted)
+- 326 nodes · 789 edges · 17 communities (12 shown, 5 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 15 edges (avg confidence: 0.87)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `9af94580`
+- Built from commit: `ddd70fac`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -20,6 +20,7 @@
 - app.js
 - evalExpr
 - smoke.mjs
+- dialog.js
 - createTerminal
 - index.js
 - progress.js
@@ -56,15 +57,15 @@
 ## Import Cycles
 - None detected.
 
-## Communities (16 total, 5 thin omitted)
+## Communities (17 total, 5 thin omitted)
 
 ### Community 0 - "Session"
 Cohesion: 0.10
 Nodes (27): basename(), CANONICAL, canonicalCmdlet(), clone(), coerce(), compare(), defaultFileSystem(), defaultProcesses() (+19 more)
 
 ### Community 1 - "app.js"
-Cohesion: 0.09
-Nodes (54): askQuiz(), bootCommands, curriculum(), emptyRun(), focusGuide(), handleCommand(), lastRun, onLevelSolved() (+46 more)
+Cohesion: 0.11
+Nodes (43): askQuiz(), bootCommands, curriculum(), emptyRun(), focusGuide(), handleCommand(), lastRun, onLevelSolved() (+35 more)
 
 ### Community 2 - "evalExpr"
 Cohesion: 0.19
@@ -72,7 +73,11 @@ Nodes (18): balanced(), coerceVal(), compareOp(), equals(), evalAtom(), evalExpr
 
 ### Community 3 - "smoke.mjs"
 Cohesion: 0.06
-Nodes (41): DEPTH_TIERS, SERIES_DEPTHS, describe(), evaluateGoal(), fileExistsOn(), L(), LEVELS, levelsInSeries() (+33 more)
+Nodes (42): DEPTH_TIERS, getDepthContent(), SERIES_DEPTHS, describe(), evaluateGoal(), fileExistsOn(), L(), LEVELS (+34 more)
+
+### Community 4 - "dialog.js"
+Cohesion: 0.44
+Nodes (10): escapeHtml(), isListItem(), isTableRow(), isTableSeparator(), renderInline(), renderListItem(), renderMarkdown(), renderProse() (+2 more)
 
 ### Community 5 - "createTerminal"
 Cohesion: 0.20
@@ -119,8 +124,8 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `createTerminal()` connect `createTerminal` to `app.js`?**
   _High betweenness centrality (0.078) - this node is a cross-community bridge._
 - **Should `app.js` be split into smaller, more focused modules?**
-  _Cohesion score 0.09216589861751152 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.10980392156862745 - nodes in this community are weakly interconnected._
 - **Should `smoke.mjs` be split into smaller, more focused modules?**
-  _Cohesion score 0.06290471785383904 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06205673758865248 - nodes in this community are weakly interconnected._
 - **Should `LearnPowerShell — Design Notes` be split into smaller, more focused modules?**
   _Cohesion score 0.06896551724137931 - nodes in this community are weakly interconnected._

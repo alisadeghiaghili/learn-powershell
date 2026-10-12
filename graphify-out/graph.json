@@ -795,7 +795,7 @@
       "file_type": "code",
       "norm_label": "askquiz()",
       "source_file": "assets/js/app.js",
-      "source_location": "L751"
+      "source_location": "L762"
     },
     {
       "id": "assets_js_app_closelang",
@@ -807,7 +807,7 @@
       "file_type": "code",
       "norm_label": "closelang()",
       "source_file": "assets/js/app.js",
-      "source_location": "L980"
+      "source_location": "L990"
     },
     {
       "id": "assets_js_app_closenav",
@@ -819,7 +819,7 @@
       "file_type": "code",
       "norm_label": "closenav()",
       "source_file": "assets/js/app.js",
-      "source_location": "L993"
+      "source_location": "L1003"
     },
     {
       "id": "assets_js_app_curriculum",
@@ -867,7 +867,7 @@
       "file_type": "code",
       "norm_label": "handlecommand()",
       "source_file": "assets/js/app.js",
-      "source_location": "L867"
+      "source_location": "L878"
     },
     {
       "id": "assets_js_app_onlevelsolved",
@@ -891,7 +891,7 @@
       "file_type": "code",
       "norm_label": "openuihelp()",
       "source_file": "assets/js/app.js",
-      "source_location": "L698"
+      "source_location": "L709"
     },
     {
       "id": "assets_js_app_refreshvisuals",
@@ -915,7 +915,7 @@
       "file_type": "code",
       "norm_label": "remountafterlocale()",
       "source_file": "assets/js/app.js",
-      "source_location": "L1000"
+      "source_location": "L1010"
     },
     {
       "id": "assets_js_app_renderdock",
@@ -939,7 +939,7 @@
       "file_type": "code",
       "norm_label": "renderlessonmodalhtml()",
       "source_file": "assets/js/app.js",
-      "source_location": "L527"
+      "source_location": "L538"
     },
     {
       "id": "assets_js_app_replaylesson",
@@ -951,7 +951,7 @@
       "file_type": "code",
       "norm_label": "replaylesson()",
       "source_file": "assets/js/app.js",
-      "source_location": "L638"
+      "source_location": "L649"
     },
     {
       "id": "assets_js_app_resetlevel",
@@ -963,7 +963,7 @@
       "file_type": "code",
       "norm_label": "resetlevel()",
       "source_file": "assets/js/app.js",
-      "source_location": "L847"
+      "source_location": "L858"
     },
     {
       "id": "assets_js_app_runquiz",
@@ -975,7 +975,7 @@
       "file_type": "code",
       "norm_label": "runquiz()",
       "source_file": "assets/js/app.js",
-      "source_location": "L723"
+      "source_location": "L734"
     },
     {
       "id": "assets_js_app_showlevels",
@@ -987,7 +987,7 @@
       "file_type": "code",
       "norm_label": "showlevels()",
       "source_file": "assets/js/app.js",
-      "source_location": "L436"
+      "source_location": "L447"
     },
     {
       "id": "assets_js_app_showsolution",
@@ -999,7 +999,7 @@
       "file_type": "code",
       "norm_label": "showsolution()",
       "source_file": "assets/js/app.js",
-      "source_location": "L487"
+      "source_location": "L498"
     },
     {
       "id": "assets_js_app_startlevel",
@@ -1011,7 +1011,7 @@
       "file_type": "code",
       "norm_label": "startlevel()",
       "source_file": "assets/js/app.js",
-      "source_location": "L768"
+      "source_location": "L779"
     },
     {
       "id": "assets_js_app_startsandbox",
@@ -1023,7 +1023,7 @@
       "file_type": "code",
       "norm_label": "startsandbox()",
       "source_file": "assets/js/app.js",
-      "source_location": "L819"
+      "source_location": "L830"
     },
     {
       "id": "assets_js_app_togglelang",
@@ -1035,7 +1035,7 @@
       "file_type": "code",
       "norm_label": "togglelang()",
       "source_file": "assets/js/app.js",
-      "source_location": "L973"
+      "source_location": "L983"
     },
     {
       "id": "assets_js_app_togglenav",
@@ -1047,7 +1047,7 @@
       "file_type": "code",
       "norm_label": "togglenav()",
       "source_file": "assets/js/app.js",
-      "source_location": "L986"
+      "source_location": "L996"
     },
     {
       "id": "assets_js_app_updatechrome",
@@ -2471,7 +2471,7 @@
       "file_type": "code",
       "norm_label": "bootcommands",
       "source_file": "assets/js/app.js",
-      "source_location": "L1076"
+      "source_location": "L1086"
     },
     {
       "id": "assets_js_app_lastrun",
@@ -2493,7 +2493,7 @@
       "file_type": "code",
       "norm_label": "params",
       "source_file": "assets/js/app.js",
-      "source_location": "L1075"
+      "source_location": "L1085"
     },
     {
       "id": "assets_js_app_progressmap",
@@ -2526,7 +2526,7 @@
       "file_type": "code",
       "norm_label": "startlevelparam",
       "source_file": "assets/js/app.js",
-      "source_location": "L1077"
+      "source_location": "L1087"
     },
     {
       "id": "assets_js_app_term",
@@ -3838,7 +3838,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L752",
+      "source_location": "L763",
       "weight": 1.0
     },
     {
@@ -3862,31 +3862,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L870",
+      "source_location": "L881",
       "weight": 1.0
     },
     {
       "source": "assets_js_app_handlecommand",
-      "target": "assets_js_levels_catalog_nextlevelid",
+      "target": "assets_js_app_onlevelsolved",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L873",
-      "weight": 1.0
-    },
-    {
-      "source": "assets_js_app_handlecommand",
-      "target": "assets_js_app_startlevel",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "assets/js/app.js",
-      "source_location": "L875",
+      "source_location": "L885",
       "weight": 1.0
     },
     {
@@ -3898,7 +3886,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L886",
+      "source_location": "L896",
       "weight": 1.0
     },
     {
@@ -3910,7 +3898,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L887",
+      "source_location": "L897",
       "weight": 1.0
     },
     {
@@ -3922,7 +3910,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L893",
+      "source_location": "L903",
       "weight": 1.0
     },
     {
@@ -3934,7 +3922,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L896",
+      "source_location": "L906",
       "weight": 1.0
     },
     {
@@ -3946,7 +3934,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L900",
+      "source_location": "L910",
       "weight": 1.0
     },
     {
@@ -3958,7 +3946,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L912",
+      "source_location": "L922",
       "weight": 1.0
     },
     {
@@ -3970,7 +3958,31 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L923",
+      "source_location": "L933",
+      "weight": 1.0
+    },
+    {
+      "source": "assets_js_app_handlecommand",
+      "target": "assets_js_levels_catalog_nextlevelid",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "assets/js/app.js",
+      "source_location": "L939",
+      "weight": 1.0
+    },
+    {
+      "source": "assets_js_app_handlecommand",
+      "target": "assets_js_app_startlevel",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "assets/js/app.js",
+      "source_location": "L941",
       "weight": 1.0
     },
     {
@@ -3982,7 +3994,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L956",
+      "source_location": "L966",
       "weight": 1.0
     },
     {
@@ -4107,6 +4119,18 @@
     },
     {
       "source": "assets_js_app_onlevelsolved",
+      "target": "assets_js_i18n_index_getlocale",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "assets/js/app.js",
+      "source_location": "L329",
+      "weight": 1.0
+    },
+    {
+      "source": "assets_js_app_onlevelsolved",
       "target": "assets_js_dialog_rendermarkdown",
       "relation": "calls",
       "_origin": "ast",
@@ -4114,7 +4138,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L337",
+      "source_location": "L336",
       "weight": 1.0
     },
     {
@@ -4126,7 +4150,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L381",
+      "source_location": "L392",
       "weight": 1.0
     },
     {
@@ -4138,7 +4162,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L390",
+      "source_location": "L401",
       "weight": 1.0
     },
     {
@@ -4150,7 +4174,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L396",
+      "source_location": "L407",
       "weight": 1.0
     },
     {
@@ -4162,7 +4186,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L397",
+      "source_location": "L408",
       "weight": 1.0
     },
     {
@@ -4174,7 +4198,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L399",
+      "source_location": "L410",
       "weight": 1.0
     },
     {
@@ -4186,7 +4210,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L423",
+      "source_location": "L434",
       "weight": 1.0
     },
     {
@@ -4198,7 +4222,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L699",
+      "source_location": "L710",
       "weight": 1.0
     },
     {
@@ -4210,7 +4234,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L700",
+      "source_location": "L711",
       "weight": 1.0
     },
     {
@@ -4222,7 +4246,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L701",
+      "source_location": "L712",
       "weight": 1.0
     },
     {
@@ -4234,7 +4258,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L705",
+      "source_location": "L716",
       "weight": 1.0
     },
     {
@@ -4294,7 +4318,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L1001",
+      "source_location": "L1011",
       "weight": 1.0
     },
     {
@@ -4306,7 +4330,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L1002",
+      "source_location": "L1012",
       "weight": 1.0
     },
     {
@@ -4426,7 +4450,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L539",
+      "source_location": "L550",
       "weight": 1.0
     },
     {
@@ -4438,7 +4462,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L593",
+      "source_location": "L604",
       "weight": 1.0
     },
     {
@@ -4450,7 +4474,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L639",
+      "source_location": "L650",
       "weight": 1.0
     },
     {
@@ -4462,7 +4486,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L645",
+      "source_location": "L656",
       "weight": 1.0
     },
     {
@@ -4474,7 +4498,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L647",
+      "source_location": "L658",
       "weight": 1.0
     },
     {
@@ -4486,7 +4510,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L652",
+      "source_location": "L663",
       "weight": 1.0
     },
     {
@@ -4498,7 +4522,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L653",
+      "source_location": "L664",
       "weight": 1.0
     },
     {
@@ -4510,7 +4534,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L655",
+      "source_location": "L666",
       "weight": 1.0
     },
     {
@@ -4522,7 +4546,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L657",
+      "source_location": "L668",
       "weight": 1.0
     },
     {
@@ -4534,7 +4558,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L849",
+      "source_location": "L860",
       "weight": 1.0
     },
     {
@@ -4546,7 +4570,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L851",
+      "source_location": "L862",
       "weight": 1.0
     },
     {
@@ -4558,7 +4582,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L860",
+      "source_location": "L871",
       "weight": 1.0
     },
     {
@@ -4570,7 +4594,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L724",
+      "source_location": "L735",
       "weight": 1.0
     },
     {
@@ -4582,7 +4606,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L727",
+      "source_location": "L738",
       "weight": 1.0
     },
     {
@@ -4594,7 +4618,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L438",
+      "source_location": "L449",
       "weight": 1.0
     },
     {
@@ -4606,7 +4630,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L439",
+      "source_location": "L450",
       "weight": 1.0
     },
     {
@@ -4618,7 +4642,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L440",
+      "source_location": "L451",
       "weight": 1.0
     },
     {
@@ -4630,7 +4654,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L440",
+      "source_location": "L451",
       "weight": 1.0
     },
     {
@@ -4642,7 +4666,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L443",
+      "source_location": "L454",
       "weight": 1.0
     },
     {
@@ -4654,7 +4678,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L448",
+      "source_location": "L459",
       "weight": 1.0
     },
     {
@@ -4666,7 +4690,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L453",
+      "source_location": "L464",
       "weight": 1.0
     },
     {
@@ -4678,7 +4702,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L469",
+      "source_location": "L480",
       "weight": 1.0
     },
     {
@@ -4690,7 +4714,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L481",
+      "source_location": "L492",
       "weight": 1.0
     },
     {
@@ -4702,7 +4726,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L492",
+      "source_location": "L503",
       "weight": 1.0
     },
     {
@@ -4714,7 +4738,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L495",
+      "source_location": "L506",
       "weight": 1.0
     },
     {
@@ -4726,7 +4750,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L496",
+      "source_location": "L507",
       "weight": 1.0
     },
     {
@@ -4738,7 +4762,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L497",
+      "source_location": "L508",
       "weight": 1.0
     },
     {
@@ -4750,7 +4774,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L515",
+      "source_location": "L526",
       "weight": 1.0
     },
     {
@@ -4762,7 +4786,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L517",
+      "source_location": "L528",
       "weight": 1.0
     },
     {
@@ -4774,7 +4798,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L769",
+      "source_location": "L780",
       "weight": 1.0
     },
     {
@@ -4786,7 +4810,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L774",
+      "source_location": "L785",
       "weight": 1.0
     },
     {
@@ -4798,7 +4822,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L775",
+      "source_location": "L786",
       "weight": 1.0
     },
     {
@@ -4810,7 +4834,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L777",
+      "source_location": "L788",
       "weight": 1.0
     },
     {
@@ -4822,7 +4846,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L780",
+      "source_location": "L791",
       "weight": 1.0
     },
     {
@@ -4834,7 +4858,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L792",
+      "source_location": "L803",
       "weight": 1.0
     },
     {
@@ -4846,7 +4870,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L795",
+      "source_location": "L806",
       "weight": 1.0
     },
     {
@@ -4858,7 +4882,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L815",
+      "source_location": "L826",
       "weight": 1.0
     },
     {
@@ -4870,7 +4894,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L823",
+      "source_location": "L834",
       "weight": 1.0
     },
     {
@@ -4882,7 +4906,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L824",
+      "source_location": "L835",
       "weight": 1.0
     },
     {
@@ -4894,7 +4918,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L826",
+      "source_location": "L837",
       "weight": 1.0
     },
     {
@@ -4906,7 +4930,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L829",
+      "source_location": "L840",
       "weight": 1.0
     },
     {
@@ -4918,7 +4942,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L843",
+      "source_location": "L854",
       "weight": 1.0
     },
     {
@@ -8475,6 +8499,18 @@
     },
     {
       "source": "assets_js_app",
+      "target": "assets_js_app_closenav",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "assets/js/app.js",
+      "source_location": "L1003",
+      "weight": 1.0
+    },
+    {
+      "source": "assets_js_app",
       "target": "assets_js_app_remountafterlocale",
       "relation": "contains",
       "_origin": "ast",
@@ -8482,7 +8518,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L1000",
+      "source_location": "L1010",
       "weight": 1.0
     },
     {
@@ -8518,7 +8554,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L436",
+      "source_location": "L447",
       "weight": 1.0
     },
     {
@@ -8530,7 +8566,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L487",
+      "source_location": "L498",
       "weight": 1.0
     },
     {
@@ -8542,7 +8578,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L638",
+      "source_location": "L649",
       "weight": 1.0
     },
     {
@@ -8566,7 +8602,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L698",
+      "source_location": "L709",
       "weight": 1.0
     },
     {
@@ -8578,7 +8614,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L819",
+      "source_location": "L830",
       "weight": 1.0
     },
     {
@@ -8590,7 +8626,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L847",
+      "source_location": "L858",
       "weight": 1.0
     },
     {
@@ -8602,7 +8638,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L973",
+      "source_location": "L983",
       "weight": 1.0
     },
     {
@@ -8614,7 +8650,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L980",
+      "source_location": "L990",
       "weight": 1.0
     },
     {
@@ -8626,19 +8662,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L986",
-      "weight": 1.0
-    },
-    {
-      "source": "assets_js_app",
-      "target": "assets_js_app_closenav",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "assets/js/app.js",
-      "source_location": "L993",
+      "source_location": "L996",
       "weight": 1.0
     },
     {
@@ -9849,7 +9873,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/app.js",
-      "source_location": "L1075",
+      "source_location": "L1085",
       "weight": 1.0
     },
     {
@@ -9860,7 +9884,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/app.js",
-      "source_location": "L1076",
+      "source_location": "L1086",
       "weight": 1.0
     },
     {
@@ -9871,7 +9895,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/app.js",
-      "source_location": "L1077",
+      "source_location": "L1087",
       "weight": 1.0
     },
     {
@@ -9904,7 +9928,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/app.js",
-      "source_location": "L527",
+      "source_location": "L538",
       "weight": 1.0
     },
     {
@@ -9948,7 +9972,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/app.js",
-      "source_location": "L723",
+      "source_location": "L734",
       "weight": 1.0
     },
     {
@@ -9959,7 +9983,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/app.js",
-      "source_location": "L751",
+      "source_location": "L762",
       "weight": 1.0
     },
     {
@@ -9970,7 +9994,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/app.js",
-      "source_location": "L768",
+      "source_location": "L779",
       "weight": 1.0
     },
     {
@@ -13014,5 +13038,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "ddd70faceaafbf918265229eb9f29ff2020a0a73"
+  "built_at_commit": "efd05a108b94e39342c8283b2656510172d14012"
 }

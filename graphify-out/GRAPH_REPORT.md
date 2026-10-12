@@ -1,17 +1,17 @@
 # Graph Report - learn-powershell  (2026-10-12)
 
 ## Corpus Check
-- 33 files · ~61,875 words
+- 33 files · ~61,949 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 3 file(s) not represented in the graph (top: (none) 2, .css 1)
 
 ## Summary
-- 326 nodes · 789 edges · 17 communities (12 shown, 5 thin omitted)
+- 326 nodes · 791 edges · 17 communities (12 shown, 5 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 15 edges (avg confidence: 0.87)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `ddd70fac`
+- Built from commit: `efd05a10`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -34,11 +34,11 @@
 1. `Session` - 53 edges
 2. `PSObject` - 25 edges
 3. `evalExpr()` - 23 edges
-4. `onLevelSolved()` - 19 edges
+4. `onLevelSolved()` - 21 edges
 5. `ui()` - 16 edges
 6. `createTerminal()` - 16 edges
-7. `LearnPowerShell — Design Notes` - 15 edges
-8. `handleCommand()` - 14 edges
+7. `handleCommand()` - 15 edges
+8. `LearnPowerShell — Design Notes` - 15 edges
 9. `resolvePath()` - 14 edges
 10. `getLevel()` - 14 edges
 
@@ -124,7 +124,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `createTerminal()` connect `createTerminal` to `app.js`?**
   _High betweenness centrality (0.078) - this node is a cross-community bridge._
 - **Should `app.js` be split into smaller, more focused modules?**
-  _Cohesion score 0.10980392156862745 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.11137254901960784 - nodes in this community are weakly interconnected._
 - **Should `smoke.mjs` be split into smaller, more focused modules?**
   _Cohesion score 0.06205673758865248 - nodes in this community are weakly interconnected._
 - **Should `LearnPowerShell — Design Notes` be split into smaller, more focused modules?**

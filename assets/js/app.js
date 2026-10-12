@@ -324,17 +324,28 @@ function onLevelSolved(rawLevel, result) {
     curriculum: c,
   });
 
+  const isMindset = Boolean(rawLevel.goal?.acknowledge || rawLevel.id.endsWith("-00"));
+  const badgeText = isMindset
+    ? (getLocale() === "fa" ? "🧠 مایندست تکمیل شد" : "🧠 MINDSET ASSIMILATED")
+    : escapeHtml(ui().levelCleared);
+
+  const statsLine = isMindset
+    ? (getLocale() === "fa" 
+        ? "مدل ذهنی این فصل با موفقیت درک شد. آماده‌ی ورود به آزمایشگاه و تمرین‌های عملی هستید!" 
+        : "Mental model assimilated! Ready for hands-on pipeline challenges.")
+    : renderMarkdown(golfLine);
+
   const bodyHtml = `
     <div class="celebrate" aria-live="polite">
       <div class="celebrate-visual" aria-hidden="true">
         <div class="celebrate-ring"></div>
         <div class="celebrate-star">★</div>
       </div>
-      <div class="celebrate-badge">${escapeHtml(ui().levelCleared)}</div>
+      <div class="celebrate-badge">${badgeText}</div>
       <h3 class="celebrate-title">${escapeHtml(level.name)}</h3>
       <p class="celebrate-sub">${escapeHtml(level.seriesTitle)} · <code dir="ltr">${escapeHtml(level.id)}</code></p>
       <p class="celebrate-cheer">${escapeHtml(cheer)}</p>
-      <div class="celebrate-stats">${renderMarkdown(golfLine)}</div>
+      <div class="celebrate-stats">${statsLine}</div>
       <div class="celebrate-progress">
         <div class="prog-track"><div class="prog-fill" style="width:${c.percent}%"></div></div>
         <div class="par-note">${solvedCount} / ${total} levels solved · progress saved in this browser</div>
@@ -870,9 +881,8 @@ function handleCommand(line) {
     const curLevel = getLevel(levelId);
     if (curLevel?.goal?.acknowledge) {
       if (!trimmed || trimmed === "next" || trimmed === "continue") {
-        const nextId = nextLevelId(levelId);
-        if (nextId) {
-          startLevel(nextId);
+        if (!celebrateOffered) {
+          onLevelSolved(curLevel, { solved: true, checks: [{ passed: true, label: "Mindset assimilated", detail: "Ready for hands-on lab" }] });
           return;
         }
       }
