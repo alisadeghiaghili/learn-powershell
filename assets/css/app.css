@@ -44,6 +44,23 @@ body {
   overflow: hidden;
 }
 
+a {
+  color: #60a5fa;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 600;
+  transition: color 120ms ease;
+}
+
+a:visited {
+  color: #93c5fd;
+}
+
+a:hover,
+a:focus {
+  color: #bfdbfe;
+}
+
 code,
 pre,
 input,
@@ -1129,16 +1146,25 @@ html[dir="rtl"] .lang-option {
   font-size: 14px;
 }
 
+.modal a,
 .modal .markdown a {
-  color: #60a5fa;
+  color: #60a5fa !important;
   text-decoration: underline;
   text-underline-offset: 3px;
   font-weight: 600;
   transition: color 120ms ease;
 }
 
-.modal .markdown a:hover {
-  color: #93c5fd;
+.modal a:visited,
+.modal .markdown a:visited {
+  color: #93c5fd !important;
+}
+
+.modal a:hover,
+.modal a:focus,
+.modal .markdown a:hover,
+.modal .markdown a:focus {
+  color: #bfdbfe !important;
 }
 
 .modal h2.visually-hidden {
