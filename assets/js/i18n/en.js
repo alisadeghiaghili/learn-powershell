@@ -27,6 +27,7 @@ export const en = {
       "Published and maintained by **Ali Sadeghi Aghili** — programmer, data engineer / scientist, ML engineer. [linktr.ee/aliaghili](https://linktr.ee/aliaghili)",
     welcomeGithub: "- [GitHub — source & issues](https://github.com/alisadeghiaghili/learn-powershell)",
     welcomeCoffee: "Buy Me a Coffee (supports the publisher):",
+    sandbox: "Sandbox",
     openLevels: "Open levels",
     whyPowerShellBtn: "Why PowerShell?",
     appWelcome:
@@ -112,6 +113,7 @@ export const en = {
     idealLegend:
       "**Ideal commands** — golf target, not a hard limit.",
     solvedLegend: "**Solved** — your best command count is preserved.",
+    difficultyOf: (n) => `Difficulty ${n} of 5`,
     solvedLabel: "solved",
     githubTitle: "GitHub repository",
     supportTitle: "Support the author",

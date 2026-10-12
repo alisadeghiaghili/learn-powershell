@@ -1,24 +1,24 @@
 # Graph Report - learn-powershell  (2026-10-12)
 
 ## Corpus Check
-- 33 files · ~63,848 words
+- 33 files · ~64,037 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 3 file(s) not represented in the graph (top: (none) 2, .css 1)
 
 ## Summary
-- 329 nodes · 799 edges · 17 communities (12 shown, 5 thin omitted)
+- 330 nodes · 802 edges · 17 communities (12 shown, 5 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 15 edges (avg confidence: 0.87)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `51820aa8`
+- Built from commit: `75210523`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - Session
 - app.js
-- evalExpr
+- engine.js
 - smoke.mjs
 - dialog.js
 - createTerminal
@@ -39,8 +39,8 @@
 6. `createTerminal()` - 16 edges
 7. `handleCommand()` - 15 edges
 8. `LearnPowerShell — Design Notes` - 15 edges
-9. `resolvePath()` - 14 edges
-10. `getLevel()` - 14 edges
+9. `showLevels()` - 14 edges
+10. `resolvePath()` - 14 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `solve()` --calls--> `Session`  [EXTRACTED]
@@ -60,16 +60,16 @@
 ## Communities (17 total, 5 thin omitted)
 
 ### Community 0 - "Session"
-Cohesion: 0.10
-Nodes (27): basename(), CANONICAL, canonicalCmdlet(), clone(), coerce(), compare(), defaultFileSystem(), defaultProcesses() (+19 more)
+Cohesion: 0.15
+Nodes (11): basename(), clone(), coerce(), compare(), fileToItem(), getNode(), likeMatch(), parentPath() (+3 more)
 
 ### Community 1 - "app.js"
 Cohesion: 0.10
-Nodes (50): askQuiz(), bootCommands, curriculum(), emptyRun(), focusGuide(), handleCommand(), lastRun, onLevelSolved() (+42 more)
+Nodes (51): askQuiz(), bootCommands, curriculum(), emptyRun(), focusGuide(), handleCommand(), lastRun, onLevelSolved() (+43 more)
 
-### Community 2 - "evalExpr"
-Cohesion: 0.20
-Nodes (18): balanced(), coerceVal(), compareOp(), equals(), evalAtom(), evalExpr(), expand(), findTopArithmetic() (+10 more)
+### Community 2 - "engine.js"
+Cohesion: 0.10
+Nodes (34): CANONICAL, canonicalCmdlet(), defaultFileSystem(), defaultProcesses(), defaultServices(), expand(), formatOutput(), helpText() (+26 more)
 
 ### Community 3 - "smoke.mjs"
 Cohesion: 0.08
@@ -115,17 +115,17 @@ Nodes (20): describe(), evaluateGoal(), fileExistsOn(), L(), LEVELS, lookupVar()
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Session` connect `Session` to `app.js`, `evalExpr`, `smoke.mjs`, `LearnPowerShell — Design Notes`, `levels-catalog.js`?**
+- **Why does `Session` connect `Session` to `app.js`, `engine.js`, `smoke.mjs`, `LearnPowerShell — Design Notes`, `levels-catalog.js`?**
   _High betweenness centrality (0.326) - this node is a cross-community bridge._
 - **What connects `session`, `lastRun`, `progressMap` to the rest of the system?**
   _73 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Session` be split into smaller, more focused modules?**
-  _Cohesion score 0.09657594381035997 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.14904862579281183 - nodes in this community are weakly interconnected._
 - **Why does `createTerminal()` connect `createTerminal` to `app.js`?**
   _High betweenness centrality (0.077) - this node is a cross-community bridge._
 - **Should `app.js` be split into smaller, more focused modules?**
-  _Cohesion score 0.10163339382940109 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.09935710111046171 - nodes in this community are weakly interconnected._
+- **Should `engine.js` be split into smaller, more focused modules?**
+  _Cohesion score 0.10204081632653061 - nodes in this community are weakly interconnected._
 - **Should `smoke.mjs` be split into smaller, more focused modules?**
   _Cohesion score 0.07671957671957672 - nodes in this community are weakly interconnected._
-- **Should `share.js` be split into smaller, more focused modules?**
-  _Cohesion score 0.14736842105263157 - nodes in this community are weakly interconnected._

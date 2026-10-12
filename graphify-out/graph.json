@@ -42,18 +42,6 @@
       "source_location": "L425"
     },
     {
-      "id": "assets_js_engine_canonicalcmdlet",
-      "label": "canonicalCmdlet()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "Session",
-      "file_type": "code",
-      "norm_label": "canonicalcmdlet()",
-      "source_file": "assets/js/engine.js",
-      "source_location": "L560"
-    },
-    {
       "id": "assets_js_engine_clone",
       "label": "clone()",
       "_callable": true,
@@ -90,54 +78,6 @@
       "source_location": "L644"
     },
     {
-      "id": "assets_js_engine_defaultfilesystem",
-      "label": "defaultFileSystem()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "Session",
-      "file_type": "code",
-      "norm_label": "defaultfilesystem()",
-      "source_file": "assets/js/engine.js",
-      "source_location": "L188"
-    },
-    {
-      "id": "assets_js_engine_defaultprocesses",
-      "label": "defaultProcesses()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "Session",
-      "file_type": "code",
-      "norm_label": "defaultprocesses()",
-      "source_file": "assets/js/engine.js",
-      "source_location": "L263"
-    },
-    {
-      "id": "assets_js_engine_defaultservices",
-      "label": "defaultServices()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "Session",
-      "file_type": "code",
-      "norm_label": "defaultservices()",
-      "source_file": "assets/js/engine.js",
-      "source_location": "L328"
-    },
-    {
-      "id": "assets_js_engine_expand",
-      "label": "expand()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "Session",
-      "file_type": "code",
-      "norm_label": "expand()",
-      "source_file": "assets/js/engine.js",
-      "source_location": "L152"
-    },
-    {
       "id": "assets_js_engine_filetoitem",
       "label": "fileToItem()",
       "_callable": true,
@@ -150,18 +90,6 @@
       "source_location": "L3685"
     },
     {
-      "id": "assets_js_engine_formatoutput",
-      "label": "formatOutput()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "Session",
-      "file_type": "code",
-      "norm_label": "formatoutput()",
-      "source_file": "assets/js/engine.js",
-      "source_location": "L3723"
-    },
-    {
       "id": "assets_js_engine_getnode",
       "label": "getNode()",
       "_callable": true,
@@ -172,18 +100,6 @@
       "norm_label": "getnode()",
       "source_file": "assets/js/engine.js",
       "source_location": "L391"
-    },
-    {
-      "id": "assets_js_engine_helptext",
-      "label": "helpText()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "Session",
-      "file_type": "code",
-      "norm_label": "helptext()",
-      "source_file": "assets/js/engine.js",
-      "source_location": "L3806"
     },
     {
       "id": "assets_js_engine_likematch",
@@ -208,30 +124,6 @@
       "norm_label": "parentpath()",
       "source_file": "assets/js/engine.js",
       "source_location": "L413"
-    },
-    {
-      "id": "assets_js_engine_parseargs",
-      "label": "parseArgs()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "Session",
-      "file_type": "code",
-      "norm_label": "parseargs()",
-      "source_file": "assets/js/engine.js",
-      "source_location": "L570"
-    },
-    {
-      "id": "assets_js_engine_previewobject",
-      "label": "previewObject()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "Session",
-      "file_type": "code",
-      "norm_label": "previewobject()",
-      "source_file": "assets/js/engine.js",
-      "source_location": "L3753"
     },
     {
       "id": "assets_js_engine_psobject_constructor",
@@ -270,18 +162,6 @@
       "source_location": "L37"
     },
     {
-      "id": "assets_js_engine_rendertable",
-      "label": "renderTable()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "Session",
-      "file_type": "code",
-      "norm_label": "rendertable()",
-      "source_file": "assets/js/engine.js",
-      "source_location": "L3778"
-    },
-    {
       "id": "assets_js_engine_resolvepath",
       "label": "resolvePath()",
       "_callable": true,
@@ -304,30 +184,6 @@
       "norm_label": ".addcontent()",
       "source_file": "assets/js/engine.js",
       "source_location": "L3609"
-    },
-    {
-      "id": "assets_js_engine_session_assign",
-      "label": ".assign()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "Session",
-      "file_type": "code",
-      "norm_label": ".assign()",
-      "source_file": "assets/js/engine.js",
-      "source_location": "L1232"
-    },
-    {
-      "id": "assets_js_engine_session_constructor",
-      "label": ".constructor()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "Session",
-      "file_type": "code",
-      "norm_label": ".constructor()",
-      "source_file": "assets/js/engine.js",
-      "source_location": "L692"
     },
     {
       "id": "assets_js_engine_session_exportcsv",
@@ -546,18 +402,6 @@
       "source_location": "L3549"
     },
     {
-      "id": "assets_js_engine_session_resetworld",
-      "label": ".resetWorld()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "Session",
-      "file_type": "code",
-      "norm_label": ".resetworld()",
-      "source_file": "assets/js/engine.js",
-      "source_location": "L702"
-    },
-    {
       "id": "assets_js_engine_session_restore",
       "label": ".restore()",
       "_callable": true,
@@ -568,42 +412,6 @@
       "norm_label": ".restore()",
       "source_file": "assets/js/engine.js",
       "source_location": "L778"
-    },
-    {
-      "id": "assets_js_engine_session_run",
-      "label": ".run()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "Session",
-      "file_type": "code",
-      "norm_label": ".run()",
-      "source_file": "assets/js/engine.js",
-      "source_location": "L821"
-    },
-    {
-      "id": "assets_js_engine_session_runone",
-      "label": ".runOne()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "Session",
-      "file_type": "code",
-      "norm_label": ".runone()",
-      "source_file": "assets/js/engine.js",
-      "source_location": "L1184"
-    },
-    {
-      "id": "assets_js_engine_session_runpipeline",
-      "label": ".runPipeline()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "Session",
-      "file_type": "code",
-      "norm_label": ".runpipeline()",
-      "source_file": "assets/js/engine.js",
-      "source_location": "L1443"
     },
     {
       "id": "assets_js_engine_session_selectobject",
@@ -714,18 +522,6 @@
       "source_location": "L3631"
     },
     {
-      "id": "assets_js_engine_session_trygamecommand",
-      "label": ".tryGameCommand()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "Session",
-      "file_type": "code",
-      "norm_label": ".trygamecommand()",
-      "source_file": "assets/js/engine.js",
-      "source_location": "L1319"
-    },
-    {
       "id": "assets_js_engine_session_whereobject",
       "label": ".whereObject()",
       "_callable": true,
@@ -738,66 +534,6 @@
       "source_location": "L3227"
     },
     {
-      "id": "assets_js_engine_splitpipeline",
-      "label": "splitPipeline()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "Session",
-      "file_type": "code",
-      "norm_label": "splitpipeline()",
-      "source_file": "assets/js/engine.js",
-      "source_location": "L58"
-    },
-    {
-      "id": "assets_js_engine_splitstatements",
-      "label": "splitStatements()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "Session",
-      "file_type": "code",
-      "norm_label": "splitstatements()",
-      "source_file": "assets/js/engine.js",
-      "source_location": "L3649"
-    },
-    {
-      "id": "assets_js_engine_stringify",
-      "label": "stringify()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "Session",
-      "file_type": "code",
-      "norm_label": "stringify()",
-      "source_file": "assets/js/engine.js",
-      "source_location": "L3712"
-    },
-    {
-      "id": "assets_js_engine_tokenize",
-      "label": "tokenize()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "Session",
-      "file_type": "code",
-      "norm_label": "tokenize()",
-      "source_file": "assets/js/engine.js",
-      "source_location": "L94"
-    },
-    {
-      "id": "assets_js_engine_unquote",
-      "label": "unquote()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "Session",
-      "file_type": "code",
-      "norm_label": "unquote()",
-      "source_file": "assets/js/engine.js",
-      "source_location": "L136"
-    },
-    {
       "id": "assets_js_app_askquiz",
       "label": "askQuiz()",
       "_callable": true,
@@ -807,7 +543,7 @@
       "file_type": "code",
       "norm_label": "askquiz()",
       "source_file": "assets/js/app.js",
-      "source_location": "L882"
+      "source_location": "L932"
     },
     {
       "id": "assets_js_app_closelang",
@@ -819,7 +555,7 @@
       "file_type": "code",
       "norm_label": "closelang()",
       "source_file": "assets/js/app.js",
-      "source_location": "L1127"
+      "source_location": "L1177"
     },
     {
       "id": "assets_js_app_closenav",
@@ -831,7 +567,7 @@
       "file_type": "code",
       "norm_label": "closenav()",
       "source_file": "assets/js/app.js",
-      "source_location": "L1140"
+      "source_location": "L1190"
     },
     {
       "id": "assets_js_app_curriculum",
@@ -879,7 +615,7 @@
       "file_type": "code",
       "norm_label": "handlecommand()",
       "source_file": "assets/js/app.js",
-      "source_location": "L998"
+      "source_location": "L1048"
     },
     {
       "id": "assets_js_app_onlevelsolved",
@@ -903,7 +639,7 @@
       "file_type": "code",
       "norm_label": "openuihelp()",
       "source_file": "assets/js/app.js",
-      "source_location": "L829"
+      "source_location": "L867"
     },
     {
       "id": "assets_js_app_refreshvisuals",
@@ -927,7 +663,19 @@
       "file_type": "code",
       "norm_label": "remountafterlocale()",
       "source_file": "assets/js/app.js",
-      "source_location": "L1147"
+      "source_location": "L1197"
+    },
+    {
+      "id": "assets_js_app_renderdiffdots",
+      "label": "renderDiffDots()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "app.js",
+      "file_type": "code",
+      "norm_label": "renderdiffdots()",
+      "source_file": "assets/js/app.js",
+      "source_location": "L568"
     },
     {
       "id": "assets_js_app_renderdock",
@@ -951,7 +699,7 @@
       "file_type": "code",
       "norm_label": "renderlessonmodalhtml()",
       "source_file": "assets/js/app.js",
-      "source_location": "L658"
+      "source_location": "L699"
     },
     {
       "id": "assets_js_app_replaylesson",
@@ -963,7 +711,7 @@
       "file_type": "code",
       "norm_label": "replaylesson()",
       "source_file": "assets/js/app.js",
-      "source_location": "L769"
+      "source_location": "L810"
     },
     {
       "id": "assets_js_app_resetlevel",
@@ -975,7 +723,7 @@
       "file_type": "code",
       "norm_label": "resetlevel()",
       "source_file": "assets/js/app.js",
-      "source_location": "L978"
+      "source_location": "L1028"
     },
     {
       "id": "assets_js_app_runquiz",
@@ -987,7 +735,7 @@
       "file_type": "code",
       "norm_label": "runquiz()",
       "source_file": "assets/js/app.js",
-      "source_location": "L854"
+      "source_location": "L904"
     },
     {
       "id": "assets_js_app_showlevels",
@@ -999,7 +747,7 @@
       "file_type": "code",
       "norm_label": "showlevels()",
       "source_file": "assets/js/app.js",
-      "source_location": "L567"
+      "source_location": "L573"
     },
     {
       "id": "assets_js_app_showsolution",
@@ -1011,7 +759,7 @@
       "file_type": "code",
       "norm_label": "showsolution()",
       "source_file": "assets/js/app.js",
-      "source_location": "L618"
+      "source_location": "L659"
     },
     {
       "id": "assets_js_app_showwhypowershell",
@@ -1035,7 +783,7 @@
       "file_type": "code",
       "norm_label": "startlevel()",
       "source_file": "assets/js/app.js",
-      "source_location": "L899"
+      "source_location": "L949"
     },
     {
       "id": "assets_js_app_startsandbox",
@@ -1047,7 +795,7 @@
       "file_type": "code",
       "norm_label": "startsandbox()",
       "source_file": "assets/js/app.js",
-      "source_location": "L950"
+      "source_location": "L1000"
     },
     {
       "id": "assets_js_app_togglelang",
@@ -1059,7 +807,7 @@
       "file_type": "code",
       "norm_label": "togglelang()",
       "source_file": "assets/js/app.js",
-      "source_location": "L1120"
+      "source_location": "L1170"
     },
     {
       "id": "assets_js_app_togglenav",
@@ -1071,7 +819,7 @@
       "file_type": "code",
       "norm_label": "togglenav()",
       "source_file": "assets/js/app.js",
-      "source_location": "L1133"
+      "source_location": "L1183"
     },
     {
       "id": "assets_js_app_updatechrome",
@@ -1614,12 +1362,180 @@
       "source_location": "L9"
     },
     {
+      "id": "assets_js_engine_canonicalcmdlet",
+      "label": "canonicalCmdlet()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "engine.js",
+      "file_type": "code",
+      "norm_label": "canonicalcmdlet()",
+      "source_file": "assets/js/engine.js",
+      "source_location": "L560"
+    },
+    {
+      "id": "assets_js_engine_defaultfilesystem",
+      "label": "defaultFileSystem()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "engine.js",
+      "file_type": "code",
+      "norm_label": "defaultfilesystem()",
+      "source_file": "assets/js/engine.js",
+      "source_location": "L188"
+    },
+    {
+      "id": "assets_js_engine_defaultprocesses",
+      "label": "defaultProcesses()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "engine.js",
+      "file_type": "code",
+      "norm_label": "defaultprocesses()",
+      "source_file": "assets/js/engine.js",
+      "source_location": "L263"
+    },
+    {
+      "id": "assets_js_engine_defaultservices",
+      "label": "defaultServices()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "engine.js",
+      "file_type": "code",
+      "norm_label": "defaultservices()",
+      "source_file": "assets/js/engine.js",
+      "source_location": "L328"
+    },
+    {
+      "id": "assets_js_engine_expand",
+      "label": "expand()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "engine.js",
+      "file_type": "code",
+      "norm_label": "expand()",
+      "source_file": "assets/js/engine.js",
+      "source_location": "L152"
+    },
+    {
+      "id": "assets_js_engine_formatoutput",
+      "label": "formatOutput()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "engine.js",
+      "file_type": "code",
+      "norm_label": "formatoutput()",
+      "source_file": "assets/js/engine.js",
+      "source_location": "L3723"
+    },
+    {
+      "id": "assets_js_engine_helptext",
+      "label": "helpText()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "engine.js",
+      "file_type": "code",
+      "norm_label": "helptext()",
+      "source_file": "assets/js/engine.js",
+      "source_location": "L3806"
+    },
+    {
+      "id": "assets_js_engine_parseargs",
+      "label": "parseArgs()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "engine.js",
+      "file_type": "code",
+      "norm_label": "parseargs()",
+      "source_file": "assets/js/engine.js",
+      "source_location": "L570"
+    },
+    {
+      "id": "assets_js_engine_previewobject",
+      "label": "previewObject()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "engine.js",
+      "file_type": "code",
+      "norm_label": "previewobject()",
+      "source_file": "assets/js/engine.js",
+      "source_location": "L3753"
+    },
+    {
+      "id": "assets_js_engine_rendertable",
+      "label": "renderTable()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "engine.js",
+      "file_type": "code",
+      "norm_label": "rendertable()",
+      "source_file": "assets/js/engine.js",
+      "source_location": "L3778"
+    },
+    {
+      "id": "assets_js_engine_session_assign",
+      "label": ".assign()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "engine.js",
+      "file_type": "code",
+      "norm_label": ".assign()",
+      "source_file": "assets/js/engine.js",
+      "source_location": "L1232"
+    },
+    {
+      "id": "assets_js_engine_session_constructor",
+      "label": ".constructor()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "engine.js",
+      "file_type": "code",
+      "norm_label": ".constructor()",
+      "source_file": "assets/js/engine.js",
+      "source_location": "L692"
+    },
+    {
+      "id": "assets_js_engine_session_resetworld",
+      "label": ".resetWorld()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "engine.js",
+      "file_type": "code",
+      "norm_label": ".resetworld()",
+      "source_file": "assets/js/engine.js",
+      "source_location": "L702"
+    },
+    {
+      "id": "assets_js_engine_session_run",
+      "label": ".run()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "engine.js",
+      "file_type": "code",
+      "norm_label": ".run()",
+      "source_file": "assets/js/engine.js",
+      "source_location": "L821"
+    },
+    {
       "id": "assets_js_engine_session_runblock",
       "label": ".runBlock()",
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "evalExpr",
+      "community_name": "engine.js",
       "file_type": "code",
       "norm_label": ".runblock()",
       "source_file": "assets/js/engine.js",
@@ -1631,7 +1547,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "evalExpr",
+      "community_name": "engine.js",
       "file_type": "code",
       "norm_label": ".runforeach()",
       "source_file": "assets/js/engine.js",
@@ -1643,11 +1559,35 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "evalExpr",
+      "community_name": "engine.js",
       "file_type": "code",
       "norm_label": ".runif()",
       "source_file": "assets/js/engine.js",
       "source_location": "L1003"
+    },
+    {
+      "id": "assets_js_engine_session_runone",
+      "label": ".runOne()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "engine.js",
+      "file_type": "code",
+      "norm_label": ".runone()",
+      "source_file": "assets/js/engine.js",
+      "source_location": "L1184"
+    },
+    {
+      "id": "assets_js_engine_session_runpipeline",
+      "label": ".runPipeline()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "engine.js",
+      "file_type": "code",
+      "norm_label": ".runpipeline()",
+      "source_file": "assets/js/engine.js",
+      "source_location": "L1443"
     },
     {
       "id": "assets_js_engine_session_runswitch",
@@ -1655,7 +1595,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "evalExpr",
+      "community_name": "engine.js",
       "file_type": "code",
       "norm_label": ".runswitch()",
       "source_file": "assets/js/engine.js",
@@ -1667,7 +1607,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "evalExpr",
+      "community_name": "engine.js",
       "file_type": "code",
       "norm_label": ".runtry()",
       "source_file": "assets/js/engine.js",
@@ -1679,11 +1619,23 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "evalExpr",
+      "community_name": "engine.js",
       "file_type": "code",
       "norm_label": ".runwhile()",
       "source_file": "assets/js/engine.js",
       "source_location": "L1097"
+    },
+    {
+      "id": "assets_js_engine_session_trygamecommand",
+      "label": ".tryGameCommand()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "engine.js",
+      "file_type": "code",
+      "norm_label": ".trygamecommand()",
+      "source_file": "assets/js/engine.js",
+      "source_location": "L1319"
     },
     {
       "id": "assets_js_engine_session_trylanguage",
@@ -1691,11 +1643,71 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "evalExpr",
+      "community_name": "engine.js",
       "file_type": "code",
       "norm_label": ".trylanguage()",
       "source_file": "assets/js/engine.js",
       "source_location": "L937"
+    },
+    {
+      "id": "assets_js_engine_splitpipeline",
+      "label": "splitPipeline()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "engine.js",
+      "file_type": "code",
+      "norm_label": "splitpipeline()",
+      "source_file": "assets/js/engine.js",
+      "source_location": "L58"
+    },
+    {
+      "id": "assets_js_engine_splitstatements",
+      "label": "splitStatements()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "engine.js",
+      "file_type": "code",
+      "norm_label": "splitstatements()",
+      "source_file": "assets/js/engine.js",
+      "source_location": "L3649"
+    },
+    {
+      "id": "assets_js_engine_stringify",
+      "label": "stringify()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "engine.js",
+      "file_type": "code",
+      "norm_label": "stringify()",
+      "source_file": "assets/js/engine.js",
+      "source_location": "L3712"
+    },
+    {
+      "id": "assets_js_engine_tokenize",
+      "label": "tokenize()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "engine.js",
+      "file_type": "code",
+      "norm_label": "tokenize()",
+      "source_file": "assets/js/engine.js",
+      "source_location": "L94"
+    },
+    {
+      "id": "assets_js_engine_unquote",
+      "label": "unquote()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "engine.js",
+      "file_type": "code",
+      "norm_label": "unquote()",
+      "source_file": "assets/js/engine.js",
+      "source_location": "L136"
     },
     {
       "id": "assets_js_lang_balanced",
@@ -1703,7 +1715,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "evalExpr",
+      "community_name": "engine.js",
       "file_type": "code",
       "norm_label": "balanced()",
       "source_file": "assets/js/lang.js",
@@ -1715,7 +1727,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "evalExpr",
+      "community_name": "engine.js",
       "file_type": "code",
       "norm_label": "coerceval()",
       "source_file": "assets/js/lang.js",
@@ -1727,7 +1739,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "evalExpr",
+      "community_name": "engine.js",
       "file_type": "code",
       "norm_label": "compareop()",
       "source_file": "assets/js/lang.js",
@@ -1739,7 +1751,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "evalExpr",
+      "community_name": "engine.js",
       "file_type": "code",
       "norm_label": "equals()",
       "source_file": "assets/js/lang.js",
@@ -1751,7 +1763,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "evalExpr",
+      "community_name": "engine.js",
       "file_type": "code",
       "norm_label": "evalatom()",
       "source_file": "assets/js/lang.js",
@@ -1763,7 +1775,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "evalExpr",
+      "community_name": "engine.js",
       "file_type": "code",
       "norm_label": "evalexpr()",
       "source_file": "assets/js/lang.js",
@@ -1775,7 +1787,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "evalExpr",
+      "community_name": "engine.js",
       "file_type": "code",
       "norm_label": "expand()",
       "source_file": "assets/js/lang.js",
@@ -1787,7 +1799,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "evalExpr",
+      "community_name": "engine.js",
       "file_type": "code",
       "norm_label": "findtoparithmetic()",
       "source_file": "assets/js/lang.js",
@@ -1799,7 +1811,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "evalExpr",
+      "community_name": "engine.js",
       "file_type": "code",
       "norm_label": "ispsobject()",
       "source_file": "assets/js/lang.js",
@@ -1811,7 +1823,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "evalExpr",
+      "community_name": "engine.js",
       "file_type": "code",
       "norm_label": "likematch()",
       "source_file": "assets/js/lang.js",
@@ -1823,7 +1835,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "evalExpr",
+      "community_name": "engine.js",
       "file_type": "code",
       "norm_label": "parsehashtable()",
       "source_file": "assets/js/lang.js",
@@ -1835,7 +1847,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "evalExpr",
+      "community_name": "engine.js",
       "file_type": "code",
       "norm_label": "readblock()",
       "source_file": "assets/js/lang.js",
@@ -1847,7 +1859,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "evalExpr",
+      "community_name": "engine.js",
       "file_type": "code",
       "norm_label": "resolvevarexpr()",
       "source_file": "assets/js/lang.js",
@@ -1859,7 +1871,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "evalExpr",
+      "community_name": "engine.js",
       "file_type": "code",
       "norm_label": "splitlogical()",
       "source_file": "assets/js/lang.js",
@@ -1871,7 +1883,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "evalExpr",
+      "community_name": "engine.js",
       "file_type": "code",
       "norm_label": "splittop()",
       "source_file": "assets/js/lang.js",
@@ -1883,7 +1895,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "evalExpr",
+      "community_name": "engine.js",
       "file_type": "code",
       "norm_label": "truthy()",
       "source_file": "assets/js/lang.js",
@@ -1895,7 +1907,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "evalExpr",
+      "community_name": "engine.js",
       "file_type": "code",
       "norm_label": "typecheck()",
       "source_file": "assets/js/lang.js",
@@ -1907,7 +1919,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "evalExpr",
+      "community_name": "engine.js",
       "file_type": "code",
       "norm_label": "unquote()",
       "source_file": "assets/js/lang.js",
@@ -2442,28 +2454,6 @@
       "source_location": "L128"
     },
     {
-      "id": "assets_js_engine",
-      "label": "engine.js",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "Session",
-      "file_type": "code",
-      "norm_label": "engine.js",
-      "source_file": "assets/js/engine.js",
-      "source_location": "L1"
-    },
-    {
-      "id": "assets_js_engine_canonical",
-      "label": "CANONICAL",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "Session",
-      "file_type": "code",
-      "norm_label": "canonical",
-      "source_file": "assets/js/engine.js",
-      "source_location": "L431"
-    },
-    {
       "id": "assets_js_app",
       "label": "app.js",
       "_origin": "ast",
@@ -2483,7 +2473,7 @@
       "file_type": "code",
       "norm_label": "bootcommands",
       "source_file": "assets/js/app.js",
-      "source_location": "L1224"
+      "source_location": "L1274"
     },
     {
       "id": "assets_js_app_lastrun",
@@ -2505,7 +2495,7 @@
       "file_type": "code",
       "norm_label": "params",
       "source_file": "assets/js/app.js",
-      "source_location": "L1223"
+      "source_location": "L1273"
     },
     {
       "id": "assets_js_app_progressmap",
@@ -2538,7 +2528,7 @@
       "file_type": "code",
       "norm_label": "startlevelparam",
       "source_file": "assets/js/app.js",
-      "source_location": "L1225"
+      "source_location": "L1275"
     },
     {
       "id": "assets_js_app_term",
@@ -3188,11 +3178,33 @@
       "source_location": "L1"
     },
     {
+      "id": "assets_js_engine",
+      "label": "engine.js",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "engine.js",
+      "file_type": "code",
+      "norm_label": "engine.js",
+      "source_file": "assets/js/engine.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "assets_js_engine_canonical",
+      "label": "CANONICAL",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "engine.js",
+      "file_type": "code",
+      "norm_label": "canonical",
+      "source_file": "assets/js/engine.js",
+      "source_location": "L431"
+    },
+    {
       "id": "assets_js_lang",
       "label": "lang.js",
       "_origin": "ast",
       "community": 2,
-      "community_name": "evalExpr",
+      "community_name": "engine.js",
       "file_type": "code",
       "norm_label": "lang.js",
       "source_file": "assets/js/lang.js",
@@ -3872,7 +3884,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L883",
+      "source_location": "L933",
       "weight": 1.0
     },
     {
@@ -3896,7 +3908,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L1002",
+      "source_location": "L1052",
       "weight": 1.0
     },
     {
@@ -3908,7 +3920,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L1005",
+      "source_location": "L1055",
       "weight": 1.0
     },
     {
@@ -3920,7 +3932,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L1015",
+      "source_location": "L1065",
       "weight": 1.0
     },
     {
@@ -3932,7 +3944,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L1016",
+      "source_location": "L1066",
       "weight": 1.0
     },
     {
@@ -3944,7 +3956,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L1017",
+      "source_location": "L1067",
       "weight": 1.0
     },
     {
@@ -3956,7 +3968,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L1032",
+      "source_location": "L1082",
       "weight": 1.0
     },
     {
@@ -3968,7 +3980,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L1035",
+      "source_location": "L1085",
       "weight": 1.0
     },
     {
@@ -3980,7 +3992,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L1039",
+      "source_location": "L1089",
       "weight": 1.0
     },
     {
@@ -3992,7 +4004,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L1051",
+      "source_location": "L1101",
       "weight": 1.0
     },
     {
@@ -4004,7 +4016,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L1062",
+      "source_location": "L1112",
       "weight": 1.0
     },
     {
@@ -4016,7 +4028,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L1076",
+      "source_location": "L1126",
       "weight": 1.0
     },
     {
@@ -4028,7 +4040,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L1078",
+      "source_location": "L1128",
       "weight": 1.0
     },
     {
@@ -4040,7 +4052,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L1103",
+      "source_location": "L1153",
       "weight": 1.0
     },
     {
@@ -4261,6 +4273,18 @@
     },
     {
       "source": "assets_js_app_openuihelp",
+      "target": "assets_js_ui_help_startuitour",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "assets/js/app.js",
+      "source_location": "L868",
+      "weight": 1.0
+    },
+    {
+      "source": "assets_js_app_openuihelp",
       "target": "assets_js_dialog_showmodal",
       "relation": "calls",
       "_origin": "ast",
@@ -4268,7 +4292,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L830",
+      "source_location": "L869",
       "weight": 1.0
     },
     {
@@ -4280,7 +4304,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L831",
+      "source_location": "L870",
       "weight": 1.0
     },
     {
@@ -4292,19 +4316,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L832",
+      "source_location": "L871",
       "weight": 1.0
     },
     {
       "source": "assets_js_app_openuihelp",
-      "target": "assets_js_ui_help_startuitour",
+      "target": "assets_js_app_openuihelp",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L836",
+      "source_location": "L891",
       "weight": 1.0
     },
     {
@@ -4364,7 +4388,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L1148",
+      "source_location": "L1198",
       "weight": 1.0
     },
     {
@@ -4376,7 +4400,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L1149",
+      "source_location": "L1199",
       "weight": 1.0
     },
     {
@@ -4496,7 +4520,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L670",
+      "source_location": "L711",
       "weight": 1.0
     },
     {
@@ -4508,7 +4532,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L724",
+      "source_location": "L765",
       "weight": 1.0
     },
     {
@@ -4520,7 +4544,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L770",
+      "source_location": "L811",
       "weight": 1.0
     },
     {
@@ -4532,7 +4556,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L776",
+      "source_location": "L817",
       "weight": 1.0
     },
     {
@@ -4544,7 +4568,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L778",
+      "source_location": "L819",
       "weight": 1.0
     },
     {
@@ -4556,7 +4580,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L783",
+      "source_location": "L824",
       "weight": 1.0
     },
     {
@@ -4568,7 +4592,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L784",
+      "source_location": "L825",
       "weight": 1.0
     },
     {
@@ -4580,7 +4604,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L786",
+      "source_location": "L827",
       "weight": 1.0
     },
     {
@@ -4592,7 +4616,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L788",
+      "source_location": "L829",
       "weight": 1.0
     },
     {
@@ -4604,7 +4628,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L980",
+      "source_location": "L1030",
       "weight": 1.0
     },
     {
@@ -4616,7 +4640,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L982",
+      "source_location": "L1032",
       "weight": 1.0
     },
     {
@@ -4628,7 +4652,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L991",
+      "source_location": "L1041",
       "weight": 1.0
     },
     {
@@ -4640,7 +4664,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L855",
+      "source_location": "L905",
       "weight": 1.0
     },
     {
@@ -4652,43 +4676,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L858",
-      "weight": 1.0
-    },
-    {
-      "source": "assets_js_app_showlevels",
-      "target": "assets_js_levels_catalog_levelsinseries",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "assets/js/app.js",
-      "source_location": "L569",
-      "weight": 1.0
-    },
-    {
-      "source": "assets_js_app_showlevels",
-      "target": "assets_js_i18n_index_localizeseriestitle",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "assets/js/app.js",
-      "source_location": "L570",
-      "weight": 1.0
-    },
-    {
-      "source": "assets_js_app_showlevels",
-      "target": "assets_js_depth_getdepthcontent",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "assets/js/app.js",
-      "source_location": "L571",
+      "source_location": "L908",
       "weight": 1.0
     },
     {
@@ -4700,7 +4688,31 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L571",
+      "source_location": "L574",
+      "weight": 1.0
+    },
+    {
+      "source": "assets_js_app_showlevels",
+      "target": "assets_js_levels_catalog_levelsinseries",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "assets/js/app.js",
+      "source_location": "L576",
+      "weight": 1.0
+    },
+    {
+      "source": "assets_js_app_showlevels",
+      "target": "assets_js_i18n_index_localizeseriestitle",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "assets/js/app.js",
+      "source_location": "L577",
       "weight": 1.0
     },
     {
@@ -4712,19 +4724,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L574",
-      "weight": 1.0
-    },
-    {
-      "source": "assets_js_app_showlevels",
-      "target": "assets_js_i18n_index_ui",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "assets/js/app.js",
-      "source_location": "L579",
+      "source_location": "L580",
       "weight": 1.0
     },
     {
@@ -4736,7 +4736,31 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L584",
+      "source_location": "L591",
+      "weight": 1.0
+    },
+    {
+      "source": "assets_js_app_showlevels",
+      "target": "assets_js_app_renderdiffdots",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "assets/js/app.js",
+      "source_location": "L595",
+      "weight": 1.0
+    },
+    {
+      "source": "assets_js_app_showlevels",
+      "target": "assets_js_i18n_index_ui",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "assets/js/app.js",
+      "source_location": "L595",
       "weight": 1.0
     },
     {
@@ -4748,7 +4772,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L600",
+      "source_location": "L629",
+      "weight": 1.0
+    },
+    {
+      "source": "assets_js_app_showlevels",
+      "target": "assets_js_dialog_rendermarkdown",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "assets/js/app.js",
+      "source_location": "L637",
       "weight": 1.0
     },
     {
@@ -4760,7 +4796,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L612",
+      "source_location": "L653",
       "weight": 1.0
     },
     {
@@ -4772,7 +4808,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L623",
+      "source_location": "L664",
       "weight": 1.0
     },
     {
@@ -4784,7 +4820,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L626",
+      "source_location": "L667",
       "weight": 1.0
     },
     {
@@ -4796,7 +4832,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L627",
+      "source_location": "L668",
       "weight": 1.0
     },
     {
@@ -4808,7 +4844,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L628",
+      "source_location": "L669",
       "weight": 1.0
     },
     {
@@ -4820,7 +4856,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L646",
+      "source_location": "L687",
       "weight": 1.0
     },
     {
@@ -4832,7 +4868,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L648",
+      "source_location": "L689",
       "weight": 1.0
     },
     {
@@ -4880,7 +4916,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L900",
+      "source_location": "L950",
       "weight": 1.0
     },
     {
@@ -4892,7 +4928,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L905",
+      "source_location": "L955",
       "weight": 1.0
     },
     {
@@ -4904,7 +4940,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L906",
+      "source_location": "L956",
       "weight": 1.0
     },
     {
@@ -4916,7 +4952,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L908",
+      "source_location": "L958",
       "weight": 1.0
     },
     {
@@ -4928,7 +4964,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L911",
+      "source_location": "L961",
       "weight": 1.0
     },
     {
@@ -4940,7 +4976,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L923",
+      "source_location": "L973",
       "weight": 1.0
     },
     {
@@ -4952,7 +4988,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L926",
+      "source_location": "L976",
       "weight": 1.0
     },
     {
@@ -4964,7 +5000,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L946",
+      "source_location": "L996",
       "weight": 1.0
     },
     {
@@ -4976,7 +5012,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L954",
+      "source_location": "L1004",
       "weight": 1.0
     },
     {
@@ -4988,7 +5024,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L955",
+      "source_location": "L1005",
       "weight": 1.0
     },
     {
@@ -5000,7 +5036,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L957",
+      "source_location": "L1007",
       "weight": 1.0
     },
     {
@@ -5012,7 +5048,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L960",
+      "source_location": "L1010",
       "weight": 1.0
     },
     {
@@ -5024,7 +5060,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L974",
+      "source_location": "L1024",
       "weight": 1.0
     },
     {
@@ -8581,6 +8617,30 @@
     },
     {
       "source": "assets_js_app",
+      "target": "assets_js_app_startsandbox",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "assets/js/app.js",
+      "source_location": "L1000",
+      "weight": 1.0
+    },
+    {
+      "source": "assets_js_app",
+      "target": "assets_js_app_resetlevel",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "assets/js/app.js",
+      "source_location": "L1028",
+      "weight": 1.0
+    },
+    {
+      "source": "assets_js_app",
       "target": "assets_js_app_togglelang",
       "relation": "contains",
       "_origin": "ast",
@@ -8588,7 +8648,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L1120",
+      "source_location": "L1170",
       "weight": 1.0
     },
     {
@@ -8600,43 +8660,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L1127",
-      "weight": 1.0
-    },
-    {
-      "source": "assets_js_app",
-      "target": "assets_js_app_togglenav",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "assets/js/app.js",
-      "source_location": "L1133",
-      "weight": 1.0
-    },
-    {
-      "source": "assets_js_app",
-      "target": "assets_js_app_closenav",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "assets/js/app.js",
-      "source_location": "L1140",
-      "weight": 1.0
-    },
-    {
-      "source": "assets_js_app",
-      "target": "assets_js_app_remountafterlocale",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "assets/js/app.js",
-      "source_location": "L1147",
+      "source_location": "L1177",
       "weight": 1.0
     },
     {
@@ -8649,6 +8673,42 @@
       "context": "call",
       "source_file": "assets/js/app.js",
       "source_location": "L118",
+      "weight": 1.0
+    },
+    {
+      "source": "assets_js_app",
+      "target": "assets_js_app_togglenav",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "assets/js/app.js",
+      "source_location": "L1183",
+      "weight": 1.0
+    },
+    {
+      "source": "assets_js_app",
+      "target": "assets_js_app_closenav",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "assets/js/app.js",
+      "source_location": "L1190",
+      "weight": 1.0
+    },
+    {
+      "source": "assets_js_app",
+      "target": "assets_js_app_remountafterlocale",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "assets/js/app.js",
+      "source_location": "L1197",
       "weight": 1.0
     },
     {
@@ -8684,7 +8744,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L567",
+      "source_location": "L573",
       "weight": 1.0
     },
     {
@@ -8696,7 +8756,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L618",
+      "source_location": "L659",
       "weight": 1.0
     },
     {
@@ -8720,7 +8780,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L769",
+      "source_location": "L810",
       "weight": 1.0
     },
     {
@@ -8732,31 +8792,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/app.js",
-      "source_location": "L829",
-      "weight": 1.0
-    },
-    {
-      "source": "assets_js_app",
-      "target": "assets_js_app_startsandbox",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "assets/js/app.js",
-      "source_location": "L950",
-      "weight": 1.0
-    },
-    {
-      "source": "assets_js_app",
-      "target": "assets_js_app_resetlevel",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "assets/js/app.js",
-      "source_location": "L978",
+      "source_location": "L867",
       "weight": 1.0
     },
     {
@@ -9973,39 +10009,6 @@
     },
     {
       "source": "assets_js_app",
-      "target": "assets_js_app_params",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "assets/js/app.js",
-      "source_location": "L1223",
-      "weight": 1.0
-    },
-    {
-      "source": "assets_js_app",
-      "target": "assets_js_app_bootcommands",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "assets/js/app.js",
-      "source_location": "L1224",
-      "weight": 1.0
-    },
-    {
-      "source": "assets_js_app",
-      "target": "assets_js_app_startlevelparam",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "assets/js/app.js",
-      "source_location": "L1225",
-      "weight": 1.0
-    },
-    {
-      "source": "assets_js_app",
       "target": "assets_js_app_renderdock",
       "relation": "contains",
       "_origin": "ast",
@@ -10017,6 +10020,39 @@
     },
     {
       "source": "assets_js_app",
+      "target": "assets_js_app_params",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "assets/js/app.js",
+      "source_location": "L1273",
+      "weight": 1.0
+    },
+    {
+      "source": "assets_js_app",
+      "target": "assets_js_app_bootcommands",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "assets/js/app.js",
+      "source_location": "L1274",
+      "weight": 1.0
+    },
+    {
+      "source": "assets_js_app",
+      "target": "assets_js_app_startlevelparam",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "assets/js/app.js",
+      "source_location": "L1275",
+      "weight": 1.0
+    },
+    {
+      "source": "assets_js_app",
       "target": "assets_js_app_onlevelsolved",
       "relation": "contains",
       "_origin": "ast",
@@ -10024,6 +10060,17 @@
       "confidence_score": 1.0,
       "source_file": "assets/js/app.js",
       "source_location": "L301",
+      "weight": 1.0
+    },
+    {
+      "source": "assets_js_app",
+      "target": "assets_js_app_renderdiffdots",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "assets/js/app.js",
+      "source_location": "L568",
       "weight": 1.0
     },
     {
@@ -10067,7 +10114,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/app.js",
-      "source_location": "L658",
+      "source_location": "L699",
       "weight": 1.0
     },
     {
@@ -10094,17 +10141,6 @@
     },
     {
       "source": "assets_js_app",
-      "target": "assets_js_app_runquiz",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "assets/js/app.js",
-      "source_location": "L854",
-      "weight": 1.0
-    },
-    {
-      "source": "assets_js_app",
       "target": "assets_js_app_curriculum",
       "relation": "contains",
       "_origin": "ast",
@@ -10116,24 +10152,13 @@
     },
     {
       "source": "assets_js_app",
-      "target": "assets_js_app_askquiz",
+      "target": "assets_js_app_runquiz",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/app.js",
-      "source_location": "L882",
-      "weight": 1.0
-    },
-    {
-      "source": "assets_js_app",
-      "target": "assets_js_app_startlevel",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "assets/js/app.js",
-      "source_location": "L899",
+      "source_location": "L904",
       "weight": 1.0
     },
     {
@@ -10145,6 +10170,28 @@
       "confidence_score": 1.0,
       "source_file": "assets/js/app.js",
       "source_location": "L91",
+      "weight": 1.0
+    },
+    {
+      "source": "assets_js_app",
+      "target": "assets_js_app_askquiz",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "assets/js/app.js",
+      "source_location": "L932",
+      "weight": 1.0
+    },
+    {
+      "source": "assets_js_app",
+      "target": "assets_js_app_startlevel",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "assets/js/app.js",
+      "source_location": "L949",
       "weight": 1.0
     },
     {
@@ -13166,5 +13213,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "51820aa8349c37602bb6d0d36af48cf8b4062267"
+  "built_at_commit": "75210523aada576bdeb6bab91f8fc954e57b6272"
 }

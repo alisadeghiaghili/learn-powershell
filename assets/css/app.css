@@ -1124,6 +1124,23 @@ html[dir="rtl"] .lang-option {
   font-weight: 700;
 }
 
+.modal .markdown {
+  color: var(--text);
+  font-size: 14px;
+}
+
+.modal .markdown a {
+  color: #60a5fa;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 600;
+  transition: color 120ms ease;
+}
+
+.modal .markdown a:hover {
+  color: #93c5fd;
+}
+
 .modal h2.visually-hidden {
   position: absolute;
   width: 1px;
@@ -1435,10 +1452,56 @@ html[dir="rtl"] .share-block {
   margin-inline-end: 4px;
 }
 
+.legend-box {
+  border: 1px solid var(--border);
+  background: var(--ink);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin: 0 0 14px;
+}
+
+.legend-box .next-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--haze);
+  margin-bottom: 6px;
+}
+
+.legend-list {
+  margin: 6px 0 0;
+  padding-inline-start: 16px;
+}
+
+.legend-list li {
+  margin-bottom: 6px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.series-block {
+  margin-bottom: 16px;
+}
+
+.series-block header h3 {
+  margin: 0 0 4px;
+  color: var(--haze);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.series-block header p {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
 .level-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  display: grid;
+  gap: 8px;
   padding: 0;
   margin: 0;
   list-style: none;
@@ -1447,38 +1510,53 @@ html[dir="rtl"] .share-block {
 .level-row {
   appearance: none;
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
   gap: 10px;
-  padding: 8px 12px;
-  border-radius: 8px;
+  align-items: center;
   border: 1px solid var(--border);
-  background: var(--elevated);
+  border-radius: 10px;
+  padding: 10px;
+  background: var(--ink);
   color: var(--text);
   font-family: var(--ui);
   font-size: 12.5px;
   cursor: pointer;
-  text-align: left;
+  text-align: start;
   transition: all 120ms ease;
 }
 
-html[dir="rtl"] .level-row {
-  text-align: right;
-}
-
 .level-row:hover {
-  background: #25334d;
+  background: #172133;
   border-color: #3b4e6d;
 }
 
-.level-row.is-done {
-  border-color: color-mix(in srgb, var(--success) 35%, var(--border));
+.level-row.is-done,
+.level-row.solved {
+  border-color: color-mix(in srgb, var(--ok) 40%, var(--border));
 }
 
 .level-row.is-mindset-row {
   border-inline-start: 3px solid #818cf8;
-  background: color-mix(in srgb, #6366f1 8%, var(--elevated));
+  background: color-mix(in srgb, #6366f1 8%, var(--ink));
+}
+
+.level-row .id {
+  font-family: var(--mono);
+  color: var(--haze);
+  font-size: 11px;
+}
+
+.level-row .name {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.level-row .par-note {
+  color: var(--haze);
+  font-family: var(--mono);
+  font-size: 12px;
+  white-space: nowrap;
 }
 
 .mindset-pill {
@@ -1494,30 +1572,51 @@ html[dir="rtl"] .level-row {
   border: 1px solid rgba(99, 102, 241, 0.35);
 }
 
-.level-meta {
-  font-family: var(--mono);
+/* Chip component matching learn-dvc */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border-radius: 999px;
+  padding: 1px 8px;
   font-size: 11px;
-  color: var(--muted);
+  font-family: var(--ui);
+  border: 1px solid var(--border);
+  color: var(--haze);
+  background: var(--panel-2);
+  white-space: nowrap;
 }
 
-/* Difficulty dots */
+.chip.ok {
+  color: #b8ffd9;
+  border-color: color-mix(in srgb, var(--ok) 45%, var(--border));
+  background: color-mix(in srgb, var(--ok) 14%, var(--ink));
+}
+
+/* Difficulty dots — 5 slots, dots colored with learn-dvc orange #f59e0b */
 .diff-dots {
   display: inline-flex;
   align-items: center;
   gap: 3px;
+  vertical-align: middle;
+  line-height: 1;
 }
 
 .diff-dot {
-  width: 6px;
-  height: 6px;
+  display: inline-block;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: transparent;
   border: 1px solid var(--haze);
+  box-sizing: border-box;
+  flex: 0 0 7px;
 }
 
 .diff-dot.on {
-  background: var(--object);
-  border-color: var(--object);
+  background: #f59e0b;
+  border-color: #f59e0b;
 }
 
 /* RTL overrides */
@@ -1603,21 +1702,27 @@ html[dir="rtl"] pre {
   }
 }
 
-/* UI Tour pulse — outlines live regions while the guide is open */
+/* UI Tour pulse — outlines live regions while the guide is open (matches learn-dvc orange theme) */
 .ui-tour-on {
-  outline: 2px dashed color-mix(in srgb, var(--accent) 85%, transparent) !important;
+  outline: 2px dashed color-mix(in srgb, #f59e0b 70%, transparent) !important;
   outline-offset: 3px;
-  border-radius: 6px;
   animation: tour-pulse 1.2s ease-in-out infinite;
 }
 
 @keyframes tour-pulse {
   0%,
   100% {
-    outline-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    outline-color: color-mix(in srgb, #f59e0b 45%, transparent);
   }
   50% {
-    outline-color: color-mix(in srgb, var(--success) 85%, transparent);
+    outline-color: color-mix(in srgb, var(--ok) 75%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-tour-on {
+    animation: none;
+    outline: 2px solid #f59e0b !important;
   }
 }
 

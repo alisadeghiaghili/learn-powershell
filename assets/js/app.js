@@ -564,25 +564,55 @@ function showWhyPowerShell() {
   });
 }
 
+/** Five equal-size dots; filled count = difficulty 1–5. */
+function renderDiffDots(difficulty) {
+  const n = Math.max(0, Math.min(5, difficulty));
+  return Array.from({ length: 5 }, (_, i) => `<i class="diff-dot${i < n ? " on" : ""}"></i>`).join("");
+}
+
 function showLevels() {
-  const seriesHtml = SERIES.map((s) => {
+  const isFa = getLocale() === "fa";
+  const seriesHtml = SERIES.map((s, seriesIndex) => {
     const levels = levelsInSeries(s.id);
     const seriesTitleStr = localizeSeriesTitle(s.id) || s.name;
-    const seriesDepth = getDepthContent(s.id, levels[0]?.id || "", getLocale());
     const items = levels
-      .map((l) => {
+      .map((l, levelIndex) => {
         const locL = localizeLevel(l);
-        const done = Boolean(progressMap[l.id]?.solved);
-        const best = progressMap[l.id]?.bestCommands;
+        const p = progressMap[l.id];
+        const done = Boolean(p?.solved);
+        const best = p?.bestCommands;
         const isMindset = Boolean(l.goal?.acknowledge || l.id.endsWith("-00"));
-        const metaStr = isMindset
-          ? `<span class="mindset-pill">${getLocale() === "fa" ? "🧠 مایندست مفهومی" : "🧠 Mindset"}</span>${done ? ` · ${ui().solvedLabel}` : ""}`
-          : `par ${l.par}${done ? ` · ${ui().solvedLabel}${best ? ` (${best})` : ""}` : ""}`;
+        
+        if (isMindset) {
+          const mindsetLabel = isFa ? "مایندست مفهومی" : "Mindset";
+          return `
+            <li>
+              <button type="button" class="level-row ${done ? "is-done solved" : ""} is-mindset-row" data-level="${l.id}">
+                <span class="id">${escapeHtml(l.id)}</span>
+                <span class="name"><span class="mindset-pill">🧠 ${escapeHtml(mindsetLabel)}</span> ${escapeHtml(locL.name)}</span>
+                <span class="par-note">ideal 1 cmd</span>
+                <span class="chip ${done ? "ok" : ""}">
+                  ${done ? `${escapeHtml(ui().solvedLabel)}${best !== undefined ? ` ${best}` : ""}` : `<span class="diff-dots" aria-label="1/5">${renderDiffDots(1)}</span>`}
+                </span>
+              </button>
+            </li>`;
+        }
+
+        // Calculate a 1-5 difficulty based on progression through the 24 series and level depth
+        const diff = Math.max(1, Math.min(5, Math.floor((seriesIndex / SERIES.length) * 4) + (l.par > 1 ? 2 : 1)));
+        const cmdsLabel = l.par === 1 ? "cmd" : "cmds";
+        const idealStr = `ideal ${l.par} ${cmdsLabel}`;
+        const diffTitle = ui().difficultyOf(diff);
+
         return `
           <li>
-            <button type="button" class="level-row ${done ? "is-done" : ""} ${isMindset ? "is-mindset-row" : ""}" data-level="${l.id}">
-              <span class="level-name">${escapeHtml(locL.name)}</span>
-              <span class="level-meta">${metaStr}</span>
+            <button type="button" class="level-row ${done ? "is-done solved" : ""}" data-level="${l.id}">
+              <span class="id">${escapeHtml(l.id)}</span>
+              <span class="name">${escapeHtml(locL.name)}</span>
+              <span class="par-note">${escapeHtml(idealStr)}</span>
+              <span class="chip ${done ? "ok" : ""}" title="${escapeHtml(diffTitle)}">
+                ${done ? `${escapeHtml(ui().solvedLabel)} ${best ?? l.par}` : `<span class="diff-dots" aria-label="${escapeHtml(diffTitle)}">${renderDiffDots(diff)}</span>`}
+              </span>
             </button>
           </li>`;
       })
@@ -591,7 +621,6 @@ function showLevels() {
       <section class="series-block">
         <header>
           <h3>${escapeHtml(seriesTitleStr)}</h3>
-          <p>${escapeHtml(s.description)}</p>
         </header>
         <ol class="level-list">${items}</ol>
       </section>`;
@@ -599,7 +628,19 @@ function showLevels() {
 
   const modal = showModal({
     title: ui().levelsTitle,
-    bodyHtml: `<p>${escapeHtml(ui().pickChallenge)}</p>${seriesHtml}`,
+    bodyHtml: `<p>${escapeHtml(ui().pickChallenge)}</p>
+      <div class="legend-box">
+        <div class="next-title">${escapeHtml(ui().howToRead)}</div>
+        <ul class="legend-list">
+          <li>
+            <span class="diff-dots" aria-hidden="true">${renderDiffDots(3)}</span>
+            ${renderMarkdown(ui().difficultyLegend)}
+          </li>
+          <li><span class="par-note">ideal 3 cmds</span> ${renderMarkdown(ui().idealLegend)}</li>
+          <li><span class="chip ok">${escapeHtml(ui().solvedLabel)} 3</span> ${renderMarkdown(ui().solvedLegend)}</li>
+        </ul>
+      </div>
+      ${seriesHtml}`,
     actions: [{ label: ui().close, className: "ghost", onClick: () => term.focus() }],
     onClose: () => term.focus(),
   });
@@ -821,25 +862,34 @@ function replayLesson() {
   bindEvents();
 }
 
-/**
- * Open the UI guide. When `runTour` is set, also pulse every region on the
- * page so the learner sees where each documented element lives.
- * @param {boolean} [runTour=false]
- */
+let helpReopenTimer = null;
+
 function openUiHelp(runTour = false) {
+  if (runTour) startUiTour(document);
   const modal = showModal({
     title: ui().uiGuideTitle,
     bodyHtml: uiHelpModalHtml(),
-    actions: [{ label: ui().close, className: "primary", onClick: () => term.focus() }],
-    onClose: () => term.focus(),
+    actions: [{ label: ui().close, className: "ghost", onClick: () => modal.close() }],
+    onClose: () => {
+      if (helpReopenTimer !== null) {
+        window.clearTimeout(helpReopenTimer);
+        helpReopenTimer = null;
+      }
+      term.focus();
+    },
   });
-  if (runTour) startUiTour(document);
 
   modal.el.querySelectorAll("[data-focus-id]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const id = btn.getAttribute("data-focus-id");
+      if (!id) return;
       modal.close();
-      if (id) startUiTour(document, id, 3500);
+      startUiTour(document, id, 3000);
+      if (helpReopenTimer !== null) window.clearTimeout(helpReopenTimer);
+      helpReopenTimer = window.setTimeout(() => {
+        helpReopenTimer = null;
+        openUiHelp(false);
+      }, 3000);
     });
   });
 }
@@ -1183,7 +1233,7 @@ document.querySelectorAll("[data-action]").forEach((btn) => {
     }
     if (action === "reset") resetLevel();
     if (action === "sandbox") startSandbox();
-    if (action === "help") openUiHelp();
+    if (action === "help") openUiHelp(true);
   });
 });
 

@@ -30,6 +30,7 @@ export const fa = {
       "انتشار و نگهداری توسط **Ali Sadeghi Aghili** — برنامه‌نویس، مهندس/دانشمند داده، مهندس ML. [linktr.ee/aliaghili](https://linktr.ee/aliaghili)",
     welcomeGithub: "- [GitHub — سورس و ایشو](https://github.com/alisadeghiaghili/learn-powershell)",
     welcomeCoffee: "Buy Me a Coffee (از ناشر حمایت می‌کند):",
+    sandbox: "سندباکس",
     openLevels: "باز کردن مرحله‌ها",
     whyPowerShellBtn: "چرا پاورشل؟",
     appWelcome:
@@ -115,6 +116,7 @@ export const fa = {
     idealLegend:
       "**تعداد فرمان ایده‌آل** — هدف گلف، نه سقف سخت.",
     solvedLegend: "**حل شد** — رد کردید؛ عدد بهترین تعداد فرمان شماست.",
+    difficultyOf: (n) => `سختی ${n} از ۵`,
     solvedLabel: "حل شد",
     githubTitle: "مخزن گیت‌هاب",
     supportTitle: "از ناشر حمایت کنید",
