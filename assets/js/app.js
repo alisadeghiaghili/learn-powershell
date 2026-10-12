@@ -461,7 +461,6 @@ function showLevels() {
         <header>
           <h3>${escapeHtml(seriesTitleStr)}</h3>
           <p>${escapeHtml(s.description)}</p>
-          ${seriesDepth?.eli5 ? `<div class="series-concept-preview"><strong>${getLocale() === "fa" ? "مفهوم پایه:" : "Core Concept:"}</strong> ${escapeHtml(seriesDepth.eli5)}</div>` : ""}
         </header>
         <ol class="level-list">${items}</ol>
       </section>`;
@@ -802,10 +801,6 @@ function startLevel(id) {
   } else {
     term.print(`— Level: ${locL.name} —`, "meta");
     term.print(locL.brief, "meta");
-    const depthContent = getDepthContent(level.series, level.id, getLocale());
-    if (depthContent?.eli5) {
-      term.print(`Concept: ${depthContent.eli5}`, "meta");
-    }
     if (level.teach?.what) {
       term.print(`What: ${level.teach.what}`, "meta");
       for (const w of level.teach.why || []) term.print(`Why: ${w}`, "meta");

@@ -3,6 +3,7 @@
   "1": "app.js",
   "2": "evalExpr",
   "3": "smoke.mjs",
+  "4": "dialog.js",
   "5": "createTerminal",
   "6": "index.js",
   "7": "progress.js",
