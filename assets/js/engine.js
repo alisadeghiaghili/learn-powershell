@@ -1368,6 +1368,11 @@ export class Session {
       used.push("sandbox");
       return { ok: true };
     }
+    if (head === "lesson") {
+      out.push("lesson");
+      used.push("lesson");
+      return { ok: true };
+    }
     if (head === "hint") {
       out.push("hint");
       used.push("hint");
@@ -3795,6 +3800,7 @@ function helpText(topic) {
   const map = {
     "": `LearnPowerShell help
   levels        open the level browser
+  lesson        open interactive 5-tier lesson (ELI5 to ELIPHD)
   hint          show the current level hint
   goal          show win conditions
   steps         show the teaching guide for the current level

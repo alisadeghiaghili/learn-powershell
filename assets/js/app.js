@@ -121,59 +121,9 @@ function renderDock() {
   if (!dockEl) return;
 
   if (mode === "sandbox" || !levelId) {
-    const depths = getDepthContent("objects", "objects-01", getLocale());
-    const activeTierObj = DEPTH_TIERS.find((t) => t.id === currentDepth) || DEPTH_TIERS[0];
-    const isFa = getLocale() === "fa";
-    const depthBarLabel = isFa ? "مدل ذهنی خط لوله (عمق یادگیری)" : "PIPELINE MENTAL MODEL (DEPTH)";
-    const toggleBtnText = spectrumMode
-      ? (isFa ? "نمای انتخابی" : "Focused View")
-      : (isFa ? "نردبان کامل ۵ سطحی" : "Full 5-Tier Ladder");
-
-    const pillsHtml = DEPTH_TIERS.map((tier) => {
-      const isActive = tier.id === currentDepth;
-      const tTitle = isFa ? tier.titleFa : tier.titleEn;
-      return `
-        <button type="button" class="depth-pill ${isActive ? "active" : ""}" data-depth="${tier.id}" title="${escapeHtml(tTitle)}">
-          <span>${tier.icon}</span> <span>${tier.label}</span>
-        </button>
-      `;
-    }).join("");
-
-    const depthCardsHtml = spectrumMode
-      ? `<div class="depth-spectrum">
-          ${DEPTH_TIERS.map((tier) => {
-            const tTitle = isFa ? tier.titleFa : tier.titleEn;
-            const content = depths[tier.id];
-            return `
-              <div class="depth-card" style="border-inline-start: 3px solid ${tier.color};">
-                <div class="depth-card-header">
-                  <span class="depth-badge" style="color: ${tier.color};">${tier.icon} ${tier.label}</span>
-                  <span class="depth-tier-title">${escapeHtml(tTitle)}</span>
-                </div>
-                <p class="depth-card-body">${escapeHtml(content)}</p>
-              </div>
-            `;
-          }).join("")}
-        </div>`
-      : `<div class="depth-card" style="border-inline-start: 3px solid ${activeTierObj.color};">
-          <div class="depth-card-header">
-            <span class="depth-badge" style="color: ${activeTierObj.color};">${activeTierObj.icon} ${activeTierObj.label}</span>
-            <span class="depth-tier-title">${escapeHtml(isFa ? activeTierObj.titleFa : activeTierObj.titleEn)}</span>
-          </div>
-          <p class="depth-card-body">${escapeHtml(depths[currentDepth] || depths.eli5)}</p>
-        </div>`;
-
     dockEl.innerHTML = `
       <h2>${escapeHtml(ui().learningGuide)}</h2>
       <p class="objective">${escapeHtml(ui().guideAlwaysOn)}</p>
-      <div class="depth-section">
-        <div class="depth-header-row">
-          <span class="depth-bar-label">${escapeHtml(depthBarLabel)}</span>
-          <button type="button" class="depth-mode-btn" id="depthModeToggle">${escapeHtml(toggleBtnText)}</button>
-        </div>
-        <div class="depth-pills">${pillsHtml}</div>
-        ${depthCardsHtml}
-      </div>
       <div class="learning-box">
         <div class="next-title">${escapeHtml(ui().startHere)}</div>
         <ul>
@@ -194,24 +144,6 @@ function renderDock() {
       </ul>
       <div class="par-note">${ui().guideFlashNote}</div>
     `;
-
-    dockEl.querySelectorAll(".depth-pill").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const d = btn.getAttribute("data-depth");
-        if (d) {
-          currentDepth = d;
-          try { localStorage.setItem("learnpowershell-depth", d); } catch {}
-          renderDock();
-        }
-      });
-    });
-    const modeToggle = dockEl.querySelector("#depthModeToggle");
-    if (modeToggle) {
-      modeToggle.addEventListener("click", () => {
-        spectrumMode = !spectrumMode;
-        renderDock();
-      });
-    }
     return;
   }
 
@@ -261,63 +193,9 @@ function renderDock() {
         <div class="par-note">${escapeHtml(ui().wrongCommandNote)}</div>
       </div>`;
 
-  const depths = getDepthContent(level.series, level.id, getLocale());
-  const activeTierObj = DEPTH_TIERS.find((t) => t.id === currentDepth) || DEPTH_TIERS[0];
-  const isFa = getLocale() === "fa";
-  const depthBarLabel = isFa ? "عمق یادگیری" : "COGNITIVE DEPTH";
-  const toggleBtnText = spectrumMode
-    ? (isFa ? "نمای انتخابی" : "Focused View")
-    : (isFa ? "نردبان کامل ۵ سطحی" : "Full 5-Tier Ladder");
-
-  const pillsHtml = DEPTH_TIERS.map((tier) => {
-    const isActive = tier.id === currentDepth;
-    const tTitle = isFa ? tier.titleFa : tier.titleEn;
-    return `
-      <button type="button" class="depth-pill ${isActive ? "active" : ""}" data-depth="${tier.id}" title="${escapeHtml(tTitle)}">
-        <span>${tier.icon}</span> <span>${tier.label}</span>
-      </button>
-    `;
-  }).join("");
-
-  const depthCardsHtml = spectrumMode
-    ? `<div class="depth-spectrum">
-        ${DEPTH_TIERS.map((tier) => {
-          const tTitle = isFa ? tier.titleFa : tier.titleEn;
-          const content = depths[tier.id];
-          return `
-            <div class="depth-card" style="border-inline-start: 3px solid ${tier.color};">
-              <div class="depth-card-header">
-                <span class="depth-badge" style="color: ${tier.color};">${tier.icon} ${tier.label}</span>
-                <span class="depth-tier-title">${escapeHtml(tTitle)}</span>
-              </div>
-              <p class="depth-card-body">${escapeHtml(content)}</p>
-            </div>
-          `;
-        }).join("")}
-      </div>`
-    : `<div class="depth-card" style="border-inline-start: 3px solid ${activeTierObj.color};">
-        <div class="depth-card-header">
-          <span class="depth-badge" style="color: ${activeTierObj.color};">${activeTierObj.icon} ${activeTierObj.label}</span>
-          <span class="depth-tier-title">${escapeHtml(isFa ? activeTierObj.titleFa : activeTierObj.titleEn)}</span>
-        </div>
-        <p class="depth-card-body">${escapeHtml(depths[currentDepth] || depths.eli5)}</p>
-      </div>`;
-
-  const depthSectionHtml = `
-    <div class="depth-section">
-      <div class="depth-header-row">
-        <span class="depth-bar-label">${escapeHtml(depthBarLabel)}</span>
-        <button type="button" class="depth-mode-btn" id="depthModeToggle">${escapeHtml(toggleBtnText)}</button>
-      </div>
-      <div class="depth-pills">${pillsHtml}</div>
-      ${depthCardsHtml}
-    </div>
-  `;
-
   dockEl.innerHTML = `
     <h2>${escapeHtml(level.name)}</h2>
     <p class="objective">${escapeHtml(level.brief)}</p>
-    ${depthSectionHtml}
     ${
       level.learning?.length
         ? `<div class="learning-box">
@@ -340,24 +218,6 @@ function renderDock() {
     <ul class="goal-list">${items.join("")}</ul>
     ${result.checks?.some((c) => !c.passed) ? `<div class="par-note">${escapeHtml(ui().stateNotes)} <code>${escapeHtml(level.id)}</code></div>` : ""}
   `;
-
-  dockEl.querySelectorAll(".depth-pill").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const d = btn.getAttribute("data-depth");
-      if (d) {
-        currentDepth = d;
-        try { localStorage.setItem("learnpowershell-depth", d); } catch {}
-        renderDock();
-      }
-    });
-  });
-  const modeToggle = dockEl.querySelector("#depthModeToggle");
-  if (modeToggle) {
-    modeToggle.addEventListener("click", () => {
-      spectrumMode = !spectrumMode;
-      renderDock();
-    });
-  }
 }
 
 function refreshVisuals() {
@@ -545,6 +405,7 @@ function showLevels() {
   const seriesHtml = SERIES.map((s) => {
     const levels = levelsInSeries(s.id);
     const seriesTitleStr = localizeSeriesTitle(s.id) || s.name;
+    const seriesDepth = getDepthContent(s.id, levels[0]?.id || "", getLocale());
     const items = levels
       .map((l) => {
         const locL = localizeLevel(l);
@@ -564,6 +425,7 @@ function showLevels() {
         <header>
           <h3>${escapeHtml(seriesTitleStr)}</h3>
           <p>${escapeHtml(s.description)}</p>
+          ${seriesDepth?.eli5 ? `<div class="series-eli-preview"><strong>🧸 ELI5:</strong> ${escapeHtml(seriesDepth.eli5)}</div>` : ""}
         </header>
         <ol class="level-list">${items}</ol>
       </section>`;
@@ -627,41 +489,168 @@ function showSolution() {
   });
 }
 
-function replayLesson() {
-  if (mode === "level" && levelId) {
-    const rawLevel = getLevel(levelId);
-    if (!rawLevel) return;
-    const level = localizeLevel(rawLevel);
-    const lines = [];
-    if (level.brief) lines.push(`**Objective:** ${level.brief}`);
-    if (level.learning?.length) {
-      lines.push("", `### ${ui().youAreLearning}`, ...level.learning.map((l) => `- ${l}`));
+function renderLessonModalHtml(level, depths, activeTierId, isSpectrum, isFa) {
+  const activeTierObj = DEPTH_TIERS.find((t) => t.id === activeTierId) || DEPTH_TIERS[0];
+  const depthBarLabel = isFa ? "عمق یادگیری (نردبان شناختی)" : "COGNITIVE DEPTH (ELI LADDER)";
+  const toggleBtnText = isSpectrum
+    ? (isFa ? "نمای انتخابی" : "Focused View")
+    : (isFa ? "نردبان کامل ۵ سطحی" : "Full 5-Tier Ladder");
+
+  const pillsHtml = DEPTH_TIERS.map((tier) => {
+    const isActive = tier.id === activeTierId;
+    const tTitle = isFa ? tier.titleFa : tier.titleEn;
+    return `
+      <button type="button" class="depth-pill ${isActive ? "active" : ""}" data-lesson-depth="${tier.id}" title="${escapeHtml(tTitle)}">
+        <span>${tier.icon}</span> <span>${tier.label}</span>
+      </button>
+    `;
+  }).join("");
+
+  const depthCardsHtml = isSpectrum
+    ? `<div class="depth-spectrum">
+        ${DEPTH_TIERS.map((tier) => {
+          const tTitle = isFa ? tier.titleFa : tier.titleEn;
+          const content = depths[tier.id];
+          return `
+            <div class="depth-card" style="border-inline-start: 3px solid ${tier.color};">
+              <div class="depth-card-header">
+                <span class="depth-badge" style="color: ${tier.color};">${tier.icon} ${tier.label}</span>
+                <span class="depth-tier-title">${escapeHtml(tTitle)}</span>
+              </div>
+              <p class="depth-card-body">${escapeHtml(content)}</p>
+            </div>
+          `;
+        }).join("")}
+      </div>`
+    : `<div class="depth-card" style="border-inline-start: 3px solid ${activeTierObj.color};">
+        <div class="depth-card-header">
+          <span class="depth-badge" style="color: ${activeTierObj.color};">${activeTierObj.icon} ${activeTierObj.label}</span>
+          <span class="depth-tier-title">${escapeHtml(isFa ? activeTierObj.titleFa : activeTierObj.titleEn)}</span>
+        </div>
+        <p class="depth-card-body">${escapeHtml(depths[activeTierId] || depths.eli5)}</p>
+      </div>`;
+
+  let extraHtml = "";
+  if (level) {
+    const teachBlocks = [];
+    if (level.teach?.what) {
+      teachBlocks.push(`<div><strong>What:</strong> ${escapeHtml(level.teach.what)}</div>`);
     }
-    if (level.fieldNotes?.length) {
-      lines.push("", `### ${ui().fieldNotesTitle}`, ...level.fieldNotes.map((f) => `- ${f}`));
+    if (level.teach?.why?.length) {
+      teachBlocks.push(`<div><strong>Why:</strong> ${escapeHtml(level.teach.why.join(" • "))}</div>`);
     }
-    showModal({
-      title: `${ui().lesson}: ${level.name}`,
-      bodyHtml: renderMarkdown(lines.join("\n")),
-      actions: [{ label: ui().close, className: "primary", onClick: () => term.focus() }],
-      onClose: () => term.focus(),
-    });
+    if (level.teach?.model) {
+      teachBlocks.push(`<div><strong>Model:</strong> <code>${escapeHtml(level.teach.model)}</code></div>`);
+    }
+    const teachSection = teachBlocks.length
+      ? `<div class="learning-box" style="margin-top: 12px;">
+          <div class="next-title">${isFa ? "مکانیک فنی و معماری" : "Technical Mechanics"}</div>
+          <div style="font-size: 12.5px; line-height: 1.5; color: #dbe4f0; display: flex; flex-direction: column; gap: 4px;">
+            ${teachBlocks.join("")}
+          </div>
+        </div>`
+      : "";
+
+    const fieldNotesHtml = level.fieldNotes?.length
+      ? `<div class="learning-box" style="margin-top: 10px;">
+          <div class="next-title">${escapeHtml(ui().fieldNotesTitle)}</div>
+          <ul>${level.fieldNotes.map((f) => `<li>${escapeHtml(f)}</li>`).join("")}</ul>
+        </div>`
+      : "";
+
+    const learningHtml = level.learning?.length
+      ? `<div class="learning-box" style="margin-top: 10px;">
+          <div class="next-title">${escapeHtml(ui().youAreLearning)}</div>
+          <ul>${level.learning.map((l) => `<li>${escapeHtml(l)}</li>`).join("")}</ul>
+        </div>`
+      : "";
+
+    extraHtml = teachSection + fieldNotesHtml + learningHtml;
   } else {
-    showModal({
-      title: ui().aboutTitle,
-      bodyHtml: renderMarkdown(
-        [
-          ui().welcomeIntro,
-          "",
-          "- Pipeline passes objects, not text lines",
-          "- 19 series covering core to advanced concepts",
-          "- Double validation: in-browser simulator and real pwsh",
-        ].join("\n")
-      ),
-      actions: [{ label: ui().close, className: "primary", onClick: () => term.focus() }],
-      onClose: () => term.focus(),
-    });
+    extraHtml = `
+      <div class="learning-box" style="margin-top: 12px;">
+        <div class="next-title">${escapeHtml(ui().startHere)}</div>
+        <ul>
+          <li>Pipeline passes objects, not text lines</li>
+          <li>19 series covering core to advanced concepts</li>
+          <li>Double validation: in-browser simulator and real pwsh</li>
+        </ul>
+      </div>
+    `;
   }
+
+  const objText = level ? level.brief : ui().guideAlwaysOn;
+  return `
+    <div class="lesson-modal-inner">
+      <div class="lesson-objective">
+        <strong>${isFa ? "هدف یادگیری:" : "Objective:"}</strong> ${escapeHtml(objText)}
+      </div>
+      <div class="depth-section" style="margin-top: 12px;">
+        <div class="depth-header-row">
+          <span class="depth-bar-label">${escapeHtml(depthBarLabel)}</span>
+          <button type="button" class="depth-mode-btn" id="lessonSpectrumToggle">${escapeHtml(toggleBtnText)}</button>
+        </div>
+        <div class="depth-pills">${pillsHtml}</div>
+        ${depthCardsHtml}
+      </div>
+      ${extraHtml}
+    </div>
+  `;
+}
+
+function replayLesson() {
+  const isFa = getLocale() === "fa";
+  let seriesId = "objects";
+  let rawLevel = null;
+  let level = null;
+
+  if (mode === "level" && levelId) {
+    rawLevel = getLevel(levelId);
+    if (rawLevel) {
+      level = localizeLevel(rawLevel);
+      seriesId = rawLevel.series;
+    }
+  }
+
+  const depths = getDepthContent(seriesId, levelId || "objects-01", getLocale());
+  const title = level ? `${ui().lesson}: ${level.name}` : ui().aboutTitle;
+
+  const modal = showModal({
+    title,
+    bodyHtml: renderLessonModalHtml(level, depths, currentDepth, spectrumMode, isFa),
+    actions: [{ label: ui().close, className: "primary", onClick: () => term.focus() }],
+    onClose: () => term.focus(),
+  });
+
+  const bindEvents = () => {
+    modal.el.querySelectorAll("[data-lesson-depth]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const d = btn.getAttribute("data-lesson-depth");
+        if (d) {
+          currentDepth = d;
+          try { localStorage.setItem("learnpowershell-depth", d); } catch {}
+          updateContent();
+        }
+      });
+    });
+    const toggle = modal.el.querySelector("#lessonSpectrumToggle");
+    if (toggle) {
+      toggle.addEventListener("click", () => {
+        spectrumMode = !spectrumMode;
+        updateContent();
+      });
+    }
+  };
+
+  const updateContent = () => {
+    const mdEl = modal.el.querySelector(".markdown");
+    if (mdEl) {
+      mdEl.innerHTML = renderLessonModalHtml(level, depths, currentDepth, spectrumMode, isFa);
+      bindEvents();
+    }
+  };
+
+  bindEvents();
 }
 
 /**
@@ -754,6 +743,10 @@ function startLevel(id) {
   const locL = localizeLevel(level);
   term.print(`— Level: ${locL.name} —`, "meta");
   term.print(locL.brief, "meta");
+  const depthContent = getDepthContent(level.series, level.id, getLocale());
+  if (depthContent?.eli5) {
+    term.print(`🧸 ELI5: ${depthContent.eli5}`, "meta");
+  }
   if (level.teach?.what) {
     term.print(`What: ${level.teach.what}`, "meta");
     for (const w of level.teach.why || []) term.print(`Why: ${w}`, "meta");
@@ -761,6 +754,7 @@ function startLevel(id) {
   }
   term.print(`Hint: ${level.hint}`, "meta");
   term.print(`Par: ${level.par}`, "meta");
+  term.print("Tip: Type 'lesson' for 5-tier deep dive (ELI5 to ELIPHD).", "meta");
   term.setHint(level.hint);
   refreshVisuals();
   term.focus();
@@ -853,6 +847,12 @@ function handleCommand(line) {
   if (result.output.includes("curriculum") && result.output.length === 1) {
     showLevels();
   }
+  if (result.output.includes("lesson") && result.output.length === 1) {
+    lastRun = emptyRun();
+    refreshVisuals();
+    replayLesson();
+    return;
+  }
 
   for (const lineOut of result.output) {
     if (
@@ -862,6 +862,7 @@ function handleCommand(line) {
       lineOut === "goal" ||
       lineOut === "steps" ||
       lineOut === "curriculum" ||
+      lineOut === "lesson" ||
       lineOut === "ui-tour" ||
       (typeof lineOut === "string" && lineOut.startsWith("quiz:"))
     ) {

@@ -47,6 +47,7 @@ const BASE_COMMANDS = [
   "ft",
   "fl",
   "levels",
+  "lesson",
   "hint",
   "goal",
   "steps",
