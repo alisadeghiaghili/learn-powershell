@@ -29,6 +29,32 @@ function solve(id, commands) {
 }
 
 const solutions = {
+  // Mindset levels (24 chapters - completed by 'next' or reading)
+  "intro-00": ["next"],
+  "objects-00": ["next"],
+  "pipeline-00": ["next"],
+  "discovery-00": ["next"],
+  "language-00": ["next"],
+  "flow-00": ["next"],
+  "functions-00": ["next"],
+  "errors-00": ["next"],
+  "scope-00": ["next"],
+  "data-00": ["next"],
+  "providers-00": ["next"],
+  "remoting-00": ["next"],
+  "modules-00": ["next"],
+  "jobs-00": ["next"],
+  "security-00": ["next"],
+  "formatting-00": ["next"],
+  "remix-00": ["next"],
+  "apis-00": ["next"],
+  "pester-00": ["next"],
+  "internals-00": ["next"],
+  "hardening-00": ["next"],
+  "advanced-00": ["next"],
+  "mastery-00": ["next"],
+  "capstone-00": ["next"],
+
   "intro-01": ['Write-Output "Hello, PowerShell"'],
   "intro-02": ["Get-Location"],
   "intro-03": ["Get-ChildItem"],

@@ -48,6 +48,8 @@ const BASE_COMMANDS = [
   "fl",
   "levels",
   "lesson",
+  "next",
+  "continue",
   "hint",
   "goal",
   "steps",

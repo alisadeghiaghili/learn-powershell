@@ -3,6 +3,8 @@
  * Target: ≥9/10 coverage per PowerShell topic vs. standard curricula.
  */
 
+import { SERIES_DEPTHS } from "./depth.js";
+
 /** @type {{ id: string, name: string, description: string }[]} */
 export const SERIES = [
   { id: "intro", name: "Getting Started", description: "Navigate the provider and read what is on disk." },
@@ -79,6 +81,7 @@ export const SERIES = [
  * @property {string} [policyIs]
  * @property {string} [remoteRan]
  * @property {string} [moduleLoaded]
+ * @property {boolean} [acknowledge]
  */
 
 /**
@@ -110,9 +113,36 @@ function L(id, series, name, brief, hint, par, goal, teach, learning) {
   return { id, series, name, brief, hint, par, goal, teach, learning };
 }
 
+/**
+ * Create a Mindset level for a series.
+ * @param {string} seriesId
+ * @param {string} name
+ * @param {string} [modelSummary]
+ * @returns {Level}
+ */
+function makeMindset(seriesId, name, modelSummary) {
+  const depth = SERIES_DEPTHS[seriesId] || SERIES_DEPTHS.intro;
+  return L(
+    `${seriesId}-00`,
+    seriesId,
+    `Mindset: ${name}`,
+    depth.eli5.en,
+    "next",
+    1,
+    { acknowledge: true },
+    {
+      what: depth.eli10.en,
+      why: [depth.eli15.en, depth.eli20.en],
+      model: modelSummary || depth.eli5.en,
+    },
+    ["Mindset & Intuition", "Pipeline Architecture", "Core Concepts"]
+  );
+}
+
 /** @type {Level[]} */
 export const LEVELS = [
   // ─── intro ───────────────────────────────────────────────
+  makeMindset("intro", "The Object Postcard House", "A house with labeled rooms exchanging physical postcards."),
   L("intro-01", "intro", "Say hello", 'Write the string Hello, PowerShell to the pipeline using Write-Output.', 'Write-Output "Hello, PowerShell"', 1,
     { outputIncludes: "Hello, PowerShell", usedCmdlets: ["Write-Output"] },
     { what: "Write-Output places an object on the success stream.", why: ["Even a string is a System.String object.", "Verb-Noun is the cmdlet grammar."], model: "The pipeline is a conveyor belt of objects." },
@@ -139,6 +169,7 @@ export const LEVELS = [
     ["-Filter", "Wildcards"]),
 
   // ─── objects ─────────────────────────────────────────────
+  makeMindset("objects", "LEGO Factory Conveyor", "A conveyor belt carrying LEGO cars with property stickers."),
   L("objects-01", "objects", "Processes are objects", "Project only Name and Id for all processes.", "Get-Process | Select-Object Name, Id", 1,
     { usedCmdlets: ["Get-Process", "Select-Object"], outputCount: 8 },
     { what: "Select-Object projects a property subset.", why: ["Downstream sees lean objects."], model: "Select is SQL SELECT for objects." },
@@ -165,6 +196,7 @@ export const LEVELS = [
     ["Select-Object -Unique"]),
 
   // ─── pipeline ────────────────────────────────────────────
+  makeMindset("pipeline", "The Assembly Line", "A continuous assembly line where each worker refines typed objects."),
   L("pipeline-01", "pipeline", "Three stages", "One pipeline: processes → CPU > 40 → Name.", "Get-Process | Where-Object CPU -gt 40 | Select-Object Name", 1,
     { pipelineCmdlets: ["Get-Process", "Where-Object", "Select-Object"] },
     { what: "Source → transform → shape.", why: ["Each stage receives prior objects."], model: "PowerShell pipes move objects, not bytes." },
@@ -187,6 +219,7 @@ export const LEVELS = [
     ["Measure-Object -Property"]),
 
   // ─── discovery ───────────────────────────────────────────
+  makeMindset("discovery", "The Self-Documenting Map", "An interactive museum where every exhibit has a built-in search screen."),
   L("discovery-01", "discovery", "Help on a cmdlet", "Show help for Get-ChildItem.", "Get-Help Get-ChildItem", 1,
     { usedCmdlets: ["Get-Help"], outputIncludes: "Get-ChildItem" },
     { what: "Get-Help is the built-in manual for every cmdlet.", why: ["Syntax, parameters, examples — offline."], model: "Learn discovery first; memorize less." },
@@ -213,6 +246,7 @@ export const LEVELS = [
     ["Common parameters", "Verbose stream"]),
 
   // ─── language ────────────────────────────────────────────
+  makeMindset("language", "The Typed Tool Chest", "A precision tool chest with custom compartments and strict type tags."),
   L("language-01", "language", "Comparison operators", "Put the result of 5 -gt 3 into $ok.", "$ok = 5 -gt 3", 1,
     { variableCompare: "ok=True", usedCmdlets: [] },
     { what: "Comparison operators return booleans.", why: ["-gt/-lt/-eq are not text tokens — they are operators."], model: "Expressions evaluate to values." },
@@ -247,6 +281,7 @@ export const LEVELS = [
     ["Quoting", "Expansion"]),
 
   // ─── flow ────────────────────────────────────────────────
+  makeMindset("flow", "Railroad Switches & Loops", "Railroad switch tracks directing trains down conditional routes."),
   L("flow-01", "flow", "If statement", "Set $label to big if 10 -gt 5, else small.", "if (10 -gt 5) { $label = 'big' } else { $label = 'small' }", 1,
     { variableCompare: "label=big" },
     { what: "if/else chooses a block by a boolean condition.", why: ["Condition is an expression in parentheses."], model: "Control flow is expressions + blocks." },
@@ -273,6 +308,7 @@ export const LEVELS = [
     ["break/continue", "Modulus"]),
 
   // ─── functions ───────────────────────────────────────────
+  makeMindset("functions", "Robot Workbenches", "Dedicated automated workbenches with strictly defined input trays."),
   L("functions-01", "functions", "Define a function", "Define function Get-Hello that outputs 'hi'.", "function Get-Hello { 'hi' }", 1,
     { functionDefined: "Get-Hello", usedCmdlets: [] },
     { what: "function Verb-Noun { … } creates a reusable command.", why: ["Return values are just pipeline output."], model: "Functions are user commands." },
@@ -295,6 +331,7 @@ export const LEVELS = [
     ["Splatting", "@params"]),
 
   // ─── errors ──────────────────────────────────────────────
+  makeMindset("errors", "Safety Nets & Crash Dummies", "A test track with safety nets and containment walls."),
   L("errors-01", "errors", "Try/catch", "Catch a missing-path error and put the message in $err. Use Get-Content missing.txt.", "try { Get-Content missing.txt } catch { $err = $_.Exception.Message }", 2,
     { variableIs: "err=SET" },
     { what: "try/catch handles terminating errors.", why: ["$_ inside catch is the ErrorRecord."], model: "Failure is data you can handle." },
@@ -321,6 +358,7 @@ export const LEVELS = [
     ["Write-Error", "Error stream"]),
 
   // ─── scope ───────────────────────────────────────────────
+  makeMindset("scope", "Glass Walls & Private Lockers", "An office building with transparent exterior glass but private locker rooms."),
   L("scope-01", "scope", "Local by default", "Set $localOnly = 1 at the session level (top).", "$localOnly = 1", 1,
     { variableCompare: "localOnly=1" },
     { what: "Top-level assignments land in the current scope.", why: ["Functions create child scopes."], model: "Scope is a stack of variable tables." },
@@ -339,6 +377,7 @@ export const LEVELS = [
     ["Set-Variable -Scope"]),
 
   // ─── data ────────────────────────────────────────────────
+  makeMindset("data", "Translating Filing Cabinets", "A multilingual translator converting filing cabinet drawers into standard formats."),
   L("data-01", "data", "Import CSV", "Import data\\servers.csv into $rows.", "$rows = Import-Csv data\\servers.csv", 1,
     { variableIs: "rows=PSOBJECT_LIST", usedCmdlets: ["Import-Csv"] },
     { what: "Import-Csv turns rows into PSCustomObjects with column properties.", why: ["From here Where-Object Role -eq Web works."], model: "CSV is object-shaped on import." },
@@ -365,6 +404,7 @@ export const LEVELS = [
     ["Join-Path", "Portable paths"]),
 
   // ─── providers ───────────────────────────────────────────
+  makeMindset("providers", "Universal Magic Windows", "A master hallway where every door opens into a different reality using the same keys."),
   L("providers-01", "providers", "List drives", "Show PSDrives with Get-PSDrive.", "Get-PSDrive", 1,
     { usedCmdlets: ["Get-PSDrive"], outputIncludes: "C:" },
     { what: "Providers mount as drives (FileSystem, Env, Registry…).", why: ["One navigation model for heterogeneous data."], model: "Everything is a drive of items." },
@@ -387,6 +427,7 @@ export const LEVELS = [
     ["Cert:", "Certificate store"]),
 
   // ─── remoting ────────────────────────────────────────────
+  makeMindset("remoting", "Holographic Teleportation", "A command center where you send instructions through pneumatic tubes to remote terminals."),
   L("remoting-01", "remoting", "Invoke-Command", "Run Get-Location on remote machine web01 and store output in $r.", "$r = Invoke-Command -ComputerName web01 -ScriptBlock { Get-Location }", 1,
     { remoteRan: "web01", usedCmdlets: ["Invoke-Command"] },
     { what: "Invoke-Command runs a script block on a remote machine.", why: ["Output is deserialized objects (PSComputerName tag)."], model: "Remoting is the pipeline across the network." },
@@ -409,6 +450,7 @@ export const LEVELS = [
     ["Get-Credential", "PSCredential"]),
 
   // ─── modules ─────────────────────────────────────────────
+  makeMindset("modules", "Sealed Toolboxes", "A sealed crate with an official manifest and exposed handle tools."),
   L("modules-01", "modules", "List modules", "List loaded modules with Get-Module.", "Get-Module", 1,
     { usedCmdlets: ["Get-Module"] },
     { what: "Get-Module shows modules loaded in the session.", why: ["Commands live inside modules."], model: "Modules package commands." },
@@ -439,6 +481,7 @@ export const LEVELS = [
     ["Test-ModuleManifest", "Validation", "CI/CD checks"]),
 
   // ─── jobs & cim ──────────────────────────────────────────
+  makeMindset("jobs", "Background Delivery Couriers", "Autonomous delivery couriers working silently while you continue your day."),
   L("jobs-01", "jobs", "Start-Job", "Start a job that returns 42 and put the job in $job.", "$job = Start-Job { 42 }", 1,
     { usedCmdlets: ["Start-Job"] },
     { what: "Start-Job runs a script block in the background.", why: ["Shell stays responsive."], model: "Jobs are background runspaces." },
@@ -461,6 +504,7 @@ export const LEVELS = [
     ["Get-CimInstance", "WMI/CIM"]),
 
   // ─── security ────────────────────────────────────────────
+  makeMindset("security", "Castle Guard & Drawbridge", "A fortified castle gate with identity checkpoints and safety policies."),
   L("security-01", "security", "Get-ExecutionPolicy", "Show the current execution policy.", "Get-ExecutionPolicy", 1,
     { usedCmdlets: ["Get-ExecutionPolicy"], outputIncludes: "RemoteSigned" },
     { what: "Execution policy gates which scripts may run.", why: ["Not a security boundary — a safety rail."], model: "Policy is a script trust dial." },
@@ -483,6 +527,7 @@ export const LEVELS = [
     ["Constrained Language"]),
 
   // ─── formatting ──────────────────────────────────────────
+  makeMindset("formatting", "The Final Paint Shop", "A showroom paint shop that should only be visited right before delivery."),
   L("formatting-01", "formatting", "Format-Table", "Format processes as table Name, CPU only.", "Get-Process | Format-Table Name, CPU", 1,
     { usedCmdlets: ["Format-Table"] },
     { what: "Format-Table builds a view object at the end of a pipe.", why: ["Never put Format-* in the middle of a data pipeline."], model: "Views are for humans at the edge." },
@@ -505,6 +550,7 @@ export const LEVELS = [
     ["Data vs view"]),
 
   // ─── remix capstones ─────────────────────────────────────
+  makeMindset("remix", "The Symphony Orchestra", "An orchestra harmonizing multiple instrument sections into one composition."),
   L("remix-01", "remix", "Service report", "Emit only running services in one pipeline.", "Get-Service | Where-Object Status -eq Running", 1,
     { pipelineCmdlets: ["Get-Service", "Where-Object"] },
     { what: "Same filter shape as processes.", why: ["Verb-Noun consistency scales."], model: "Same pipeline, different noun." },
@@ -609,7 +655,7 @@ export const LEVELS = [
     ["Remove-Job"]),
   L("jobs-08", "jobs", "Receive -Keep", "Receive-Job -Keep so the job still has data after receive.", "$job = Start-Job { 9 }; Receive-Job $job -Keep", 2,
     { outputIncludes: "9" },
-    { what: "-Keep leaves HasMoreData set so you can receive again.", why: ["Inspect twice without restarting work."], model: "Receive is not always destructive." },
+    { what: "-Keep leaves HasMoreData set so you can receive again.", why: ["Inspect twice without restarting work."], model: "Receive is not destructive." },
     ["Receive-Job -Keep"]),
 
   // ─── depth: data edges ───────────────────────────────────
@@ -697,6 +743,7 @@ export const LEVELS = [
     ["Final composition"]),
 
   // ─── apis & web automation ──────────────────────────────
+  makeMindset("apis", "Pneumatic Web Tubes", "Intercontinental delivery tubes exchanging lightweight JSON envelopes."),
   L("apis-01", "apis", "REST API query", "Query GitHub API with Invoke-RestMethod (irm).", "Invoke-RestMethod https://api.github.com/repos/powershell/powershell", 1,
     { usedCmdlets: ["Invoke-RestMethod"], outputIncludes: "PowerShell" },
     { what: "Invoke-RestMethod deserializes REST JSON into PowerShell objects automatically.", why: ["No manual JSON parsing needed."], model: "Web endpoints are object streams." },
@@ -731,6 +778,7 @@ export const LEVELS = [
     ["PSCredential", "Get-Credential", "Identity management"]),
 
   // ─── pester testing ──────────────────────────────────────
+  makeMindset("pester", "The Automated Quality Gate", "An automated quality checkpoint that rigorously tests products before release."),
   L("pester-01", "pester", "First assertion", "Pipe 'Running' into Should -Be 'Running'.", "'Running' | Should -Be 'Running'", 1,
     { usedCmdlets: ["Should"], outputIncludes: "Passed" },
     { what: "Should -Be asserts value equality in test pipelines.", why: ["Pester is the standard unit testing framework for PowerShell."], model: "Assertions are pipeline stages." },
@@ -765,6 +813,7 @@ export const LEVELS = [
     ["Mocking", "Test isolation", "Dependency injection"]),
 
   // ─── internals, ast & ets ────────────────────────────────
+  makeMindset("internals", "Engine Gears & Clockwork", "Opening the clock face to see the balance wheels and gears that drive time."),
   L("internals-01", "internals", "AST parsing", "Parse code into an AST using [System.Management.Automation.Language.Parser]::ParseInput.", "$ast = [System.Management.Automation.Language.Parser]::ParseInput('Get-Process', [ref]$null, [ref]$null)", 1,
     { variableIs: "ast=SET" },
     { what: "The Abstract Syntax Tree (AST) is the compiler's parsed representation of script code.", why: ["PSScriptAnalyzer uses AST to lint scripts."], model: "Scripts are structured trees, not strings." },
@@ -799,6 +848,7 @@ export const LEVELS = [
     ["[runspacefactory]", "Runspaces", "Multi-threading"]),
 
   // ─── security & hardening ────────────────────────────────
+  makeMindset("hardening", "Vault Seals & Tamper Locks", "High-security bank vaults with tamper-evident wax seals and immutable logs."),
   L("hardening-01", "hardening", "File hash verification", "Calculate the SHA256 hash of a file with Get-FileHash.", "Get-FileHash data\\notes.txt -Algorithm SHA256", 1,
     { usedCmdlets: ["Get-FileHash"], outputTypeName: "Microsoft.PowerShell.Utility.FileHash" },
     { what: "Get-FileHash computes cryptographic checksums.", why: ["Detect tampering and verify software downloads."], model: "Cryptographic fingerprints." },
@@ -833,6 +883,7 @@ export const LEVELS = [
     ["ConstrainedLanguage", "$ExecutionContext", "Application Control"]),
 
   // ─── advanced: language surface ──────────────────────────
+  makeMindset("advanced", "High-Performance Engine Tuning", "A performance tuning garage stripping away overhead for maximum velocity."),
   L("adv-01", "advanced", "Subexpression $( )", 'Capture a command inside a string with $( ) — set $msg to "n=8" using $().', '$n = 8; $msg = "n=$($n)"', 2,
     { variableCompare: "msg=n=8" },
     { what: "$() evaluates an expression inside a double-quoted string.", why: ["Plain $n stops at non-name chars; $( ) is exact."], model: "String interpolation has two modes." },
@@ -923,6 +974,7 @@ export const LEVELS = [
     ["Job → object", "Final capstone"]),
 
   // ─── mastery: debug broken scripts ───────────────────────
+  makeMindset("mastery", "Master Systems Architect", "A chief architect reviewing blueprints and troubleshooting complex failures."),
   L("mst-01", "mastery", "Debug: wrong operator", "A script uses = instead of -eq and never branches. Fix it so $flag becomes True when 1 -eq 1.", "$flag = (1 -eq 1)", 1,
     { variableCompare: "flag=True" },
     { what: "Assignment is not comparison. -eq returns Boolean.", why: ["Classic bug when coming from C/Java."], model: "Operators carry type semantics." },
@@ -977,6 +1029,7 @@ export const LEVELS = [
     ["Exam", "End-to-end"]),
 
   // ─── enterprise capstone project ─────────────────────────
+  makeMindset("capstone", "Emergency Incident Hospital", "An incident response team stabilizing, verifying, and sealing production systems."),
   L("capstone-01", "capstone", "Fleet Inventory Preflight", "Import data\\servers.csv into $inventory to discover infrastructure assets.", "$inventory = Import-Csv data\\servers.csv", 1,
     { variableIs: "inventory=PSOBJECT_LIST", usedCmdlets: ["Import-Csv"] },
     { what: "Fleet discovery begins with importing structured asset records into live pipeline objects.", why: ["Never parse server lists as fragile text strings.", "Properties like Name, Role, CPU are immediately accessible."], model: "The fleet enters memory as a structured roster of living objects." },
@@ -1346,6 +1399,18 @@ export function evaluateGoal(goal, session, lastRun) {
       label: `Emits ${goal.outputTypeName}`,
       passed: Boolean(passed),
       detail: passed ? "ok" : "not emitted",
+    });
+  }
+
+  if (goal.acknowledge) {
+    const passed =
+      session.commandCount > 0 ||
+      Boolean(lastRun && (lastRun.commandCount > 0 || lastRun.usedCmdlets?.length > 0 || lastRun.output?.length > 0));
+    checks.push({
+      id: "acknowledge",
+      label: "Read the mindset and press Enter or type 'next' to continue",
+      passed: Boolean(passed),
+      detail: passed ? "completed" : "ready to advance",
     });
   }
 

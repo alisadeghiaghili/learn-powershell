@@ -1336,6 +1336,9 @@ export class Session {
       "import",
       "tour",
       "quiz",
+      "lesson",
+      "next",
+      "continue",
     ]);
     // `help ui` / `help ui`-style tour trigger
     const isHelpUi = head === "help" && (tokens[1] || "").toLowerCase() === "ui";
@@ -1371,6 +1374,11 @@ export class Session {
     if (head === "lesson") {
       out.push("lesson");
       used.push("lesson");
+      return { ok: true };
+    }
+    if (head === "next" || head === "continue") {
+      out.push("next-level");
+      used.push("next");
       return { ok: true };
     }
     if (head === "hint") {
@@ -3801,6 +3809,7 @@ function helpText(topic) {
     "": `LearnPowerShell help
   levels        open the level browser
   lesson        open interactive conceptual lesson
+  next          advance to the next level
   hint          show the current level hint
   goal          show win conditions
   steps         show the teaching guide for the current level

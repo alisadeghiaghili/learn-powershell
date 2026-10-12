@@ -5,6 +5,7 @@
 import { en } from "./en.js";
 import { de } from "./de.js";
 import { fa } from "./fa.js";
+import { SERIES_DEPTHS } from "../depth.js";
 
 export const LOCALES = ["en", "fa", "de"];
 const STORAGE_KEY = "learnpowershell-locale";
@@ -71,8 +72,33 @@ export function initLocale() {
  */
 export function localizeLevel(level) {
   if (!level) return level;
-  const copy = getCatalog().levels?.[level.id];
   const seriesName = getCatalog().series?.[level.series] || level.series;
+
+  if (level.id.endsWith("-00")) {
+    const seriesData = SERIES_DEPTHS[level.series];
+    if (current === "fa" && seriesData) {
+      return {
+        ...level,
+        seriesTitle: seriesName,
+        name: `مایندست: ${seriesName}`,
+        brief: seriesData.eli5.fa,
+        learning: ["مدل ذهنی و شهودی", "قوانین و رفتار پایپ‌لاین", "پایه‌های مفهومی"],
+        fieldNotes: [seriesData.eli10.fa, seriesData.eli15.fa, seriesData.eli20.fa],
+      };
+    }
+    if (seriesData) {
+      return {
+        ...level,
+        seriesTitle: seriesName,
+        name: `Mindset: ${seriesName}`,
+        brief: seriesData.eli5.en,
+        learning: ["Mental Model & Intuition", "Pipeline Architecture", "Core Concepts"],
+        fieldNotes: [seriesData.eli10.en, seriesData.eli15.en, seriesData.eli20.en],
+      };
+    }
+  }
+
+  const copy = getCatalog().levels?.[level.id];
   if (!copy || current === "en") {
     return {
       ...level,

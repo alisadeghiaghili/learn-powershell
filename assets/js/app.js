@@ -182,16 +182,39 @@ function renderDock() {
     `;
   });
 
-  const nextBlock = solved
-    ? `<div class="next-box met">${escapeHtml(ui().allSolutionMet)}</div>`
-    : `<div class="next-box">
-        <div class="next-title">${escapeHtml(ui().typeNextTitle)}</div>
-        <div class="next-row">
-          <span class="g-label">${escapeHtml(ui().remainingLabel)}</span>
-          <code class="g-cmd" dir="ltr">${escapeHtml(level.hint || "")}</code>
-        </div>
-        <div class="par-note">${escapeHtml(ui().wrongCommandNote)}</div>
-      </div>`;
+  const isMindset = Boolean(rawLevel.goal?.acknowledge);
+  const nextTargetId = nextLevelId(rawLevel.id);
+  const nextTargetLevel = nextTargetId ? localizeLevel(getLevel(nextTargetId)) : null;
+
+  let nextBlock = "";
+  if (isMindset) {
+    nextBlock = `
+      <div class="next-box mindset-dock-card">
+        <div class="next-title">${getLocale() === "fa" ? "🧠 مایندست مفهومی این فصل" : "🧠 Chapter Mindset"}</div>
+        <p class="par-note" style="margin: 6px 0 10px 0; font-size: 13px;">
+          ${getLocale() === "fa" 
+            ? "این مایندست نقشه ذهنی شما برای تمرین‌های این فصل است. برای ورود مستقیم به آزمایشگاه عملی، دکمه زیر را بزنید یا دستور next را بنویسید." 
+            : "This mental model primes your intuition. Click below or press Enter / type 'next' to jump straight into the hands-on lab."}
+        </p>
+        <button type="button" class="mindset-advance-btn" id="advanceMindsetBtn">
+          ${getLocale() === "fa" 
+            ? `ورود به مرحله بعد: ${nextTargetLevel ? nextTargetLevel.name : "آزمایشگاه"} ←` 
+            : `Next: ${nextTargetLevel ? nextTargetLevel.name : "Hands-on Lab"} →`}
+        </button>
+      </div>
+    `;
+  } else {
+    nextBlock = solved
+      ? `<div class="next-box met">${escapeHtml(ui().allSolutionMet)}</div>`
+      : `<div class="next-box">
+          <div class="next-title">${escapeHtml(ui().typeNextTitle)}</div>
+          <div class="next-row">
+            <span class="g-label">${escapeHtml(ui().remainingLabel)}</span>
+            <code class="g-cmd" dir="ltr">${escapeHtml(level.hint || "")}</code>
+          </div>
+          <div class="par-note">${escapeHtml(ui().wrongCommandNote)}</div>
+        </div>`;
+  }
 
   dockEl.innerHTML = `
     <h2>${escapeHtml(level.name)}</h2>
@@ -212,12 +235,21 @@ function renderDock() {
           </div>`
         : ""
     }
-    <div class="par-note">${escapeHtml(golfNote)}</div>
-    ${solved ? `<div class="solved-banner">${escapeHtml(ui().solvedBanner(session.commandCount - levelCommandStart || null))}</div>` : ""}
+    ${isMindset ? "" : `<div class="par-note">${escapeHtml(golfNote)}</div>`}
+    ${solved && !isMindset ? `<div class="solved-banner">${escapeHtml(ui().solvedBanner(session.commandCount - levelCommandStart || null))}</div>` : ""}
     ${nextBlock}
     <ul class="goal-list">${items.join("")}</ul>
-    ${result.checks?.some((c) => !c.passed) ? `<div class="par-note">${escapeHtml(ui().stateNotes)} <code>${escapeHtml(level.id)}</code></div>` : ""}
+    ${result.checks?.some((c) => !c.passed) && !isMindset ? `<div class="par-note">${escapeHtml(ui().stateNotes)} <code>${escapeHtml(level.id)}</code></div>` : ""}
   `;
+
+  if (isMindset) {
+    const advBtn = dockEl.querySelector("#advanceMindsetBtn");
+    if (advBtn) {
+      advBtn.addEventListener("click", () => {
+        handleCommand("next");
+      });
+    }
+  }
 }
 
 function refreshVisuals() {
@@ -743,21 +775,44 @@ function startLevel(id) {
   viz.renderPipeline(null);
 
   const locL = localizeLevel(level);
-  term.print(`— Level: ${locL.name} —`, "meta");
-  term.print(locL.brief, "meta");
-  const depthContent = getDepthContent(level.series, level.id, getLocale());
-  if (depthContent?.eli5) {
-    term.print(`Concept: ${depthContent.eli5}`, "meta");
+  const isMindset = Boolean(level.goal?.acknowledge);
+
+  if (isMindset) {
+    term.print(`════════════════════════════════════════════════════════════`, "meta");
+    term.print(`🧠 ${locL.name}`, "meta");
+    term.print(`════════════════════════════════════════════════════════════`, "meta");
+    term.print(locL.brief, "out");
+    if (locL.fieldNotes?.length) {
+      term.print(`\n💡 Mental Model & Field Principles:`, "meta");
+      for (const fn of locL.fieldNotes) term.print(` • ${fn}`, "out");
+    }
+    const nextTarget = nextLevelId(level.id);
+    const nextTargetName = nextTarget ? localizeLevel(getLevel(nextTarget)).name : "Lab";
+    term.print(
+      getLocale() === "fa"
+        ? `\n👉 کلید Enter را بزنید یا 'next' را تایپ کنید تا وارد مرحله بعد (${nextTargetName}) شوید.`
+        : `\n👉 Press Enter or type 'next' to continue to ${nextTargetName}.`,
+      "meta"
+    );
+    term.setHint(level.hint);
+  } else {
+    term.print(`— Level: ${locL.name} —`, "meta");
+    term.print(locL.brief, "meta");
+    const depthContent = getDepthContent(level.series, level.id, getLocale());
+    if (depthContent?.eli5) {
+      term.print(`Concept: ${depthContent.eli5}`, "meta");
+    }
+    if (level.teach?.what) {
+      term.print(`What: ${level.teach.what}`, "meta");
+      for (const w of level.teach.why || []) term.print(`Why: ${w}`, "meta");
+      if (level.teach.model) term.print(`Model: ${level.teach.model}`, "meta");
+    }
+    term.print(`Hint: ${level.hint}`, "meta");
+    term.print(`Par: ${level.par}`, "meta");
+    term.print("Tip: Type 'lesson' for in-depth concepts and mechanics.", "meta");
+    term.setHint(level.hint);
   }
-  if (level.teach?.what) {
-    term.print(`What: ${level.teach.what}`, "meta");
-    for (const w of level.teach.why || []) term.print(`Why: ${w}`, "meta");
-    if (level.teach.model) term.print(`Model: ${level.teach.model}`, "meta");
-  }
-  term.print(`Hint: ${level.hint}`, "meta");
-  term.print(`Par: ${level.par}`, "meta");
-  term.print("Tip: Type 'lesson' for in-depth concepts and mechanics.", "meta");
-  term.setHint(level.hint);
+
   refreshVisuals();
   term.focus();
 }
@@ -811,6 +866,20 @@ function resetLevel() {
  * @param {string} line
  */
 function handleCommand(line) {
+  const trimmed = line.trim();
+  if (mode === "level" && levelId) {
+    const curLevel = getLevel(levelId);
+    if (curLevel?.goal?.acknowledge) {
+      if (!trimmed || trimmed === "next" || trimmed === "continue") {
+        const nextId = nextLevelId(levelId);
+        if (nextId) {
+          startLevel(nextId);
+          return;
+        }
+      }
+    }
+  }
+
   const result = session.run(line);
 
   if (result.output.includes("clear-screen")) {
@@ -856,6 +925,16 @@ function handleCommand(line) {
     return;
   }
 
+  if (result.output.includes("next-level") && result.output.length === 1) {
+    if (mode === "level" && levelId) {
+      const nextId = nextLevelId(levelId);
+      if (nextId) {
+        startLevel(nextId);
+        return;
+      }
+    }
+  }
+
   for (const lineOut of result.output) {
     if (
       lineOut === "clear-screen" ||
@@ -866,6 +945,7 @@ function handleCommand(line) {
       lineOut === "curriculum" ||
       lineOut === "lesson" ||
       lineOut === "ui-tour" ||
+      lineOut === "next-level" ||
       (typeof lineOut === "string" && lineOut.startsWith("quiz:"))
     ) {
       continue;

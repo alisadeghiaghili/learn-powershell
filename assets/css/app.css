@@ -1652,3 +1652,50 @@ html[dir="rtl"] pre {
   margin-top: 4px;
   color: var(--haze);
 }
+
+/* Mindset Level Card in Guide Dock */
+.mindset-dock-card {
+  border: 1px solid color-mix(in srgb, #6366f1 50%, var(--border));
+  background: linear-gradient(135deg, color-mix(in srgb, #6366f1 15%, var(--ink)), color-mix(in srgb, #8b5cf6 8%, var(--ink)));
+  border-radius: 12px;
+  padding: 14px;
+  margin: 12px 0;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.12);
+}
+
+.mindset-dock-card .next-title {
+  color: #a5b4fc;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mindset-advance-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 10px 16px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35);
+}
+
+.mindset-advance-btn:hover {
+  background: linear-gradient(135deg, #4338ca, #6d28d9);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.5);
+}
+
+.mindset-advance-btn:active {
+  transform: translateY(0);
+}
+
