@@ -371,7 +371,7 @@ export function createTerminal(root, handlers) {
   }
 
   function focus() {
-    if (document.querySelector(".modal-backdrop.is-open")) return;
+    if (document.querySelector(".overlay, .modal-backdrop.is-open")) return;
     input.focus();
     const len = input.value.length;
     try {
@@ -399,7 +399,7 @@ export function createTerminal(root, handlers) {
     }
     if (e.key === "Enter") {
       e.preventDefault();
-      if (document.querySelector(".modal-backdrop.is-open")) return;
+      if (document.querySelector(".overlay, .modal-backdrop.is-open")) return;
       const value = input.value;
       input.value = "";
       const trimmed = value.trim();

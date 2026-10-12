@@ -178,6 +178,7 @@ export function showModal(opts) {
   `;
   const actionsEl = /** @type {HTMLElement} */ (overlay.querySelector(".modal-actions"));
   const close = () => {
+    window.removeEventListener("keydown", onKey);
     if (document.body.contains(overlay)) overlay.remove();
     opts.onClose?.();
   };
@@ -214,7 +215,11 @@ export function showModal(opts) {
   const modalEl = overlay.querySelector(".modal");
   if (modalEl instanceof HTMLElement) {
     modalEl.tabIndex = -1;
-    requestAnimationFrame(() => modalEl.focus());
+    const primaryBtn = overlay.querySelector(".modal-actions .btn.primary");
+    requestAnimationFrame(() => {
+      if (primaryBtn instanceof HTMLElement) primaryBtn.focus();
+      else modalEl.focus();
+    });
   }
   return { close, el: overlay };
 }

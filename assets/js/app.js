@@ -246,7 +246,13 @@ function renderDock() {
     const advBtn = dockEl.querySelector("#advanceMindsetBtn");
     if (advBtn) {
       advBtn.addEventListener("click", () => {
-        handleCommand("next");
+        const curLevel = getLevel(levelId);
+        if (curLevel) {
+          onLevelSolved(curLevel, {
+            solved: true,
+            checks: [{ passed: true, label: "Mindset assimilated", detail: "Ready for hands-on lab" }],
+          });
+        }
       });
     }
   }
@@ -877,14 +883,16 @@ function resetLevel() {
  */
 function handleCommand(line) {
   const trimmed = line.trim();
+  const lower = trimmed.toLowerCase();
   if (mode === "level" && levelId) {
     const curLevel = getLevel(levelId);
     if (curLevel?.goal?.acknowledge) {
-      if (!trimmed || trimmed === "next" || trimmed === "continue") {
-        if (!celebrateOffered) {
-          onLevelSolved(curLevel, { solved: true, checks: [{ passed: true, label: "Mindset assimilated", detail: "Ready for hands-on lab" }] });
-          return;
-        }
+      if (!trimmed || lower === "next" || lower === "continue") {
+        onLevelSolved(curLevel, {
+          solved: true,
+          checks: [{ passed: true, label: "Mindset assimilated", detail: "Ready for hands-on lab" }],
+        });
+        return;
       }
     }
   }
@@ -936,6 +944,14 @@ function handleCommand(line) {
 
   if (result.output.includes("next-level") && result.output.length === 1) {
     if (mode === "level" && levelId) {
+      const curLevel = getLevel(levelId);
+      if (curLevel?.goal?.acknowledge) {
+        onLevelSolved(curLevel, {
+          solved: true,
+          checks: [{ passed: true, label: "Mindset assimilated", detail: "Ready for hands-on lab" }],
+        });
+        return;
+      }
       const nextId = nextLevelId(levelId);
       if (nextId) {
         startLevel(nextId);
