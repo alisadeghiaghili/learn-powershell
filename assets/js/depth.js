@@ -1,20 +1,20 @@
 /**
- * Multi-Tier Cognitive Progression Engine for LearnPowerShell.
+ * Multi-Perspective Conceptual & Architectural Layers for LearnPowerShell.
  * 
  * Provides 5 distinct cognitive depth tiers for every series and level:
- * - ELI5:   Pure physical metaphor (Lego, conveyor belts, envelopes, keycards, crash dummies)
- * - ELI10:  Practical mechanics, verbs, nouns, and shell rules
- * - ELI15:  Programming logic, data structures, streaming, parameters, typing
- * - ELI20:  Production DevOps, enterprise operations, performance, idempotency, security
- * - ELIPHD: Deep language internals, AST parsing, ETS type adaptation, DLR, CLR, DPAPI, AMSI
+ * - Intuition:  Pure physical mental model (Lego, conveyor belts, envelopes, keycards)
+ * - Mechanics:  Practical mechanics, verbs, nouns, and shell rules
+ * - Data Flow:  Programming logic, data structures, streaming, parameters, typing
+ * - Production: Production DevOps, enterprise operations, performance, idempotency, security
+ * - Internals:  Deep language internals, AST parsing, ETS type adaptation, DLR, CLR, DPAPI, AMSI
  */
 
 export const DEPTH_TIERS = [
-  { id: "eli5", icon: "🧸", label: "ELI5", titleEn: "Like I'm 5 (Pure Metaphor)", titleFa: "کودک ۵ ساله (تمثیل محض)", color: "#FF8C1A" },
-  { id: "eli10", icon: "🎒", label: "ELI10", titleEn: "Like I'm 10 (Shell Rules)", titleFa: "نوجوان ۱۰ ساله (قوانین و مکانیک)", color: "#2DD4BF" },
-  { id: "eli15", icon: "💻", label: "ELI15", titleEn: "Like I'm 15 (Code & Data)", titleFa: "دانش‌آموز ۱۵ ساله (کد و داده)", color: "#5B9DFF" },
-  { id: "eli20", icon: "🚀", label: "ELI20", titleEn: "Like I'm 20 (Production Ops)", titleFa: "مهندس ۲۰ ساله (پروداکشن و دوآپس)", color: "#34D399" },
-  { id: "eliphd", icon: "🔬", label: "ELIPHD", titleEn: "PhD (Compiler & Internals)", titleFa: "پژوهشگر دکترا (کامپایلر و کرنل)", color: "#F5C542" }
+  { id: "eli5", icon: "💡", label: "Intuition", labelFa: "شهود", titleEn: "Intuition & Mental Model", titleFa: "مدل ذهنی و شهودی", color: "#FF8C1A" },
+  { id: "eli10", icon: "⚙️", label: "Mechanics", labelFa: "مکانیک", titleEn: "Shell Rules & Mechanics", titleFa: "قوانین و مکانیک شل", color: "#2DD4BF" },
+  { id: "eli15", icon: "🔄", label: "Data Flow", labelFa: "جریان داده", titleEn: "Objects & Pipeline Flow", titleFa: "جریان داده و اشیاء", color: "#5B9DFF" },
+  { id: "eli20", icon: "🛡️", label: "Production", labelFa: "پروداکشن", titleEn: "Production & DevOps Patterns", titleFa: "پروداکشن و دوآپس", color: "#34D399" },
+  { id: "eliphd", icon: "🏛️", label: "Internals", labelFa: "معماری", titleEn: "Engine Internals & Architecture", titleFa: "معماری داخلی انجین", color: "#F5C542" }
 ];
 
 export const SERIES_DEPTHS = {

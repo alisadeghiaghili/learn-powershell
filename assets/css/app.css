@@ -790,7 +790,7 @@ html[dir="rtl"] .lang-option {
 }
 
 /* =========================================================
-   Cognitive Depth Progression (ELI5 -> ELIPHD)
+   Conceptual & Architectural Layers (Intuition -> Internals)
    ========================================================= */
 .depth-section {
   margin: 0 0 14px;
@@ -1401,6 +1401,7 @@ html[dir="rtl"] .share-block {
   color: var(--muted);
 }
 
+.series-concept-preview,
 .series-eli-preview {
   margin: 0 0 10px;
   padding: 6px 10px;
@@ -1412,6 +1413,7 @@ html[dir="rtl"] .share-block {
   color: #fbd38d;
 }
 
+.series-concept-preview strong,
 .series-eli-preview strong {
   color: #ff8c1a;
   font-family: var(--mono);

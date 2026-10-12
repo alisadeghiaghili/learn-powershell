@@ -425,7 +425,7 @@ function showLevels() {
         <header>
           <h3>${escapeHtml(seriesTitleStr)}</h3>
           <p>${escapeHtml(s.description)}</p>
-          ${seriesDepth?.eli5 ? `<div class="series-eli-preview"><strong>🧸 ELI5:</strong> ${escapeHtml(seriesDepth.eli5)}</div>` : ""}
+          ${seriesDepth?.eli5 ? `<div class="series-concept-preview"><strong>${getLocale() === "fa" ? "مفهوم پایه:" : "Core Concept:"}</strong> ${escapeHtml(seriesDepth.eli5)}</div>` : ""}
         </header>
         <ol class="level-list">${items}</ol>
       </section>`;
@@ -491,17 +491,18 @@ function showSolution() {
 
 function renderLessonModalHtml(level, depths, activeTierId, isSpectrum, isFa) {
   const activeTierObj = DEPTH_TIERS.find((t) => t.id === activeTierId) || DEPTH_TIERS[0];
-  const depthBarLabel = isFa ? "عمق یادگیری (نردبان شناختی)" : "COGNITIVE DEPTH (ELI LADDER)";
+  const depthBarLabel = isFa ? "لایه‌های یادگیری مفهومی و فنی" : "CONCEPTUAL & TECHNICAL DEPTH";
   const toggleBtnText = isSpectrum
-    ? (isFa ? "نمای انتخابی" : "Focused View")
-    : (isFa ? "نردبان کامل ۵ سطحی" : "Full 5-Tier Ladder");
+    ? (isFa ? "نمای تک‌لایه" : "Focused View")
+    : (isFa ? "نمای جامع تمام لایه‌ها" : "All Layers Overview");
 
   const pillsHtml = DEPTH_TIERS.map((tier) => {
     const isActive = tier.id === activeTierId;
+    const tLabel = isFa ? (tier.labelFa || tier.label) : tier.label;
     const tTitle = isFa ? tier.titleFa : tier.titleEn;
     return `
       <button type="button" class="depth-pill ${isActive ? "active" : ""}" data-lesson-depth="${tier.id}" title="${escapeHtml(tTitle)}">
-        <span>${tier.icon}</span> <span>${tier.label}</span>
+        <span>${tier.icon}</span> <span>${escapeHtml(tLabel)}</span>
       </button>
     `;
   }).join("");
@@ -509,12 +510,13 @@ function renderLessonModalHtml(level, depths, activeTierId, isSpectrum, isFa) {
   const depthCardsHtml = isSpectrum
     ? `<div class="depth-spectrum">
         ${DEPTH_TIERS.map((tier) => {
+          const tLabel = isFa ? (tier.labelFa || tier.label) : tier.label;
           const tTitle = isFa ? tier.titleFa : tier.titleEn;
           const content = depths[tier.id];
           return `
             <div class="depth-card" style="border-inline-start: 3px solid ${tier.color};">
               <div class="depth-card-header">
-                <span class="depth-badge" style="color: ${tier.color};">${tier.icon} ${tier.label}</span>
+                <span class="depth-badge" style="color: ${tier.color};">${tier.icon} ${escapeHtml(tLabel)}</span>
                 <span class="depth-tier-title">${escapeHtml(tTitle)}</span>
               </div>
               <p class="depth-card-body">${escapeHtml(content)}</p>
@@ -524,7 +526,7 @@ function renderLessonModalHtml(level, depths, activeTierId, isSpectrum, isFa) {
       </div>`
     : `<div class="depth-card" style="border-inline-start: 3px solid ${activeTierObj.color};">
         <div class="depth-card-header">
-          <span class="depth-badge" style="color: ${activeTierObj.color};">${activeTierObj.icon} ${activeTierObj.label}</span>
+          <span class="depth-badge" style="color: ${activeTierObj.color};">${activeTierObj.icon} ${escapeHtml(isFa ? (activeTierObj.labelFa || activeTierObj.label) : activeTierObj.label)}</span>
           <span class="depth-tier-title">${escapeHtml(isFa ? activeTierObj.titleFa : activeTierObj.titleEn)}</span>
         </div>
         <p class="depth-card-body">${escapeHtml(depths[activeTierId] || depths.eli5)}</p>
@@ -745,7 +747,7 @@ function startLevel(id) {
   term.print(locL.brief, "meta");
   const depthContent = getDepthContent(level.series, level.id, getLocale());
   if (depthContent?.eli5) {
-    term.print(`🧸 ELI5: ${depthContent.eli5}`, "meta");
+    term.print(`Concept: ${depthContent.eli5}`, "meta");
   }
   if (level.teach?.what) {
     term.print(`What: ${level.teach.what}`, "meta");
@@ -754,7 +756,7 @@ function startLevel(id) {
   }
   term.print(`Hint: ${level.hint}`, "meta");
   term.print(`Par: ${level.par}`, "meta");
-  term.print("Tip: Type 'lesson' for 5-tier deep dive (ELI5 to ELIPHD).", "meta");
+  term.print("Tip: Type 'lesson' for in-depth concepts and mechanics.", "meta");
   term.setHint(level.hint);
   refreshVisuals();
   term.focus();

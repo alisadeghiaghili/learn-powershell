@@ -3800,7 +3800,7 @@ function helpText(topic) {
   const map = {
     "": `LearnPowerShell help
   levels        open the level browser
-  lesson        open interactive 5-tier lesson (ELI5 to ELIPHD)
+  lesson        open interactive conceptual lesson
   hint          show the current level hint
   goal          show win conditions
   steps         show the teaching guide for the current level
