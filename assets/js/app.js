@@ -108,6 +108,11 @@ function updateChrome() {
       levelTitleEl.textContent = ui().sandboxTitle;
     }
   }
+
+  const whyBtn = document.querySelector("[data-action=why]");
+  if (whyBtn) {
+    whyBtn.textContent = getLocale() === "fa" ? "چرا پاورشل؟" : "Why PowerShell?";
+  }
 }
 
 function focusGuide() {
@@ -447,6 +452,115 @@ function onLevelSolved(rawLevel, result) {
             : ui().copyFailed
           : "Share window opened.";
     });
+  });
+}
+
+function showWhyPowerShell() {
+  const isFa = getLocale() === "fa";
+  const title = isFa ? "چرا پاورشل و به چه دردی می‌خورد؟" : "Why PowerShell & What Is It Good For?";
+
+  const bodyHtml = isFa ? `
+    <p class="modal-lead">چرا به جای شل‌های سنتی (مثل CMD یا Bash متنی) سراغ پاورشل می‌رویم؟</p>
+    <div style="font-size: 13.5px; line-height: 1.6; margin-bottom: 12px; color: var(--text);">
+      در تمام خط‌فرمان‌های سنتی، خروجی دستورات <strong>رشته‌های متنی خام و بی‌ساختار</strong> است. اگر می‌خواستید نام یک پروسس با مصرف رم بالا یا فایل‌های حجیم را پیدا کنید، مجبور بودید با <code>grep</code>، <code>awk</code>، <code>sed</code> و عبارات باقاعده (Regex) متن را قطعه‌قطعه کنید؛ روشی به شدت شکننده که با یک فاصله یا تغییر زبان سیستم از کار می‌افتاد (معروف به <em>مالیات پردازش متن</em> یا <em>Text Parsing Tax</em>).
+      <br/><br/>
+      مایکروسافت و جفری اسنوور با الهام از ترکیب‌پذیری پایپ‌لاین یونیکس و غنای شیءگرایی مدرن، <strong>پاورشل</strong> را خلق کردند: <strong>انتقال اشیاء زنده دات‌نت (.NET Objects) به جای متن خام!</strong>
+    </div>
+
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-card-title">⚡ ۱. رهایی کامل از جهنم پردازش متن</div>
+        <p class="why-card-body">خروجی هر دستور یک شیء واقعی با ویژگی‌ها و متدهای تایپ‌شده است. برای فیلتر کردن پروسس‌ها نیازی به برش متن ندارید؛ کافی است بنویسید <code>Where-Object CPU -gt 50</code> تا مستقیماً روی فیلد عددی فیلتر شود.</p>
+      </div>
+
+      <div class="why-card">
+        <div class="why-card-title">🚀 ۲. خودکارسازی وظایف و مدیریت سرورها (SysAdmin)</div>
+        <p class="why-card-body">انجام وظایف تکراری سیستم‌عامل بدون کلیک در محیط گرافیکی؛ اتصال ریموت همزمان به ده‌ها یا صدها سرور با پروتکل‌های امن WinRM و SSH، مدیریت سرویس‌ها، رجیستری و فایل‌ها در چند ثانیه.</p>
+      </div>
+
+      <div class="why-card">
+        <div class="why-card-title">☁️ ۳. ابزار محوری دوآپس و کلود (DevOps & Cloud)</div>
+        <p class="why-card-body">پاورشل مدرن (PowerShell 7+) روی <strong>ویندوز، لینوکس و مک</strong> اجرا می‌شود. ابزار رسمی مدیریت و استقرار در پلتفرم‌های ابری (Azure, AWS)، داکر، کوبرنتیز و پایپ‌لاین‌های CI/CD است.</p>
+      </div>
+
+      <div class="why-card">
+        <div class="why-card-title">🛡️ ۴. امنیت، ممیزی و فارنزیک (Security & Auditing)</div>
+        <p class="why-card-body">محاسبه و مقایسه هش فایل‌ها، بررسی امضای دیجیتال، لاگ‌برداری از بلاک‌های اسکریپت، اعمال سیاست‌های امنیتی (ExecutionPolicy) و اعطای حداقل دسترسی لازم با JEA.</p>
+      </div>
+
+      <div class="why-card">
+        <div class="why-card-title">🧩 ۵. گرامر استاندارد «فعل-اسم» (Verb-Noun)</div>
+        <p class="why-card-body">تمام دستورات از ساختار قابل پیش‌بینی پیروی می‌کنند: <code>Get-Service</code>، <code>Start-Process</code>، <code>New-Item</code>. با حفظ نکردن نام‌های عجیب، همیشه می‌توانید نام دستور بعدی را حدس بزنید.</p>
+      </div>
+
+      <div class="why-card">
+        <div class="why-card-title">🔍 ۶. سیستم خودآموز و خودتوصیف (Self-Discovery)</div>
+        <p class="why-card-body">با <code>Get-Help</code> مستندات و مثال‌های هر دستور را بخوانید و با <code>Get-Member</code> ببینید یک شیء چه ویژگی‌ها و متدهایی دارد. پاورشل خودآموزترین شل در دنیای مهندسی است.</p>
+      </div>
+    </div>
+
+    <div class="learning-box" style="margin-top: 14px;">
+      <div class="next-title">🎯 نتیجه‌گیری و هدف یادگیری</div>
+      <p style="margin: 4px 0 0; font-size: 13px; line-height: 1.55; color: var(--text);">
+        ما پاورشل را یاد می‌گیریم تا کارهای چندساعته را در چند ثانیه خودکار کنیم، سیستم‌ها را با دقت مهندسی مدیریت کنیم و به جای دست‌وپنجه نرم‌کردن با کاراکترهای متنی، با <strong>داده‌های ساخت‌یافته و هوشمند</strong> کار کنیم.
+      </p>
+    </div>
+  ` : `
+    <p class="modal-lead">Why choose PowerShell over legacy shells (like CMD or text-only Bash)?</p>
+    <div style="font-size: 13.5px; line-height: 1.6; margin-bottom: 12px; color: var(--text);">
+      In traditional command lines, every utility spits out <strong>flat, unstructured text streams</strong>. If you want a process name or free disk space, you must slice lines with <code>grep</code>, <code>awk</code>, <code>sed</code>, and regex. The moment column formatting or system localization changes, your automation scripts shatter (the notorious <em>Text Parsing Tax</em>).
+      <br/><br/>
+      Jeffrey Snover and Microsoft combined the elegance of Unix pipelines with modern object-oriented runtime power to create <strong>PowerShell</strong>: <strong>passing live, typed .NET objects down the pipeline instead of raw text!</strong>
+    </div>
+
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-card-title">⚡ 1. Abolishing the Text Parsing Tax</div>
+        <p class="why-card-body">Command output is never dumb text; it is an object with typed properties and callable methods. Filter directly on real values (e.g. <code>Where-Object CPU -gt 50</code>) without fragile string slicing.</p>
+      </div>
+
+      <div class="why-card">
+        <div class="why-card-title">🚀 2. Enterprise Task Automation & Fleet SysAdmin</div>
+        <p class="why-card-body">Automate repetitive OS management without manual GUI clicks. Remoting over WinRM and SSH lets you fan out commands across hundreds of servers concurrently in seconds.</p>
+      </div>
+
+      <div class="why-card">
+        <div class="why-card-title">☁️ 3. Modern Cross-Platform DevOps & Cloud</div>
+        <p class="why-card-body">PowerShell 7+ runs natively on <strong>Windows, Linux, and macOS</strong>. It is the premier automation engine for cloud orchestration (Azure, AWS), Docker, Kubernetes, and CI/CD pipelines.</p>
+      </div>
+
+      <div class="why-card">
+        <div class="why-card-title">🛡️ 4. Security, Hardening & Cryptographic Auditing</div>
+        <p class="why-card-body">Inspect file hashes, verify code signatures, enforce Execution Policies, capture full script block logging, and grant strictly scoped admin permissions with Just Enough Administration (JEA).</p>
+      </div>
+
+      <div class="why-card">
+        <div class="why-card-title">🧩 5. Predictable Verb-Noun Grammar</div>
+        <p class="why-card-body">Standardized naming pairs eliminate cryptic flag memorization: <code>Get-Service</code>, <code>Start-Process</code>, <code>New-Item</code>. If you know the action, you can infer the command name immediately.</p>
+      </div>
+
+      <div class="why-card">
+        <div class="why-card-title">🔍 6. Complete Self-Discovery (Introspection)</div>
+        <p class="why-card-body">Commands explain themselves. Use <code>Get-Help</code> for verified syntax and examples, and pipe into <code>Get-Member</code> to inspect all properties and methods available on any object.</p>
+      </div>
+    </div>
+
+    <div class="learning-box" style="margin-top: 14px;">
+      <div class="next-title">🎯 The Core Takeaway</div>
+      <p style="margin: 4px 0 0; font-size: 13px; line-height: 1.55; color: var(--text);">
+        We use PowerShell to turn hours of manual clicking and error-prone script maintenance into robust, repeatable, cross-platform engineering. You don't parse strings; you manipulate living objects.
+      </p>
+    </div>
+  `;
+
+  const modal = showModal({
+    title,
+    bodyHtml,
+    actions: [
+      { label: isFa ? "شروع مراحل آموزشی" : "Start levels", className: "primary", onClick: () => showLevels() },
+      { label: isFa ? "بستن" : "Close", className: "ghost", onClick: () => term.focus() },
+    ],
+    onClose: () => term.focus(),
   });
 }
 
@@ -897,6 +1011,13 @@ function handleCommand(line) {
     }
   }
 
+  if (lower === "why" || lower === "why-powershell" || lower === "about-powershell") {
+    lastRun = emptyRun();
+    refreshVisuals();
+    showWhyPowerShell();
+    return;
+  }
+
   const result = session.run(line);
 
   if (result.output.includes("clear-screen")) {
@@ -1043,6 +1164,7 @@ document.querySelectorAll("[data-action]").forEach((btn) => {
     closeLang();
     closeNav();
 
+    if (action === "why") showWhyPowerShell();
     if (action === "levels") showLevels();
     if (action === "lesson") replayLesson();
     if (action === "guide") focusGuide();
@@ -1103,16 +1225,33 @@ const bootCommands = params.get("command");
 const startLevelParam = params.get("level");
 
 if (params.get("NODEMO") == null && !bootCommands && !startLevelParam) {
+  const isFa = getLocale() === "fa";
   showModal({
-    title: "Welcome to Learn PowerShell",
-    titleHtml: 'Welcome to Learn <span class="brand-ps">PowerShell</span>',
-    bodyHtml: `
-      <p class="modal-lead">An interactive PowerShell pipeline lab and object sandbox.</p>
-      <p>Objects flow through cmdlets. Levels teach the language so you leave with a mental model — not just typed lines.</p>
+    title: isFa ? "به LearnPowerShell خوش آمدید" : "Welcome to Learn PowerShell",
+    titleHtml: isFa
+      ? 'به آزمایشگاه تعاملی <span class="brand-ps">PowerShell</span> خوش آمدید'
+      : 'Welcome to Learn <span class="brand-ps">PowerShell</span>',
+    bodyHtml: isFa ? `
+      <p class="modal-lead">چرا پاورشل و به چه دردی می‌خورد؟</p>
+      <div style="font-size: 13px; line-height: 1.6; margin-bottom: 12px; color: var(--text);">
+        در خط‌فرمان‌های سنتی (مثل CMD یا شل‌های متنی)، خروجی ابزارها رشته‌های متنی خام و شکننده است که با هر تغییر می‌شکند.
+        <strong>پاورشل متولد شد تا اشیاء زنده دات‌نت (.NET Objects) را در پایپ‌لاین عبور دهد.</strong>
+        <br/><br/>
+        <strong>کاربردهای محوری:</strong> اتوماسیون وظایف روزمره، مدیریت ناوگان سرورها و شبکه‌ها، زیرساخت ابری (DevOps/Cloud)، اسکریپت‌های امنیتی و مانیتورینگ بدون نیاز به کلیک‌های تکراری در محیط گرافیکی.
+      </div>
+    ` : `
+      <p class="modal-lead">Why PowerShell & What Is It Good For?</p>
+      <div style="font-size: 13px; line-height: 1.6; margin-bottom: 12px; color: var(--text);">
+        Legacy shells treat everything as fragile unstructured text lines that break easily.
+        <strong>PowerShell was created to stream typed .NET objects across the pipeline</strong> — giving you direct access to properties without fragile text parsing.
+        <br/><br/>
+        <strong>Real-world roles:</strong> Cross-platform OS automation, server & cloud infrastructure (Azure/AWS), CI/CD DevOps workflows, and enterprise security auditing.
+      </div>
     `,
     actions: [
-      { label: "Start levels", className: "primary", onClick: () => showLevels() },
-      { label: "Sandbox", className: "ghost", onClick: () => startSandbox() },
+      { label: isFa ? "شروع مراحل آموزشی" : "Start levels", className: "primary", onClick: () => showLevels() },
+      { label: isFa ? "چرا پاورشل؟ (توضیح کامل)" : "Why PowerShell? (Deep Dive)", className: "ghost", onClick: () => showWhyPowerShell() },
+      { label: isFa ? "محیط آزاد (سندباکس)" : "Sandbox", className: "ghost", onClick: () => startSandbox() },
     ],
     onClose: () => term.focus(),
   });

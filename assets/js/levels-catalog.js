@@ -142,7 +142,7 @@ function makeMindset(seriesId, name, modelSummary) {
 /** @type {Level[]} */
 export const LEVELS = [
   // ─── intro ───────────────────────────────────────────────
-  makeMindset("intro", "The Object Postcard House", "A house with labeled rooms exchanging physical postcards."),
+  makeMindset("intro", "Why PowerShell? From Text to Objects", "Why we use PowerShell: eliminating text parsing with live objects."),
   L("intro-01", "intro", "Say hello", 'Write the string Hello, PowerShell to the pipeline using Write-Output.', 'Write-Output "Hello, PowerShell"', 1,
     { outputIncludes: "Hello, PowerShell", usedCmdlets: ["Write-Output"] },
     { what: "Write-Output places an object on the success stream.", why: ["Even a string is a System.String object.", "Verb-Noun is the cmdlet grammar."], model: "The pipeline is a conveyor belt of objects." },

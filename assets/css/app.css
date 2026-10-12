@@ -1717,3 +1717,43 @@ html[dir="rtl"] pre {
   transform: translateY(0);
 }
 
+/* Why PowerShell Section & Modal */
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+  margin: 14px 0 6px;
+}
+
+.why-card {
+  background: color-mix(in srgb, var(--panel-2) 90%, var(--ink));
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.why-card:hover {
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--border));
+  transform: translateY(-2px);
+}
+
+.why-card-title {
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--accent-soft);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.why-card-body {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--text);
+  margin: 0;
+}
+

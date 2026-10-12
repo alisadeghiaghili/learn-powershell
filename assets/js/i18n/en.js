@@ -32,10 +32,10 @@ export const en = {
       "Always-on panel. In a level it shows concepts, field notes, and the solution checklist.",
     startHere: "START HERE",
     startHereItems: [
+      "**Why PowerShell?** Type `why` or click Why PowerShell? to learn core purposes",
       "Open **Levels** and begin with Getting Started → Say hello",
       "Type `help` for a map of commands",
       "Type `curriculum` for outcomes you will own",
-      "Type `concepts` for PowerShell mental models",
     ],
     sandboxTip: "SANDBOX TIP",
     sandboxTipItems: [

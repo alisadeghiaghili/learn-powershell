@@ -76,13 +76,16 @@ export function localizeLevel(level) {
 
   if (level.id.endsWith("-00")) {
     const seriesData = SERIES_DEPTHS[level.series];
+    const isIntro = level.id === "intro-00";
     if (current === "fa" && seriesData) {
       return {
         ...level,
         seriesTitle: seriesName,
-        name: `مایندست: ${seriesName}`,
+        name: isIntro ? "مایندست: چرا پاورشل و به چه دردی می‌خورد؟" : `مایندست: ${seriesName}`,
         brief: seriesData.eli5.fa,
-        learning: ["مدل ذهنی و شهودی", "قوانین و رفتار پایپ‌لاین", "پایه‌های مفهومی"],
+        learning: isIntro
+          ? ["چرا اصلاً پاورشل؟", "حل جهنم پردازش متن (Text Parsing Tax)", "کاربردهای حیاتی در دوآپس و مدیریت سیستم"]
+          : ["مدل ذهنی و شهودی", "قوانین و رفتار پایپ‌لاین", "پایه‌های مفهومی"],
         fieldNotes: [seriesData.eli10.fa, seriesData.eli15.fa, seriesData.eli20.fa],
       };
     }
@@ -90,9 +93,11 @@ export function localizeLevel(level) {
       return {
         ...level,
         seriesTitle: seriesName,
-        name: `Mindset: ${seriesName}`,
+        name: isIntro ? "Mindset: Why PowerShell? (Purpose & Powers)" : `Mindset: ${seriesName}`,
         brief: seriesData.eli5.en,
-        learning: ["Mental Model & Intuition", "Pipeline Architecture", "Core Concepts"],
+        learning: isIntro
+          ? ["Why PowerShell Exists", "Solving Text Parsing Hell", "Real-World SysAdmin & DevOps Roles"]
+          : ["Mental Model & Intuition", "Pipeline Architecture", "Core Concepts"],
         fieldNotes: [seriesData.eli10.en, seriesData.eli15.en, seriesData.eli20.en],
       };
     }

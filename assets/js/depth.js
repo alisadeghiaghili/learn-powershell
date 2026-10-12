@@ -20,24 +20,24 @@ export const DEPTH_TIERS = [
 export const SERIES_DEPTHS = {
   intro: {
     eli5: {
-      en: "The computer is a house with labeled rooms. You don't shout words into thin air; you send physical toy postcards that carry real information on the back.",
-      fa: "کامپیوتر مثل یک خانه بزرگ با اتاق‌های برچسب‌دار است. شما کلمات را در هوا فریاد نمی‌زنید؛ بلکه کارت‌پستال‌های واقعی می‌فرستید که پشت آن‌ها اطلاعات فیزیکی ثبت شده است."
+      en: "Why do we use PowerShell? Traditional shells (like CMD or text-only tools) dump flat, unstructured text strings that break if a single column moves. PowerShell passes real, structured objects with labeled properties — like sending physical postal packages with exact dimensions, instead of shouting words into the wind.",
+      fa: "چرا اصلاً سراغ پاورشل می‌رویم و به چه دردی می‌خورد؟ شل‌های سنتی (مثل CMD یا ترمینال‌های قدیمی متنی) خروجی را به شکل رشته‌های متنی خام و بی‌ساختار بیرون می‌ریزند که با کوچک‌ترین تغییر فاصله یا فونت می‌شکنند. اما پاورشل اشیاء هوشمند با ویژگی‌های مشخص را در پایپ‌لاین عبور می‌دهد؛ مثل پست کردن بسته‌های فیزیکی با برچسب مشخص به جای فریاد زدن کلمات در باد."
     },
     eli10: {
-      en: "PowerShell speaks in Verb-Noun pairs (like Get-Location or Set-Location). Verbs are the action; nouns are the target. Aliases like 'dir' and 'cd' are just nicknames for these pairs.",
-      fa: "پاورشل با دستورات دو کلمه‌ای «فعل-اسم» صحبت می‌کند (مثل Get-Location یا Set-Location). فعل یعنی چه کاری بکن و اسم یعنی روی چه چیزی. دستوراتی مثل dir و cd فقط نام‌های مستعار هستند."
+      en: "What is it good for? 1) Automating OS administration without manual GUI clicking, 2) Managing server fleets, networks, and active directory, 3) Deploying cloud resources (Azure, AWS), 4) CI/CD DevOps workflows. Its standard Verb-Noun syntax (like Get-Process or Stop-Service) means you never have to memorize obscure cryptic flags.",
+      fa: "پاورشل به چه دردی می‌خورد؟ ۱) خودکارسازی وظایف سیستم‌عامل بدون نیاز به کلیک‌های تکراری در محیط گرافیکی، ۲) مدیریت یکپارچه سرورها، شبکه‌ها و اکتیو دایرکتوری، ۳) مدیریت و استقرار منابع ابری (Azure، AWS)، ۴) پایپ‌لاین‌های DevOps و CI/CD. گرامر استاندارد «فعل-اسم» (مانند Get-Process یا Stop-Service) یادگیری و پیش‌بینی دستورات را فوق‌العاده آسان می‌کند."
     },
     eli15: {
-      en: "The session maintains a PathInfo pointer in memory. Get-Content streams file rows as distinct System.String objects into the pipeline, ready for immediate downstream filtering.",
-      fa: "سشن یک اشاره‌گر وضعیت PathInfo در حافظه نگه می‌دارد. دستور Get-Content سطرهای فایل را به شکل اشیاء رشته‌ای مجزا (System.String) درون خط لوله جاری می‌کند تا بلافاصله فیلتر شوند."
+      en: "Eliminating the Text Parsing Tax: In legacy shells, extracting a process ID or free disk space requires fragile regex, awk, sed, and string cutting. In PowerShell, every command emits live .NET objects. You simply inspect `$proc.CPU` or filter with `Where-Object Status -eq 'Running'` directly on properties without text manipulation.",
+      fa: "رهایی از مالیات پردازش متن (Text Parsing Tax): در ابزارهای سنتی برای پیدا کردن یک ستون یا فضای خالی دیسک باید با awk، grep و regex متن را قطعه‌قطعه می‌کردید. در پاورشل، خروجی هر دستور اشیاء زنده دات‌نت هستند؛ کافی است ویژگی proc.CPU$ را بخوانید یا با Where-Object مستقیماً روی فیلدها فیلتر کنید بدون آنکه درگیر تجزیه متن شوید."
     },
     eli20: {
-      en: "Hardcoded absolute paths break cross-platform automation. Production scripts resolve provider-qualified paths via $PSScriptRoot and verify item presence before mutating state.",
-      fa: "مسیرهای ثابت و هاردکد شده در اتوماسیون‌های چندسکویی دچار شکست می‌شوند. اسکریپت‌های پروداکشن مسیرها را به کمک PSScriptRoot$ و کشف وضعیت آیتم‌ها مدیریت می‌کنند."
+      en: "Enterprise Reliability & Cross-Platform: PowerShell (PowerShell 7+) runs natively on Windows, Linux, and macOS. Enterprise automation demands idempotency, structured error handling (try/catch), remoting (WinRM/SSH), and security guardrails (Execution Policies, JEA, and script block logging) which PowerShell provides out of the box.",
+      fa: "اعتمادپذیری سازمانی و اجرای چندسکویی: پاورشل مدرن (PowerShell 7+) روی ویندوز، لینوکس و مک اجرا می‌شود. در سازمان‌ها نیاز به کارهای تکرارپذیر (Idempotent)، مدیریت خطای ساخت‌یافته (try/catch)، ریموت‌زدن امن (SSH/WinRM) و ممیزی امنیتی است که پاورشل به صورت پیش‌فرض همه را تامین می‌کند."
     },
     eliphd: {
-      en: "SessionStateInternal coordinates the provider hierarchy. PathInfo encapsulates Drive, Provider, and ProviderPath with drive-qualified PSDrive resolution and path normalization.",
-      fa: "سیستم SessionStateInternal ساختار سلسله‌مراتبی پرووایدرها را هدایت می‌کند. شیء PathInfo درایو، پرووایدر و مسیر واقعی را با اعتبارسنجی PSDrive کپسوله‌سازی می‌کند."
+      en: "Monad Architecture & ETS: Conceived by Jeffrey Snover, the Monad Manifesto solved administrative complexity by marrying Unix pipelines with object orientation. The Extended Type System (ETS) adapts disparate data sources (WMI, CIM, XML, JSON, Registry, .NET) into a unified object model managed by SessionState.",
+      fa: "معماری موناد و سیستم نوع ETS: بر اساس مانیفست Monad جفری اسنوور، پاورشل ترکیب هوشمندانه‌ای از خط لوله یونیکس با شیء‌گرایی دات‌نت است. سیستم نوع توسعه‌یافته (ETS) منابع نامتجانس داده (رجیستری، وب، فایل‌ها، اکتیودایرکتوری و اشیاء دات‌نت) را به مدلی یکپارچه برای مدیریت سیستم تبدیل می‌کند."
     }
   },
   objects: {

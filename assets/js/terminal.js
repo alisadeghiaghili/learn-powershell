@@ -48,6 +48,8 @@ const BASE_COMMANDS = [
   "fl",
   "levels",
   "lesson",
+  "why",
+  "why-powershell",
   "next",
   "continue",
   "hint",
