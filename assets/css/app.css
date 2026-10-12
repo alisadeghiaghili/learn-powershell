@@ -1476,6 +1476,24 @@ html[dir="rtl"] .level-row {
   border-color: color-mix(in srgb, var(--success) 35%, var(--border));
 }
 
+.level-row.is-mindset-row {
+  border-inline-start: 3px solid #818cf8;
+  background: color-mix(in srgb, #6366f1 8%, var(--elevated));
+}
+
+.mindset-pill {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--ui);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: rgba(99, 102, 241, 0.18);
+  color: #a5b4fc;
+  border: 1px solid rgba(99, 102, 241, 0.35);
+}
+
 .level-meta {
   font-family: var(--mono);
   font-size: 11px;

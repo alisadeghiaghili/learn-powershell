@@ -3,7 +3,6 @@
   "1": "app.js",
   "2": "evalExpr",
   "3": "smoke.mjs",
-  "4": "dialog.js",
   "5": "createTerminal",
   "6": "index.js",
   "7": "progress.js",
@@ -14,6 +13,6 @@
   "13": "verify.ps1",
   "14": "verify-all.ps1",
   "15": "LearnPowerShell — Design Notes",
-  "16": "levels-catalog.js",
+  "16": "teach.js",
   "17": "CLAUDE.md"
 }

@@ -443,11 +443,15 @@ function showLevels() {
         const locL = localizeLevel(l);
         const done = Boolean(progressMap[l.id]?.solved);
         const best = progressMap[l.id]?.bestCommands;
+        const isMindset = Boolean(l.goal?.acknowledge || l.id.endsWith("-00"));
+        const metaStr = isMindset
+          ? `<span class="mindset-pill">${getLocale() === "fa" ? "🧠 مایندست مفهومی" : "🧠 Mindset"}</span>${done ? ` · ${ui().solvedLabel}` : ""}`
+          : `par ${l.par}${done ? ` · ${ui().solvedLabel}${best ? ` (${best})` : ""}` : ""}`;
         return `
           <li>
-            <button type="button" class="level-row ${done ? "is-done" : ""}" data-level="${l.id}">
+            <button type="button" class="level-row ${done ? "is-done" : ""} ${isMindset ? "is-mindset-row" : ""}" data-level="${l.id}">
               <span class="level-name">${escapeHtml(locL.name)}</span>
-              <span class="level-meta">par ${l.par}${done ? ` · ${ui().solvedLabel}${best ? ` (${best})` : ""}` : ""}</span>
+              <span class="level-meta">${metaStr}</span>
             </button>
           </li>`;
       })

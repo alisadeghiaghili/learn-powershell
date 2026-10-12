@@ -6,9 +6,9 @@
     "semantic_hash": "527f76e3f827474bf59fd51ba5d5fbaa"
   },
   "assets/js/app.js": {
-    "mtime": 1791807290.3115304,
-    "seen": 1791807353.1643708,
-    "ast_hash": "ad26fe55f53a77b6b9a5d8afb6b6b6f6",
+    "mtime": 1791809019.5649185,
+    "seen": 1791809161.354697,
+    "ast_hash": "c9483752e0c22da40bc4d802cfe45c36",
     "semantic_hash": ""
   },
   "assets/js/confetti.js": {
@@ -24,9 +24,9 @@
     "semantic_hash": "0dc63aad861d8be337d45f50ebc2d807"
   },
   "assets/js/engine.js": {
-    "mtime": 1791807220.0453248,
-    "seen": 1791807353.1643708,
-    "ast_hash": "a6ea574ad4156f537997cfedf761a03e",
+    "mtime": 1791809134.162896,
+    "seen": 1791809161.354697,
+    "ast_hash": "04b5f151d568a70410064aa472dd9161",
     "semantic_hash": ""
   },
   "assets/js/i18n/de.js": {
@@ -54,10 +54,10 @@
     "semantic_hash": ""
   },
   "assets/js/i18n/index.js": {
-    "mtime": 1791052084.1377716,
-    "seen": 1791221283.0996456,
-    "ast_hash": "23be93b7cae08d692437546dcbeedba3",
-    "semantic_hash": "23be93b7cae08d692437546dcbeedba3"
+    "mtime": 1791808410.0603921,
+    "seen": 1791809161.354697,
+    "ast_hash": "4c7aa8e1ecc84a1fa267cad6aaf51c44",
+    "semantic_hash": ""
   },
   "assets/js/lang.js": {
     "mtime": 1791285822.6877813,
@@ -66,9 +66,9 @@
     "semantic_hash": ""
   },
   "assets/js/levels-catalog.js": {
-    "mtime": 1791481933.1780398,
-    "seen": 1791482164.521125,
-    "ast_hash": "16ab230ede22726209552c8aece3f9ce",
+    "mtime": 1791808848.2410238,
+    "seen": 1791809161.354697,
+    "ast_hash": "b4ed9321ccbb0d719dc4f35cff8e0248",
     "semantic_hash": ""
   },
   "assets/js/levels.js": {
@@ -96,9 +96,9 @@
     "semantic_hash": ""
   },
   "assets/js/terminal.js": {
-    "mtime": 1791806385.4026463,
-    "seen": 1791806783.510622,
-    "ast_hash": "4aa411d4f686048c029e2e4c3a777255",
+    "mtime": 1791808230.7511668,
+    "seen": 1791809161.354697,
+    "ast_hash": "7eb0fcb1785fb6d6b5011d45eb08e9ce",
     "semantic_hash": ""
   },
   "assets/js/visitor-counter.js": {
@@ -150,9 +150,9 @@
     "semantic_hash": "e9f94f2a3e02b316bf11d4489986f03b"
   },
   "tests/curriculum.mjs": {
-    "mtime": 1791481975.2832112,
-    "seen": 1791482164.521125,
-    "ast_hash": "022d601d6cc1a0d260ab6e5b49ba4d44",
+    "mtime": 1791809047.2014952,
+    "seen": 1791809161.354697,
+    "ast_hash": "e48e8f01a5f434510cec1d0512e9d935",
     "semantic_hash": ""
   },
   "tests/smoke.mjs": {
