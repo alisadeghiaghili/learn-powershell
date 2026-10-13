@@ -31,7 +31,7 @@ import {
   localizeLevel,
   localizeSeriesTitle,
 } from "./i18n/index.js";
-import { getVisitorCount } from "./visitor-counter.js";
+import { getVisitorCount, getCachedVisitorCount } from "./visitor-counter.js";
 import { DEPTH_TIERS, getDepthContent } from "./depth.js";
 import {
   uiHelpModalHtml,
@@ -96,6 +96,8 @@ function updateChrome() {
   document.querySelectorAll("[data-lang]").forEach((btn) => {
     btn.classList.toggle("on", btn.getAttribute("data-lang") === getLocale());
   });
+  const visitorStatEl = document.getElementById("visitor-stat");
+  if (visitorStatEl) visitorStatEl.title = ui().visitorsTitle;
 
   if (levelTitleEl) {
     if (mode === "level" && levelId) {
@@ -1258,16 +1260,17 @@ document.addEventListener("click", (e) => {
 });
 
 // Visitor Counter
-getVisitorCount().then((count) => {
-  if (count !== null) {
-    const statEl = document.getElementById("visitor-stat");
-    const countEl = document.getElementById("visitor-count");
-    if (statEl && countEl) {
-      countEl.textContent = String(count);
-      statEl.hidden = false;
-    }
-  }
-});
+function renderVisitorCount(count) {
+  const statEl = document.getElementById("visitor-stat");
+  const countEl = document.getElementById("visitor-count");
+  if (!statEl || !countEl || count === null) return;
+  statEl.title = ui().visitorsTitle;
+  countEl.textContent = count.toLocaleString("en-US");
+  statEl.hidden = false;
+}
+
+renderVisitorCount(getCachedVisitorCount());
+getVisitorCount().then(renderVisitorCount);
 
 // URL permalinks & initial modal
 const params = new URLSearchParams(location.search);

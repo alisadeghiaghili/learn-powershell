@@ -145,11 +145,13 @@ assets/js/ui-help.js       interactive UI tour + terminal quiz
 assets/js/i18n/            locale catalogs (en / fa / de)
 assets/js/teach.js         after-command "why" blocks
 assets/js/progress.js      localStorage + cookie persistence
+assets/js/visitor-counter.js unique visitor counter (server-side count, once per browser)
 assets/js/share.js         LinkedIn / X / Facebook share payloads
 assets/js/confetti.js      celebration effects
 assets/js/app.js           wiring, modes, modals
 tests/smoke.mjs            engine smoke tests (Node)
 tests/curriculum.mjs       every level solvable (Node)
+tests/visitor-counter.test.mjs visitor counter (node --test, fetch and localStorage mocked)
 DESIGN.md                  design notes
 LICENSE                    Apache-2.0
 ```
@@ -159,6 +161,7 @@ LICENSE                    Apache-2.0
 ```powershell
 node tests/smoke.mjs
 node tests/curriculum.mjs
+node --test tests/visitor-counter.test.mjs
 node labs/export-solutions.mjs
 pwsh -NoProfile -File labs/verify.ps1
 pwsh -NoProfile -File labs/verify-all.ps1
